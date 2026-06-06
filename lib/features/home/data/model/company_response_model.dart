@@ -1,0 +1,352 @@
+// To parse this JSON data, do
+//
+//     final logisticResponseModel = logisticResponseModelFromJson(jsonString);
+
+import 'dart:convert';
+
+LogisticPaginatedModel logisticPaginatedModelFromJson(String str) =>
+    LogisticPaginatedModel.fromJson(json.decode(str));
+
+String logisticPaginatedModelToJson(LogisticPaginatedModel data) =>
+    json.encode(data.toJson());
+
+class LogisticPaginatedModel {
+  final List<LogisticResponseModel>? data;
+  final int? totalCount;
+  final int? page;
+  final int? pageSize;
+  final int? totalPages;
+  final bool? hasPrevious;
+  final bool? hasNext;
+
+  LogisticPaginatedModel({
+    this.data,
+    this.totalCount,
+    this.page,
+    this.pageSize,
+    this.totalPages,
+    this.hasPrevious,
+    this.hasNext,
+  });
+
+  LogisticPaginatedModel copyWith({
+    List<LogisticResponseModel>? data,
+    int? totalCount,
+    int? page,
+    int? pageSize,
+    int? totalPages,
+    bool? hasPrevious,
+    bool? hasNext,
+  }) => LogisticPaginatedModel(
+    data: data ?? this.data,
+    totalCount: totalCount ?? this.totalCount,
+    page: page ?? this.page,
+    pageSize: pageSize ?? this.pageSize,
+    totalPages: totalPages ?? this.totalPages,
+    hasPrevious: hasPrevious ?? this.hasPrevious,
+    hasNext: hasNext ?? this.hasNext,
+  );
+
+  factory LogisticPaginatedModel.fromJson(Map<String, dynamic> json) =>
+      LogisticPaginatedModel(
+        data:
+            json["data"] == null
+                ? []
+                : List<LogisticResponseModel>.from(
+                  json["data"]!.map((x) => LogisticResponseModel.fromJson(x)),
+                ),
+        totalCount: json["totalCount"],
+        page: json["page"],
+        pageSize: json["pageSize"],
+        totalPages: json["totalPages"],
+        hasPrevious: json["hasPrevious"],
+        hasNext: json["hasNext"],
+      );
+
+  Map<String, dynamic> toJson() => {
+    "data":
+        data == null ? [] : List<dynamic>.from(data!.map((x) => x.toJson())),
+    "totalCount": totalCount,
+    "page": page,
+    "pageSize": pageSize,
+    "totalPages": totalPages,
+    "hasPrevious": hasPrevious,
+    "hasNext": hasNext,
+  };
+}
+
+class LogisticResponseModel {
+  final String? id;
+  final String? adminId;
+  final String? companyEmail;
+  final String? companyName;
+  final String? phoneNumber;
+  final String? companyLogo;
+  final String? companyRegNo;
+  final String? companyInfo;
+  final num? rating;
+  final num? valueCharge;
+  final num? noOfTrucks;
+  final num? nofOfBikes;
+  final bool? available;
+  final String? companyAddress;
+  final String? postCodes;
+  final String? locality;
+  final String? state;
+  final num? latitude;
+  final num? longitude;
+  final String? bankName;
+  final String? accountName;
+  final String? accountNumber;
+  final List<String>? deliveryTypes;
+  final List<String>? serviceAreas;
+  final List<CompanyReviewModel>? companyReviewModels;
+  final DateTime? createdAt;
+
+  LogisticResponseModel({
+    this.id,
+    this.adminId,
+    this.companyEmail,
+    this.companyName,
+    this.phoneNumber,
+    this.companyLogo,
+    this.companyRegNo,
+    this.companyInfo,
+    this.rating,
+    this.valueCharge,
+    this.noOfTrucks,
+    this.nofOfBikes,
+    this.available,
+    this.companyAddress,
+    this.postCodes,
+    this.locality,
+    this.state,
+    this.latitude,
+    this.longitude,
+    this.bankName,
+    this.accountName,
+    this.accountNumber,
+    this.deliveryTypes,
+    this.serviceAreas,
+    this.companyReviewModels,
+    this.createdAt,
+  });
+
+  LogisticResponseModel copyWith({
+    String? id,
+    String? adminId,
+    String? companyEmail,
+    String? companyName,
+    String? phoneNumber,
+    String? companyLogo,
+    String? companyRegNo,
+    String? companyInfo,
+    num? rating,
+    num? valueCharge,
+    num? noOfTrucks,
+    num? nofOfBikes,
+    bool? available,
+    String? companyAddress,
+    String? postCodes,
+    String? locality,
+    String? state,
+    num? latitude,
+    num? longitude,
+    String? bankName,
+    String? accountName,
+    String? accountNumber,
+    List<String>? deliveryTypes,
+    List<String>? serviceAreas,
+    List<CompanyReviewModel>? companyReviewModels,
+    DateTime? createdAt,
+  }) {
+    return LogisticResponseModel(
+      id: id ?? this.id,
+      adminId: adminId ?? this.adminId,
+      companyEmail: companyEmail ?? this.companyEmail,
+      companyName: companyName ?? this.companyName,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      companyLogo: companyLogo ?? this.companyLogo,
+      companyRegNo: companyRegNo ?? this.companyRegNo,
+      companyInfo: companyInfo ?? this.companyInfo,
+      rating: rating ?? this.rating,
+      valueCharge: valueCharge ?? this.valueCharge,
+      noOfTrucks: noOfTrucks ?? this.noOfTrucks,
+      nofOfBikes: nofOfBikes ?? this.nofOfBikes,
+      available: available ?? this.available,
+      companyAddress: companyAddress ?? this.companyAddress,
+      postCodes: postCodes ?? this.postCodes,
+      locality: locality ?? this.locality,
+      state: state ?? this.state,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      bankName: bankName ?? this.bankName,
+      accountName: accountName ?? this.accountName,
+      accountNumber: accountNumber ?? this.accountNumber,
+      deliveryTypes: deliveryTypes ?? this.deliveryTypes,
+      serviceAreas: serviceAreas ?? this.serviceAreas,
+      companyReviewModels: companyReviewModels ?? this.companyReviewModels,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  factory LogisticResponseModel.fromJson(Map<String, dynamic> json) =>
+      LogisticResponseModel(
+        id: json["id"] ?? "",
+        adminId: json["adminId"] ?? "",
+        companyEmail: json["companyEmail"] ?? "",
+        phoneNumber: json["phoneNumber"] ?? "",
+        companyRegNo: json["companyRegNo"] ?? "",
+        companyName: json["companyName"] ?? "",
+        companyInfo: json["companyInfo"] ?? "",
+        rating: json["rating"] ?? 0,
+        valueCharge: json["valueCharge"] ?? 0,
+        companyLogo: json["companyLogo"] ?? "",
+        noOfTrucks: json["noOfTrucks"] ?? 0,
+        nofOfBikes: json["nofOfBikes"] ?? 0,
+        available: json["available"] ?? false,
+        companyAddress: json["companyAddress"] ?? "",
+        postCodes: json["postCodes"] ?? "",
+        locality: json["locality"],
+        state: json["state"] ?? "",
+        latitude: json["latitude"] ?? 0,
+        longitude: json["longitude"] ?? 0,
+        bankName: json["bankName"],
+        accountName: json["accountName"],
+        accountNumber: json["accountNumber"],
+        deliveryTypes:
+            json["deliveryTypes"] == null
+                ? []
+                : List<String>.from(json["deliveryTypes"]!.map((x) => x)),
+        serviceAreas:
+            json["serviceAreas"] == null
+                ? []
+                : List<String>.from(json["serviceAreas"]!.map((x) => x)),
+        companyReviewModels:
+            json["companyReviewModels"] == null
+                ? []
+                : List<CompanyReviewModel>.from(
+                  json["companyReviewModels"]!.map(
+                    (x) => CompanyReviewModel.fromJson(x),
+                  ),
+                ),
+        createdAt:
+            json["createdAt"] == null
+                ? null
+                : DateTime.parse(json["createdAt"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "adminId": adminId,
+    "companyEmail": companyEmail,
+    "companyName": companyName,
+    "phoneNumber": phoneNumber,
+    "companyLogo": companyLogo,
+    "companyRegNo": companyRegNo,
+    "companyInfo": companyInfo,
+    "rating": rating,
+    "valueCharge": valueCharge,
+    "noOfTrucks": noOfTrucks,
+    "nofOfBikes": nofOfBikes,
+    "available": available,
+    "companyAddress": companyAddress,
+    "postCodes": postCodes,
+    "locality": locality,
+    "state": state,
+    "latitude": latitude,
+    "longitude": longitude,
+    "bankName": bankName,
+    "accountName": accountName,
+    "accountNumber": accountNumber,
+    "deliveryTypes":
+        deliveryTypes == null
+            ? []
+            : List<dynamic>.from(deliveryTypes!.map((x) => x)),
+    "serviceAreas":
+        serviceAreas == null
+            ? []
+            : List<dynamic>.from(serviceAreas!.map((x) => x)),
+    "companyReviewModels":
+        companyReviewModels == null
+            ? []
+            : List<dynamic>.from(companyReviewModels!.map((x) => x.toJson())),
+    "createdAt": createdAt?.toIso8601String(),
+  };
+}
+
+class CompanyReviewModel {
+  final String? id;
+  final String? userName;
+  final String? profileImage;
+  final String? reviewMessage;
+  final String? userId;
+  final String? companyDataModelId;
+  final num? ratingNum;
+  final String? orderId;
+  final DateTime? createdAt;
+
+  CompanyReviewModel({
+    this.id,
+    this.userName,
+    this.profileImage,
+    this.reviewMessage,
+    this.userId,
+    this.companyDataModelId,
+    this.ratingNum,
+    this.orderId,
+    this.createdAt,
+  });
+
+  CompanyReviewModel copyWith({
+    String? id,
+    String? userName,
+    String? profileImage,
+    String? reviewMessage,
+    String? userId,
+    String? companyDataModelId,
+    num? ratingNum,
+    String? orderId,
+    DateTime? createdAt,
+  }) {
+    return CompanyReviewModel(
+      id: id ?? this.id,
+      userName: userName ?? this.userName,
+      profileImage: profileImage ?? this.profileImage,
+      reviewMessage: reviewMessage ?? this.reviewMessage,
+      userId: userId ?? this.userId,
+      companyDataModelId: companyDataModelId ?? this.companyDataModelId,
+      ratingNum: ratingNum ?? this.ratingNum,
+      orderId: orderId ?? this.orderId,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  factory CompanyReviewModel.fromJson(Map<String, dynamic> json) =>
+      CompanyReviewModel(
+        id: json["id"] ?? "",
+        userName: json["userName"] ?? "",
+        profileImage: json["profileImage"] ?? "",
+        reviewMessage: json["reviewMessage"] ?? "",
+        userId: json["userId"] ?? "",
+        companyDataModelId: json["companyDataModelId"] ?? "",
+        ratingNum: json["ratingNum"] ?? 0,
+        orderId: json["orderId"] ?? "",
+        createdAt:
+            json["createdAt"] == null
+                ? null
+                : DateTime.parse(json["createdAt"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "userName": userName,
+    "profileImage": profileImage,
+    "reviewMessage": reviewMessage,
+    "userId": userId,
+    "companyDataModelId": companyDataModelId,
+    "ratingNum": ratingNum,
+    "orderId": orderId,
+    "createdAt": createdAt?.toIso8601String(),
+  };
+}
