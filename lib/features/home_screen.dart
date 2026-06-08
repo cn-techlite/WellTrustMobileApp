@@ -1,13 +1,14 @@
 // ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously, deprecated_member_use
 
 import 'dart:ui';
-import 'package:ginilog_customer_app/core/helpers/globals.dart';
-import 'package:ginilog_customer_app/core/utils/constants.dart';
-import 'package:ginilog_customer_app/features/account/presentation/screen/account.dart';
-import 'package:ginilog_customer_app/features/account/states/account_provider.dart';
-import 'package:ginilog_customer_app/features/bookings/presentation/screen/bookings.dart';
-import 'package:ginilog_customer_app/features/home/presentation/screen/home.dart';
-import 'package:ginilog_customer_app/features/order_history/presentation/screen/order_history.dart';
+import 'package:well_trust_mobile_app/core/helpers/globals.dart';
+import 'package:well_trust_mobile_app/core/utils/constants.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/screen/account.dart';
+import 'package:well_trust_mobile_app/features/account/states/account_provider.dart';
+import 'package:well_trust_mobile_app/features/meds/presentation/screen/med_screen.dart';
+import 'package:well_trust_mobile_app/features/visits/presentation/screen/bookings.dart';
+import 'package:well_trust_mobile_app/features/home/presentation/screen/home.dart';
+import 'package:well_trust_mobile_app/features/notes/presentation/screen/order_history.dart';
 import 'package:geolocator/geolocator.dart' as positions;
 import 'package:geolocator/geolocator.dart';
 
@@ -172,44 +173,43 @@ class _NavBarfeaturestate extends ConsumerState<HomeScreenPage>
     }
     return (await showDialog(
           context: context,
-          builder:
-              (context) => BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-                child: AlertDialog(
-                  title: const Text(
-                    'Exit App',
-                    style: TextStyle(color: AppColors.primary),
-                  ),
-                  content: const Text(
-                    'Do you want to exit the app?',
-                    style: TextStyle(color: AppColors.primary),
-                  ),
-                  backgroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  actions: <Widget>[
-                    TextButton(
-                      child: const Text(
-                        'Yes',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                      onPressed: () {
-                        SystemNavigator.pop();
-                      },
-                    ),
-                    TextButton(
-                      child: const Text(
-                        'No',
-                        style: TextStyle(color: AppColors.primary),
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pop(false);
-                      },
-                    ),
-                  ],
-                ),
+          builder: (context) => BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+            child: AlertDialog(
+              title: const Text(
+                'Exit App',
+                style: TextStyle(color: AppColors.primary),
               ),
+              content: const Text(
+                'Do you want to exit the app?',
+                style: TextStyle(color: AppColors.primary),
+              ),
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Yes',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  onPressed: () {
+                    SystemNavigator.pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text(
+                    'No',
+                    style: TextStyle(color: AppColors.primary),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                ),
+              ],
+            ),
+          ),
         )) ??
         false;
   }
@@ -218,8 +218,9 @@ class _NavBarfeaturestate extends ConsumerState<HomeScreenPage>
   Widget build(BuildContext context) {
     List<Widget> children = [
       const HomeScreen(),
-      const OrderHistoryScreen(),
-      const BookingsScreen(),
+      const VisitsScreen(),
+      const NotesScreen(),
+      const MedScreen(),
       const AccountPage(),
     ];
     return Consumer(
@@ -256,8 +257,9 @@ class _NavBarfeaturestate extends ConsumerState<HomeScreenPage>
                     child: Image.asset(
                       "assets/images/home.png",
                       width: 20,
-                      color:
-                          _currentIndex == 0 ? AppColors.primary : Colors.grey,
+                      color: _currentIndex == 0
+                          ? AppColors.primary
+                          : Colors.grey,
                     ),
                   ),
                   label: 'Home',
@@ -266,37 +268,53 @@ class _NavBarfeaturestate extends ConsumerState<HomeScreenPage>
                   icon: Padding(
                     padding: const EdgeInsets.only(bottom: 5.0, right: 8),
                     child: Image.asset(
-                      "assets/images/track_history.png",
+                      "assets/images/calendar_icon.png",
                       width: 20,
-                      color:
-                          _currentIndex == 1 ? AppColors.primary : Colors.grey,
+                      color: _currentIndex == 1
+                          ? AppColors.primary
+                          : Colors.grey,
                     ),
                   ),
-                  label: 'Track',
+                  label: 'Visits',
                 ),
                 BottomNavigationBarItem(
                   icon: Padding(
                     padding: const EdgeInsets.only(bottom: 5.0),
                     child: Image.asset(
-                      "assets/images/bookings.png",
+                      "assets/images/notes_icon.png",
                       width: 20,
-                      color:
-                          _currentIndex == 2 ? AppColors.primary : Colors.grey,
+                      color: _currentIndex == 2
+                          ? AppColors.primary
+                          : Colors.grey,
                     ),
                   ),
-                  label: 'Bookings',
+                  label: 'Notes',
                 ),
                 BottomNavigationBarItem(
                   icon: Padding(
                     padding: const EdgeInsets.only(bottom: 5.0),
                     child: Image.asset(
-                      "assets/images/account_icon.png",
+                      "assets/images/meds_icon.png",
                       width: 20,
-                      color:
-                          _currentIndex == 3 ? AppColors.primary : Colors.grey,
+                      color: _currentIndex == 3
+                          ? AppColors.primary
+                          : Colors.grey,
                     ),
                   ),
-                  label: 'Profile',
+                  label: 'Meds',
+                ),
+                BottomNavigationBarItem(
+                  icon: Padding(
+                    padding: const EdgeInsets.only(bottom: 5.0),
+                    child: Image.asset(
+                      "assets/images/more_horiz_icon.png",
+                      width: 20,
+                      color: _currentIndex == 4
+                          ? AppColors.primary
+                          : Colors.grey,
+                    ),
+                  ),
+                  label: 'More',
                 ),
               ],
             ),

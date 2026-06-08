@@ -1,4 +1,4 @@
-import 'package:ginilog_customer_app/core/utils/size_config.dart';
+import 'package:well_trust_mobile_app/core/utils/size_config.dart';
 import 'package:flutter/material.dart';
 
 class AppTheme {

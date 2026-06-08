@@ -1,16 +1,16 @@
 import 'dart:io';
 
-import 'package:ginilog_customer_app/core/services/upload_service.dart';
-import 'package:ginilog_customer_app/core/utils/app_buttons.dart';
-import 'package:ginilog_customer_app/core/utils/colors.dart';
-import 'package:ginilog_customer_app/core/utils/package_export.dart';
-import 'package:ginilog_customer_app/core/utils/size_config.dart';
-import 'package:ginilog_customer_app/features/account/data/model/user_response_model.dart';
-import 'package:ginilog_customer_app/features/account/states/account_provider.dart';
-import 'package:ginilog_customer_app/shared/widgets/app_text.dart';
-import 'package:ginilog_customer_app/shared/widgets/back_icon.dart';
-import 'package:ginilog_customer_app/shared/widgets/custom_snackbar.dart';
-import 'package:ginilog_customer_app/shared/widgets/input.dart';
+import 'package:well_trust_mobile_app/core/services/upload_service.dart';
+import 'package:well_trust_mobile_app/core/utils/app_buttons.dart';
+import 'package:well_trust_mobile_app/core/utils/colors.dart';
+import 'package:well_trust_mobile_app/core/utils/package_export.dart';
+import 'package:well_trust_mobile_app/core/utils/size_config.dart';
+import 'package:well_trust_mobile_app/features/account/data/model/user_response_model.dart';
+import 'package:well_trust_mobile_app/features/account/states/account_provider.dart';
+import 'package:well_trust_mobile_app/shared/widgets/app_text.dart';
+import 'package:well_trust_mobile_app/shared/widgets/back_icon.dart';
+import 'package:well_trust_mobile_app/shared/widgets/custom_snackbar.dart';
+import 'package:well_trust_mobile_app/shared/widgets/input.dart';
 
 class AccountDetailsPage extends ConsumerStatefulWidget {
   const AccountDetailsPage({super.key});
@@ -200,10 +200,9 @@ class _AccountDetailsPageState extends ConsumerState<AccountDetailsPage> {
                 Container(
                   margin: const EdgeInsets.only(top: 20),
                   child: GestureDetector(
-                    onTap:
-                        _isUploadingImage
-                            ? null
-                            : () => _pickAndUploadProfileImage(user),
+                    onTap: _isUploadingImage
+                        ? null
+                        : () => _pickAndUploadProfileImage(user),
                     child: CircleAvatar(
                       radius: 50,
                       backgroundColor: Colors.grey,
@@ -211,13 +210,12 @@ class _AccountDetailsPageState extends ConsumerState<AccountDetailsPage> {
                         backgroundColor: Colors.white,
                         radius: 47,
                         backgroundImage: _profileImage(user),
-                        child:
-                            _isUploadingImage
-                                ? CircularProgressIndicator(
-                                  color: AppColors.primary,
-                                  strokeWidth: 2,
-                                )
-                                : null,
+                        child: _isUploadingImage
+                            ? CircularProgressIndicator(
+                                color: AppColors.primary,
+                                strokeWidth: 2,
+                              )
+                            : null,
                       ),
                     ),
                   ),
@@ -347,8 +345,9 @@ class _AccountDetailsPageState extends ConsumerState<AccountDetailsPage> {
                         padding: const EdgeInsets.only(left: 35, right: 35),
                         child: AppButton(
                           text: "Update",
-                          onPressed:
-                              _isUpdatingName ? () {} : () => _updateName(user),
+                          onPressed: _isUpdatingName
+                              ? () {}
+                              : () => _updateName(user),
                           widthPercent: 100,
                           heightPercent: 5,
                           btnColor: AppColors.primary,
@@ -394,38 +393,37 @@ class _AccountDetailsPageState extends ConsumerState<AccountDetailsPage> {
             await ref.read(accountProvider.notifier).refreshAccount();
             _hasFilledFields = false;
           },
-          child:
-              isLoading
-                  ? ListView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    children: [
-                      SizedBox(height: SizeConfig.heightAdjusted(35)),
-                      Center(
-                        child: CircularProgressIndicator(
-                          color: AppColors.primary,
-                          strokeWidth: 2,
-                        ),
+          child: isLoading
+              ? ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  children: [
+                    SizedBox(height: SizeConfig.heightAdjusted(35)),
+                    Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.primary,
+                        strokeWidth: 2,
                       ),
-                    ],
-                  )
-                  : user == null
-                  ? ListView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    children: [
-                      SizedBox(height: SizeConfig.heightAdjusted(30)),
-                      const Center(
-                        child: AppText(
-                          text: "Unable to load profile",
-                          textAlign: TextAlign.center,
+                    ),
+                  ],
+                )
+              : user == null
+              ? ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  children: [
+                    SizedBox(height: SizeConfig.heightAdjusted(30)),
+                    const Center(
+                      child: AppText(
+                        text: "Unable to load profile",
+                        textAlign: TextAlign.center,
 
-                          color: AppColors.black,
+                        color: AppColors.black,
 
-                          fontWeight: FontWeight.w600,
-                        ),
+                        fontWeight: FontWeight.w600,
                       ),
-                    ],
-                  )
-                  : _buildContent(user),
+                    ),
+                  ],
+                )
+              : _buildContent(user),
         ),
       ),
     );

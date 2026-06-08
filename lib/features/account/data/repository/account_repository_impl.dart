@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:ginilog_customer_app/core/extension/error_handling.dart';
-import 'package:ginilog_customer_app/features/account/data/model/user_response_model.dart';
-import 'package:ginilog_customer_app/features/account/data/services/account_remote_services.dart';
-import 'package:ginilog_customer_app/features/account/domain/usercases/account_repository.dart';
-import 'package:ginilog_customer_app/shared/model/response_result_model.dart';
+import 'package:well_trust_mobile_app/core/extension/error_handling.dart';
+import 'package:well_trust_mobile_app/features/account/data/model/user_response_model.dart';
+import 'package:well_trust_mobile_app/features/account/data/services/account_remote_services.dart';
+import 'package:well_trust_mobile_app/features/account/domain/usercases/account_repository.dart';
+import 'package:well_trust_mobile_app/shared/model/response_result_model.dart';
 
 class AccountRepositoryImpl implements AccountRepository {
   final AccountRemoteService remoteService;

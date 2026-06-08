@@ -1,15 +1,14 @@
 import 'dart:convert';
 
-import 'package:ginilog_customer_app/core/extension/error_handling.dart';
-import 'package:ginilog_customer_app/core/helpers/globals.dart';
-import 'package:ginilog_customer_app/core/utils/constants.dart';
-import 'package:ginilog_customer_app/features/auth/data/model/auth_result_model.dart';
-import 'package:ginilog_customer_app/features/auth/data/model/login_response_model.dart';
-import 'package:ginilog_customer_app/features/auth/data/service/auth_local_storage_service.dart';
-import 'package:ginilog_customer_app/features/auth/data/service/auth_remote_service.dart';
-import 'package:ginilog_customer_app/features/auth/data/service/auth_session_service.dart';
-import 'package:ginilog_customer_app/features/auth/data/service/social_auth_service.dart';
-import 'package:ginilog_customer_app/features/auth/domain/usercases/auth_repository.dart';
+import 'package:well_trust_mobile_app/core/extension/error_handling.dart';
+import 'package:well_trust_mobile_app/core/helpers/globals.dart';
+import 'package:well_trust_mobile_app/core/utils/constants.dart';
+import 'package:well_trust_mobile_app/features/auth/data/model/auth_result_model.dart';
+import 'package:well_trust_mobile_app/features/auth/data/model/login_response_model.dart';
+import 'package:well_trust_mobile_app/features/auth/data/service/auth_local_storage_service.dart';
+import 'package:well_trust_mobile_app/features/auth/data/service/auth_remote_service.dart';
+import 'package:well_trust_mobile_app/features/auth/data/service/auth_session_service.dart';
+import 'package:well_trust_mobile_app/features/auth/domain/usercases/auth_repository.dart';
 import '../dto/login_request.dart';
 import '../dto/register_request.dart';
 import '../dto/resend_code_request.dart';
@@ -18,17 +17,14 @@ import '../dto/verify_email_request.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteService _remoteService;
-  final SocialAuthService _socialAuthService;
   final AuthLocalStorageService _localStorageService;
   final AuthSessionService _sessionService;
 
   AuthRepositoryImpl({
     required AuthRemoteService remoteService,
-    required SocialAuthService socialAuthService,
     required AuthLocalStorageService localStorageService,
     required AuthSessionService sessionService,
   }) : _remoteService = remoteService,
-       _socialAuthService = socialAuthService,
        _localStorageService = localStorageService,
        _sessionService = sessionService;
 
@@ -87,51 +83,6 @@ class AuthRepositoryImpl implements AuthRepository {
     return AuthResultModel.failure(errorMessage);
   }
 
-  @override
-  Future<AuthResultModel> signInWithGoogle() async {
-    final response = await _socialAuthService.signInWithGoogle();
-    final errorMessage = getErrorMessageFromResponse(
-      response.statusCode,
-      response.body,
-    );
-
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      final model = LoginResponseModel.fromJson(jsonDecode(response.body));
-      await _localStorageService.saveSocialLoginSession(
-        model: model,
-        providerUid: model.userId ?? '',
-      );
-      await _sessionService.initialize();
-      await _remoteService.updateDeviceToken();
-
-      return AuthResultModel.success(loginData: model);
-    }
-
-    return AuthResultModel.failure(errorMessage);
-  }
-
-  @override
-  Future<AuthResultModel> signInWithApple() async {
-    final response = await _socialAuthService.signInWithApple();
-    final errorMessage = getErrorMessageFromResponse(
-      response.statusCode,
-      response.body,
-    );
-
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      final model = LoginResponseModel.fromJson(jsonDecode(response.body));
-      await _localStorageService.saveSocialLoginSession(
-        model: model,
-        providerUid: model.userId ?? '',
-      );
-      await _sessionService.initialize();
-      await _remoteService.updateDeviceToken();
-
-      return AuthResultModel.success(loginData: model);
-    }
-
-    return AuthResultModel.failure(errorMessage);
-  }
 
   @override
   Future<AuthResultModel> verifyEmail({
@@ -291,7 +242,6 @@ class AuthRepositoryImpl implements AuthRepository {
         } catch (_) {}
       }
 
-      await _socialAuthService.signOutSocials();
       await _localStorageService.clearAuthSession();
       await _sessionService.clear();
 

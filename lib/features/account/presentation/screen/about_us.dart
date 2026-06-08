@@ -1,10 +1,10 @@
 // ignore_for_file: library_private_types_in_public_api
 
-import 'package:ginilog_customer_app/core/utils/colors.dart';
-import 'package:ginilog_customer_app/core/utils/package_export.dart';
-import 'package:ginilog_customer_app/core/utils/size_config.dart';
-import 'package:ginilog_customer_app/shared/widgets/app_text.dart';
-import 'package:ginilog_customer_app/shared/widgets/back_icon.dart';
+import 'package:well_trust_mobile_app/core/utils/colors.dart';
+import 'package:well_trust_mobile_app/core/utils/package_export.dart';
+import 'package:well_trust_mobile_app/core/utils/size_config.dart';
+import 'package:well_trust_mobile_app/shared/widgets/app_text.dart';
+import 'package:well_trust_mobile_app/shared/widgets/back_icon.dart';
 
 class AboutUsScreen extends StatefulWidget {
   const AboutUsScreen({super.key});

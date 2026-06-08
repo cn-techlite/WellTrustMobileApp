@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-showCustomSnackbar2(BuildContext context,
+void showCustomSnackbar2(BuildContext context,
     {required String title,
     required String content,
     required SnackbarType type}) {
@@ -20,7 +20,7 @@ showCustomSnackbar2(BuildContext context,
   ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }
 
-showCustomSnackbar(BuildContext context,
+void showCustomSnackbar(BuildContext context,
     {required String title,
     required String content,
     required SnackbarType type,

@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:ginilog_customer_app/core/utils/size_config.dart';
-import 'package:ginilog_customer_app/shared/widgets/app_text.dart';
+import 'package:well_trust_mobile_app/core/utils/size_config.dart';
+import 'package:well_trust_mobile_app/shared/widgets/app_text.dart';
 import 'colors.dart';
 
 class AppButton extends StatelessWidget {
@@ -48,10 +48,9 @@ class AppButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: btnColor,
           borderRadius: BorderRadius.circular(borderRadius),
-          border:
-              borderColor != null
-                  ? Border.all(color: borderColor!, width: borderWidth)
-                  : null,
+          border: borderColor != null
+              ? Border.all(color: borderColor!, width: borderWidth)
+              : null,
         ),
         child: _buildButton(context),
       ),
@@ -65,20 +64,19 @@ class AppButton extends StatelessWidget {
       borderRadius: BorderRadius.circular(borderRadius),
       color: Colors.transparent,
       // disabledColor: isLoading ? btnColor : btnColor,
-      child:
-          isLoading
-              ? SpinKitThreeBounce(
-                color: isLoading ? borderColor ?? AppColors.white : borderColor,
-                size: 16,
-              )
-              : child ??
-                  AppText(
-                    text: text,
-                    textAlign: TextAlign.center,
-                    color: textColor,
-                    fontWeight: FontWeight.w600,
-                    type: AppTextType.labelMedium,
-                  ),
+      child: isLoading
+          ? SpinKitThreeBounce(
+              color: isLoading ? borderColor ?? AppColors.white : borderColor,
+              size: 16,
+            )
+          : child ??
+                AppText(
+                  text: text,
+                  textAlign: TextAlign.center,
+                  color: textColor,
+                  fontWeight: FontWeight.w600,
+                  type: AppTextType.labelMedium,
+                ),
     );
   }
 }
@@ -127,10 +125,9 @@ class SmallButton extends StatelessWidget {
     if (hasText) {
       children.add(
         Padding(
-          padding:
-              hasIcon
-                  ? const EdgeInsets.symmetric(horizontal: 4.0)
-                  : EdgeInsets.zero,
+          padding: hasIcon
+              ? const EdgeInsets.symmetric(horizontal: 4.0)
+              : EdgeInsets.zero,
           child: Text(
             text!,
             style: TextStyle(
@@ -155,12 +152,9 @@ class SmallButton extends StatelessWidget {
         minimumSize: Size.zero,
         backgroundColor: backgroundColor,
         iconSize: 20,
-        shape:
-            isCircular
-                ? const CircleBorder()
-                : RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
+        shape: isCircular
+            ? const CircleBorder()
+            : RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
       child: Row(mainAxisSize: MainAxisSize.min, children: children),

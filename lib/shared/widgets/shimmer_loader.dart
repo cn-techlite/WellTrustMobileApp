@@ -1,7 +1,6 @@
-import 'package:ginilog_customer_app/core/utils/colors.dart';
-import 'package:ginilog_customer_app/core/utils/package_export.dart';
-import 'package:ginilog_customer_app/core/utils/size_config.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:well_trust_mobile_app/core/utils/colors.dart';
+import 'package:well_trust_mobile_app/core/utils/package_export.dart';
+import 'package:well_trust_mobile_app/core/utils/size_config.dart';
 
 Widget buildBookingShimmerCard(BuildContext context) {
   return Shimmer.fromColors(

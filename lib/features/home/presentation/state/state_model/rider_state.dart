@@ -1,4 +1,4 @@
-import 'package:ginilog_customer_app/features/home/data/model/riders_response_model.dart';
+import 'package:well_trust_mobile_app/features/home/data/model/riders_response_model.dart';
 
 class RidersState {
   final List<RidersResponseModel> listRiders;

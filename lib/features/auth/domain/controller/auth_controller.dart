@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:ginilog_customer_app/features/auth/data/model/auth_result_model.dart';
-import 'package:ginilog_customer_app/features/auth/domain/usercases/auth_repository.dart';
-import 'package:ginilog_customer_app/features/auth/presentation/state/providers/auth_provider.dart';
-import 'package:ginilog_customer_app/features/auth/presentation/state/state_model/auth_state.dart';
+import 'package:well_trust_mobile_app/features/auth/data/model/auth_result_model.dart';
+import 'package:well_trust_mobile_app/features/auth/domain/usercases/auth_repository.dart';
+import 'package:well_trust_mobile_app/features/auth/presentation/state/providers/auth_provider.dart';
+import 'package:well_trust_mobile_app/features/auth/presentation/state/state_model/auth_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/dto/register_request.dart';
@@ -111,38 +111,6 @@ class AuthController extends AsyncNotifier<AuthState> {
     state = AsyncData(previous);
     return result.value ??
         const AuthResultModel(isSuccess: false, message: "Registration failed");
-  }
-
-  Future<AuthResultModel> loginWithGoogle() async {
-    final previous = _current;
-    state = const AsyncLoading();
-
-    final result = await AsyncValue.guard(() async {
-      return await _repository.signInWithGoogle();
-    });
-
-    state = AsyncData(previous);
-    return result.value ??
-        const AuthResultModel(
-          isSuccess: false,
-          message: "Google sign-in failed",
-        );
-  }
-
-  Future<AuthResultModel> loginWithApple() async {
-    final previous = _current;
-    state = const AsyncLoading();
-
-    final result = await AsyncValue.guard(() async {
-      return await _repository.signInWithApple();
-    });
-
-    state = AsyncData(previous);
-    return result.value ??
-        const AuthResultModel(
-          isSuccess: false,
-          message: "Apple sign-in failed",
-        );
   }
 
   Future<AuthResultModel> verifyEmail({

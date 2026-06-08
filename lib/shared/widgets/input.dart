@@ -1,9 +1,9 @@
 // ignore_for_file: prefer_const_constructors, constant_identifier_names, annotate_overrides, overridden_fields, use_key_in_widget_constructors, must_be_immutable
 
-import 'package:ginilog_customer_app/core/utils/app_buttons.dart';
-import 'package:ginilog_customer_app/core/utils/package_export.dart';
-import 'package:ginilog_customer_app/core/utils/size_config.dart';
-import 'package:ginilog_customer_app/shared/widgets/app_text.dart';
+import 'package:well_trust_mobile_app/core/utils/app_buttons.dart';
+import 'package:well_trust_mobile_app/core/utils/package_export.dart';
+import 'package:well_trust_mobile_app/core/utils/size_config.dart';
+import 'package:well_trust_mobile_app/shared/widgets/app_text.dart';
 import '../../core/utils/colors.dart';
 
 class SerachInput extends StatelessWidget {
@@ -116,10 +116,9 @@ class SerachInput extends StatelessWidget {
           borderSide: BorderSide(color: Colors.red, width: 2.0),
         ),
 
-        fillColor:
-            !enable
-                ? fillColor ?? Color(0xFFeeeeee)
-                : fillColor ?? Colors.transparent,
+        fillColor: !enable
+            ? fillColor ?? Color(0xFFeeeeee)
+            : fillColor ?? Colors.transparent,
         // fillColor: Colors.white,
         filled: false,
         enabledBorder: OutlineInputBorder(
@@ -216,29 +215,25 @@ class _GlobalTextFieldState extends State<GlobalTextField> {
       onTap: widget.onTap,
       enabled: true,
       maxLines: widget.isNotePad ? 10 : 1,
-      minLines:
-          widget.isNotePad
-              ? widget.maxLength <= 100
-                  ? 3
-                  : 6
-              : 1,
-      enableInteractiveSelection:
-          widget.readOnly == true
-              ? false
-              : true, // prevents long press/double tap menu
+      minLines: widget.isNotePad
+          ? widget.maxLength <= 100
+                ? 3
+                : 6
+          : 1,
+      enableInteractiveSelection: widget.readOnly == true
+          ? false
+          : true, // prevents long press/double tap menu
       textInputAction: widget.textInputAction,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       //   textAlign: TextAlign.start,
-      textCapitalization:
-          widget.keyBoardType == TextInputType.name
-              ? TextCapitalization.sentences
-              : TextCapitalization.none,
-      keyboardType:
-          widget.allowDecimal
-              ? const TextInputType.numberWithOptions(decimal: true)
-              : widget.obscureText == true
-              ? TextInputType.visiblePassword
-              : widget.keyBoardType,
+      textCapitalization: widget.keyBoardType == TextInputType.name
+          ? TextCapitalization.sentences
+          : TextCapitalization.none,
+      keyboardType: widget.allowDecimal
+          ? const TextInputType.numberWithOptions(decimal: true)
+          : widget.obscureText == true
+          ? TextInputType.visiblePassword
+          : widget.keyBoardType,
       inputFormatters: _buildInputFormatters(),
       style: AppTextType.bodyMedium.style(
         context,
@@ -256,23 +251,22 @@ class _GlobalTextFieldState extends State<GlobalTextField> {
           vertical: 2.heightAdjusted,
           horizontal: 2.widthAdjusted,
         ),
-        suffixIcon:
-            widget.isEyeVisible
-                ? IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _obscureText = !_obscureText;
-                    });
-                  },
-                  icon: Icon(
-                    _obscureText
-                        ? Icons.visibility_off_outlined
-                        : Icons.visibility_outlined,
-                    color: AppColors.black,
-                    size: 25,
-                  ),
-                )
-                : widget.suffix,
+        suffixIcon: widget.isEyeVisible
+            ? IconButton(
+                onPressed: () {
+                  setState(() {
+                    _obscureText = !_obscureText;
+                  });
+                },
+                icon: Icon(
+                  _obscureText
+                      ? Icons.visibility_off_outlined
+                      : Icons.visibility_outlined,
+                  color: AppColors.black,
+                  size: 25,
+                ),
+              )
+            : widget.suffix,
         prefix: widget.prefix,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(widget.borderRadius ?? 5),
@@ -496,10 +490,9 @@ class _CustomDropdownBottomSheetState extends State<CustomDropdownBottomSheet> {
     _searchController.addListener(() {
       final query = _searchController.text.toLowerCase();
       setState(() {
-        _filteredOptions =
-            widget.options
-                .where((item) => item.toLowerCase().contains(query))
-                .toList();
+        _filteredOptions = widget.options
+            .where((item) => item.toLowerCase().contains(query))
+            .toList();
       });
     });
   }
@@ -636,16 +629,15 @@ class _CustomMultipleDropdownBottomSheetState
   void initState() {
     super.initState();
     _filteredOptions = widget.options;
-    _selectedItems =
-        widget.initialSelected.toSet(); // 👈 start with pre-selected
+    _selectedItems = widget.initialSelected
+        .toSet(); // 👈 start with pre-selected
 
     _searchController.addListener(() {
       final query = _searchController.text.toLowerCase();
       setState(() {
-        _filteredOptions =
-            widget.options
-                .where((item) => item.toLowerCase().contains(query))
-                .toList();
+        _filteredOptions = widget.options
+            .where((item) => item.toLowerCase().contains(query))
+            .toList();
       });
     });
   }

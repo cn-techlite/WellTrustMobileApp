@@ -1,4 +1,4 @@
-import 'package:ginilog_customer_app/features/auth/data/model/auth_result_model.dart';
+import 'package:well_trust_mobile_app/features/auth/data/model/auth_result_model.dart';
 
 import '../../data/dto/register_request.dart';
 
@@ -9,9 +9,6 @@ abstract class AuthRepository {
   });
 
   Future<AuthResultModel> register({required RegisterRequest request});
-
-  Future<AuthResultModel> signInWithGoogle();
-  Future<AuthResultModel> signInWithApple();
 
   Future<AuthResultModel> verifyEmail({
     required String token,

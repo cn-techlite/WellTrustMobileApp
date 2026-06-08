@@ -1,14 +1,14 @@
-import 'package:ginilog_customer_app/core/helpers/globals.dart';
-import 'package:ginilog_customer_app/core/utils/app_buttons.dart';
-import 'package:ginilog_customer_app/core/utils/colors.dart';
-import 'package:ginilog_customer_app/core/utils/size_config.dart';
-import 'package:ginilog_customer_app/features/auth/presentation/screen/email_dialog.dart';
-import 'package:ginilog_customer_app/features/auth/presentation/state/providers/auth_provider.dart';
-import 'package:ginilog_customer_app/features/auth/presentation/state/state_model/auth_state.dart';
-import 'package:ginilog_customer_app/shared/widgets/app_text.dart';
-import 'package:ginilog_customer_app/shared/widgets/back_icon.dart';
-import 'package:ginilog_customer_app/shared/widgets/custom_snackbar.dart';
-import 'package:ginilog_customer_app/shared/widgets/input.dart';
+import 'package:well_trust_mobile_app/core/helpers/globals.dart';
+import 'package:well_trust_mobile_app/core/utils/app_buttons.dart';
+import 'package:well_trust_mobile_app/core/utils/colors.dart';
+import 'package:well_trust_mobile_app/core/utils/size_config.dart';
+import 'package:well_trust_mobile_app/features/auth/presentation/screen/email_dialog.dart';
+import 'package:well_trust_mobile_app/features/auth/presentation/state/providers/auth_provider.dart';
+import 'package:well_trust_mobile_app/features/auth/presentation/state/state_model/auth_state.dart';
+import 'package:well_trust_mobile_app/shared/widgets/app_text.dart';
+import 'package:well_trust_mobile_app/shared/widgets/back_icon.dart';
+import 'package:well_trust_mobile_app/shared/widgets/custom_snackbar.dart';
+import 'package:well_trust_mobile_app/shared/widgets/input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
@@ -244,29 +244,30 @@ class _ForgotPasswordCodeScreenState
                 /// Button
                 canSubmit
                     ? AppButton(
-                      text: "Update Password",
-                      onPressed: isLoading ? null : onSubmit,
-                      widthPercent: 100,
-                      heightPercent: 6,
-                      btnColor: AppColors.primary,
-                      isLoading: isLoading,
-                    )
+                        text: "Update Password",
+                        onPressed: isLoading ? null : onSubmit,
+                        widthPercent: 100,
+                        heightPercent: 6,
+                        btnColor: AppColors.primary,
+                        isLoading: isLoading,
+                      )
                     : AppButton(
-                      text: "Update Password",
-                      onPressed: () {},
-                      widthPercent: 100,
-                      heightPercent: 6,
-                      btnColor: AppColors.grey,
-                      isLoading: false,
-                    ),
+                        text: "Update Password",
+                        onPressed: () {},
+                        widthPercent: 100,
+                        heightPercent: 6,
+                        btnColor: AppColors.grey,
+                        isLoading: false,
+                      ),
 
                 addVerticalSpacing(2),
 
                 /// Resend
                 AppButton(
                   text: "Resend Code",
-                  onPressed:
-                      globals.stopWatchTimer!.isRunning ? null : resendCode,
+                  onPressed: globals.stopWatchTimer!.isRunning
+                      ? null
+                      : resendCode,
                   widthPercent: 100,
                   heightPercent: 6,
                   btnColor: AppColors.white,

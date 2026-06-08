@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'package:ginilog_customer_app/core/extension/error_handling.dart';
-import 'package:ginilog_customer_app/core/helpers/endpoints.dart';
-import 'package:ginilog_customer_app/core/helpers/globals.dart';
-import 'package:ginilog_customer_app/core/utils/constants.dart';
+import 'package:well_trust_mobile_app/core/extension/error_handling.dart';
+import 'package:well_trust_mobile_app/core/helpers/endpoints.dart';
+import 'package:well_trust_mobile_app/core/helpers/globals.dart';
+import 'package:well_trust_mobile_app/core/utils/constants.dart';
 import 'package:http/http.dart' as http;
 
 import '../dto/login_request.dart';

@@ -1,4 +1,4 @@
-import 'package:ginilog_customer_app/features/home/data/model/company_response_model.dart';
+import 'package:well_trust_mobile_app/features/home/data/model/company_response_model.dart';
 
 class LogisticState {
   final List<LogisticResponseModel> listLogistic;

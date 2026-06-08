@@ -1,15 +1,15 @@
-import 'package:ginilog_customer_app/core/helpers/globals.dart';
-import 'package:ginilog_customer_app/core/utils/app_buttons.dart';
-import 'package:ginilog_customer_app/core/utils/colors.dart';
-import 'package:ginilog_customer_app/core/utils/helper_functions.dart';
-import 'package:ginilog_customer_app/core/utils/package_export.dart';
-import 'package:ginilog_customer_app/core/utils/size_config.dart';
-import 'package:ginilog_customer_app/features/auth/presentation/screen/logins.dart';
-import 'package:ginilog_customer_app/features/auth/presentation/state/providers/auth_provider.dart';
-import 'package:ginilog_customer_app/shared/widgets/app_text.dart';
-import 'package:ginilog_customer_app/shared/widgets/back_icon.dart';
-import 'package:ginilog_customer_app/shared/widgets/custom_snackbar.dart';
-import 'package:ginilog_customer_app/shared/widgets/input.dart';
+import 'package:well_trust_mobile_app/core/helpers/globals.dart';
+import 'package:well_trust_mobile_app/core/utils/app_buttons.dart';
+import 'package:well_trust_mobile_app/core/utils/colors.dart';
+import 'package:well_trust_mobile_app/core/utils/helper_functions.dart';
+import 'package:well_trust_mobile_app/core/utils/package_export.dart';
+import 'package:well_trust_mobile_app/core/utils/size_config.dart';
+import 'package:well_trust_mobile_app/features/auth/presentation/screen/logins.dart';
+import 'package:well_trust_mobile_app/features/auth/presentation/state/providers/auth_provider.dart';
+import 'package:well_trust_mobile_app/shared/widgets/app_text.dart';
+import 'package:well_trust_mobile_app/shared/widgets/back_icon.dart';
+import 'package:well_trust_mobile_app/shared/widgets/custom_snackbar.dart';
+import 'package:well_trust_mobile_app/shared/widgets/input.dart';
 import 'package:flutter/cupertino.dart';
 
 class DeleteAccountPage extends ConsumerStatefulWidget {
@@ -147,12 +147,11 @@ class _DeleteAccountPageState extends ConsumerState<DeleteAccountPage> {
                     child: CircleAvatar(
                       radius: 57,
                       backgroundColor: Colors.white,
-                      backgroundImage:
-                          widget.imageUrl.isEmpty
-                              ? const NetworkImage(
-                                "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Microsoft_Account.svg/512px-Microsoft_Account.svg.png",
-                              )
-                              : NetworkImage(widget.imageUrl),
+                      backgroundImage: widget.imageUrl.isEmpty
+                          ? const NetworkImage(
+                              "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Microsoft_Account.svg/512px-Microsoft_Account.svg.png",
+                            )
+                          : NetworkImage(widget.imageUrl),
                     ),
                   ),
                 ),
@@ -169,7 +168,7 @@ class _DeleteAccountPageState extends ConsumerState<DeleteAccountPage> {
                 /// Email
                 Center(
                   child: AppText(
-                    text: "${globals.userEmail}",
+                    text: globals.userEmail,
                     color: AppColors.black,
                   ),
                 ),
@@ -201,21 +200,21 @@ class _DeleteAccountPageState extends ConsumerState<DeleteAccountPage> {
                 /// Button
                 canSubmit
                     ? AppButton(
-                      text: "Delete My Account",
-                      onPressed: isLoading ? null : _confirmDelete,
-                      widthPercent: 100,
-                      heightPercent: 6,
-                      btnColor: AppColors.primary,
-                      isLoading: isLoading,
-                    )
+                        text: "Delete My Account",
+                        onPressed: isLoading ? null : _confirmDelete,
+                        widthPercent: 100,
+                        heightPercent: 6,
+                        btnColor: AppColors.primary,
+                        isLoading: isLoading,
+                      )
                     : AppButton(
-                      text: "Delete My Account",
-                      onPressed: () {},
-                      widthPercent: 100,
-                      heightPercent: 6,
-                      btnColor: AppColors.grey,
-                      isLoading: false,
-                    ),
+                        text: "Delete My Account",
+                        onPressed: () {},
+                        widthPercent: 100,
+                        heightPercent: 6,
+                        btnColor: AppColors.grey,
+                        isLoading: false,
+                      ),
 
                 addVerticalSpacing(20),
               ],

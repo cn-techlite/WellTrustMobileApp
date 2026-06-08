@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'package:ginilog_customer_app/core/routes/route.dart';
-import 'package:ginilog_customer_app/core/utils/app_buttons.dart';
-import 'package:ginilog_customer_app/core/utils/colors.dart';
-import 'package:ginilog_customer_app/core/utils/helper_functions.dart';
-import 'package:ginilog_customer_app/core/utils/size_config.dart';
-import 'package:ginilog_customer_app/shared/widgets/app_text.dart';
+import 'package:well_trust_mobile_app/core/routes/route.dart';
+import 'package:well_trust_mobile_app/core/utils/app_buttons.dart';
+import 'package:well_trust_mobile_app/core/utils/colors.dart';
+import 'package:well_trust_mobile_app/core/utils/helper_functions.dart';
+import 'package:well_trust_mobile_app/core/utils/size_config.dart';
+import 'package:well_trust_mobile_app/shared/widgets/app_text.dart';
 
 import '../../../../core/utils/package_export.dart';
 import '../../data/model/onbaording_data.dart';

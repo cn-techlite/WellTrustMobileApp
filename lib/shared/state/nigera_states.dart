@@ -1,11 +1,11 @@
 import 'dart:convert';
-import 'package:ginilog_customer_app/core/helpers/endpoints.dart';
-import 'package:ginilog_customer_app/core/helpers/globals.dart';
-import 'package:ginilog_customer_app/core/utils/constants.dart';
+import 'package:well_trust_mobile_app/core/helpers/endpoints.dart';
+import 'package:well_trust_mobile_app/core/helpers/globals.dart';
+import 'package:well_trust_mobile_app/core/utils/constants.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:ginilog_customer_app/core/utils/package_export.dart';
-import 'package:ginilog_customer_app/features/account/data/model/user_response_model.dart';
+import 'package:well_trust_mobile_app/core/utils/package_export.dart';
+import 'package:well_trust_mobile_app/features/account/data/model/user_response_model.dart';
 
 class RegionProvider with ChangeNotifier {
   RegionProvider() {
@@ -45,9 +45,8 @@ class RegionProvider with ChangeNotifier {
         if (jsonD is List) {
           printData('User Delivery address', jsonD);
           return jsonD.map<DeliveryAddress>((json) {
-              return DeliveryAddress.fromJson(json);
-            }).toList()
-            ..sort(Utils.ascendingSort);
+            return DeliveryAddress.fromJson(json);
+          }).toList()..sort(Utils.ascendingSort);
         } else {
           throw Exception("Expected 'deliveryAddresses' to be a List");
         }

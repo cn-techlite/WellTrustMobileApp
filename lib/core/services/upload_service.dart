@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:ginilog_customer_app/core/helpers/endpoints.dart';
-import 'package:ginilog_customer_app/core/helpers/globals.dart';
-import 'package:ginilog_customer_app/core/utils/constants.dart';
+import 'package:well_trust_mobile_app/core/helpers/endpoints.dart';
+import 'package:well_trust_mobile_app/core/helpers/globals.dart';
+import 'package:well_trust_mobile_app/core/utils/constants.dart';
 
 class ApiService {
   static Future<String> upload(String file) async {

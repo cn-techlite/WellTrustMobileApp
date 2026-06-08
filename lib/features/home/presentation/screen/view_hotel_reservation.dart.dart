@@ -2,10 +2,10 @@
 
 import 'dart:math';
 
-import 'package:ginilog_customer_app/features/home/presentation/state/provider/home_provider.dart';
-import 'package:ginilog_customer_app/features/home/presentation/state/state_model/logistic_state.dart';
-import 'package:ginilog_customer_app/core/utils/size_config.dart';
-import 'package:ginilog_customer_app/shared/widgets/back_icon.dart';
+import 'package:well_trust_mobile_app/features/home/presentation/state/provider/home_provider.dart';
+import 'package:well_trust_mobile_app/features/home/presentation/state/state_model/logistic_state.dart';
+import 'package:well_trust_mobile_app/core/utils/size_config.dart';
+import 'package:well_trust_mobile_app/shared/widgets/back_icon.dart';
 
 import '../../../../core/utils/colors.dart';
 import '../../../../core/utils/package_export.dart';
@@ -103,21 +103,20 @@ class _ViewAllLogisticsPageState extends ConsumerState<ViewAllLogisticsPage> {
 
     final isLoading = asyncState.isLoading && !data.hasLoadedInitially;
 
-    final logistics =
-        data.listLogistic.where((element) {
-          if (element.available != true) {
-            return false;
-          }
+    final logistics = data.listLogistic.where((element) {
+      if (element.available != true) {
+        return false;
+      }
 
-          final distanceFilter = calculateDistance(
-            widget.latitude,
-            widget.longitude,
-            element.latitude ?? 0,
-            element.longitude ?? 0,
-          );
+      final distanceFilter = calculateDistance(
+        widget.latitude,
+        widget.longitude,
+        element.latitude ?? 0,
+        element.longitude ?? 0,
+      );
 
-          return distanceFilter <= distance;
-        }).toList();
+      return distanceFilter <= distance;
+    }).toList();
 
     return Scaffold(
       backgroundColor: AppColors.white,
@@ -135,136 +134,129 @@ class _ViewAllLogisticsPageState extends ConsumerState<ViewAllLogisticsPage> {
           onRefresh: notifier.refreshList,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18),
-            child:
-                isLoading
-                    ? Center(
-                      child: CircularProgressIndicator(
-                        color: AppColors.primary,
+            child: isLoading
+                ? Center(
+                    child: CircularProgressIndicator(color: AppColors.primary),
+                  )
+                : logistics.isEmpty
+                ? ListView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    children: [
+                      SizedBox(height: SizeConfig.heightAdjusted(20)),
+
+                      Image.asset(
+                        "assets/images/empty.png",
+                        width: 100,
+                        height: 100,
                       ),
-                    )
-                    : logistics.isEmpty
-                    ? ListView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      children: [
-                        SizedBox(height: SizeConfig.heightAdjusted(20)),
 
-                        Image.asset(
-                          "assets/images/empty.png",
-                          width: 100,
-                          height: 100,
+                      addVerticalSpacing(5),
+
+                      const Center(
+                        child: AppText(
+                          text: "Coming soon!",
+                          textAlign: TextAlign.start,
+
+                          color: AppColors.black,
+
+                          fontWeight: FontWeight.bold,
                         ),
+                      ),
 
-                        addVerticalSpacing(5),
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: AppText(
+                          text:
+                              "There is no available Logistics Company in Your location",
+                          textAlign: TextAlign.center,
 
-                        const Center(
-                          child: AppText(
-                            text: "Coming soon!",
-                            textAlign: TextAlign.start,
+                          color: AppColors.black,
 
-                            color: AppColors.black,
-
-                            fontWeight: FontWeight.bold,
-                          ),
+                          fontWeight: FontWeight.normal,
                         ),
-
-                        const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: AppText(
-                            text:
-                                "There is no available Logistics Company in Your location",
-                            textAlign: TextAlign.center,
-
-                            color: AppColors.black,
-
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                      ],
-                    )
-                    : ListView.builder(
-                      controller: _scrollController,
-                      itemCount:
-                          logistics.length + (data.isLoadingMore ? 1 : 0),
-                      itemBuilder: (context, index) {
-                        if (index >= logistics.length) {
-                          return const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 20),
-                            child: Center(child: CircularProgressIndicator()),
-                          );
-                        }
-
-                        final company = logistics[index];
-
-                        return Column(
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                // navigateToRoute(...)
-                              },
-                              child: Row(
-                                children: [
-                                  addHorizontalSpacing(10),
-
-                                  Container(
-                                    margin: const EdgeInsets.all(5),
-                                    height: 100,
-                                    width: 100,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: AppColors.grey,
-                                        width: 1,
-                                      ),
-                                      borderRadius: BorderRadius.circular(50),
-                                      image: DecorationImage(
-                                        image: NetworkImage(
-                                          company.companyLogo ?? "",
-                                        ),
-                                        fit: BoxFit.contain,
-                                      ),
-                                    ),
-                                  ),
-
-                                  addHorizontalSpacing(10),
-
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        AppText(
-                                          text: company.companyName ?? "",
-                                          textAlign: TextAlign.start,
-
-                                          color: AppColors.black,
-
-                                          maxLines: 1,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-
-                                        AppText(
-                                          text:
-                                              "${company.companyAddress ?? ""}, ${company.locality ?? ""}, ${company.state ?? ""}",
-                                          textAlign: TextAlign.start,
-
-                                          color: AppColors.black,
-
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                            const Divider(
-                              thickness: 0.7,
-                              color: AppColors.grey,
-                            ),
-                          ],
+                      ),
+                    ],
+                  )
+                : ListView.builder(
+                    controller: _scrollController,
+                    itemCount: logistics.length + (data.isLoadingMore ? 1 : 0),
+                    itemBuilder: (context, index) {
+                      if (index >= logistics.length) {
+                        return const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 20),
+                          child: Center(child: CircularProgressIndicator()),
                         );
-                      },
-                    ),
+                      }
+
+                      final company = logistics[index];
+
+                      return Column(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              // navigateToRoute(...)
+                            },
+                            child: Row(
+                              children: [
+                                addHorizontalSpacing(10),
+
+                                Container(
+                                  margin: const EdgeInsets.all(5),
+                                  height: 100,
+                                  width: 100,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: AppColors.grey,
+                                      width: 1,
+                                    ),
+                                    borderRadius: BorderRadius.circular(50),
+                                    image: DecorationImage(
+                                      image: NetworkImage(
+                                        company.companyLogo ?? "",
+                                      ),
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ),
+                                ),
+
+                                addHorizontalSpacing(10),
+
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      AppText(
+                                        text: company.companyName ?? "",
+                                        textAlign: TextAlign.start,
+
+                                        color: AppColors.black,
+
+                                        maxLines: 1,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+
+                                      AppText(
+                                        text:
+                                            "${company.companyAddress ?? ""}, ${company.locality ?? ""}, ${company.state ?? ""}",
+                                        textAlign: TextAlign.start,
+
+                                        color: AppColors.black,
+
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          const Divider(thickness: 0.7, color: AppColors.grey),
+                        ],
+                      );
+                    },
+                  ),
           ),
         ),
       ),

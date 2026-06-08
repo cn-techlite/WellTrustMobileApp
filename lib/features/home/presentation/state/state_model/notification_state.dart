@@ -1,6 +1,6 @@
 // Notification
 
-import 'package:ginilog_customer_app/features/home/data/model/notification_model.dart';
+import 'package:well_trust_mobile_app/features/home/data/model/notification_model.dart';
 
 class NotificationStateModel {
   final bool hasFetched;

@@ -1,8 +1,8 @@
-import 'package:ginilog_customer_app/core/routes/route.dart';
+import 'package:well_trust_mobile_app/core/routes/route.dart';
 import 'package:flutter/material.dart';
-import 'package:ginilog_customer_app/features/auth/presentation/screen/logins.dart';
-import 'package:ginilog_customer_app/features/auth/presentation/screen/onboarding_.dart';
-import 'package:ginilog_customer_app/features/auth/presentation/screen/user_register.dart';
+import 'package:well_trust_mobile_app/features/auth/presentation/screen/logins.dart';
+import 'package:well_trust_mobile_app/features/auth/presentation/screen/onboarding_.dart';
+import 'package:well_trust_mobile_app/features/auth/presentation/screen/user_register.dart';
 
 import '../../features/home_screen.dart';
 import '../helpers/globals.dart';
@@ -43,11 +43,13 @@ Future<String> initialRoute() async {
   final isLoggedIn = globals.userId.isNotEmpty;
 
   if (!hasViewedOnboarding) {
-    return RootRoutes.onboard;
+    // return RootRoutes.onboard;
+    return RootRoutes.tab;
   }
 
   if (!isLoggedIn) {
-    return RootRoutes.login;
+    //  return RootRoutes.login;
+    return RootRoutes.tab;
   }
 
   return RootRoutes.tab;

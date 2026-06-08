@@ -1,6 +1,6 @@
 // Explorer
 
-import 'package:ginilog_customer_app/features/home/data/model/advert_response_model.dart';
+import 'package:well_trust_mobile_app/features/home/data/model/advert_response_model.dart';
 
 class AdvertStateModel {
   final bool hasFetched;

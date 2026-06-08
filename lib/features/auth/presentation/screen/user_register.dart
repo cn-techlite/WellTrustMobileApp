@@ -1,21 +1,18 @@
-import 'dart:io';
-
-import 'package:ginilog_customer_app/core/utils/app_buttons.dart';
-import 'package:ginilog_customer_app/core/utils/colors.dart';
-import 'package:ginilog_customer_app/core/utils/helper_functions.dart';
-import 'package:ginilog_customer_app/core/utils/package_export.dart';
-import 'package:ginilog_customer_app/core/utils/size_config.dart';
-import 'package:ginilog_customer_app/features/auth/presentation/screen/confirm_email.dart';
-import 'package:ginilog_customer_app/features/auth/presentation/screen/logins.dart';
-import 'package:ginilog_customer_app/features/auth/presentation/state/providers/auth_provider.dart';
-import 'package:ginilog_customer_app/features/auth/presentation/state/state_model/auth_state.dart';
-import 'package:ginilog_customer_app/features/home_screen.dart';
-import 'package:ginilog_customer_app/shared/state/connectivity_state.dart';
-import 'package:ginilog_customer_app/shared/widgets/app_text.dart';
-import 'package:ginilog_customer_app/shared/widgets/back_icon.dart';
-import 'package:ginilog_customer_app/shared/widgets/bizora_checkbox_widget.dart';
-import 'package:ginilog_customer_app/shared/widgets/custom_snackbar.dart';
-import 'package:ginilog_customer_app/shared/widgets/input.dart';
+import 'package:well_trust_mobile_app/core/utils/app_buttons.dart';
+import 'package:well_trust_mobile_app/core/utils/colors.dart';
+import 'package:well_trust_mobile_app/core/utils/helper_functions.dart';
+import 'package:well_trust_mobile_app/core/utils/package_export.dart';
+import 'package:well_trust_mobile_app/core/utils/size_config.dart';
+import 'package:well_trust_mobile_app/features/auth/presentation/screen/confirm_email.dart';
+import 'package:well_trust_mobile_app/features/auth/presentation/screen/logins.dart';
+import 'package:well_trust_mobile_app/features/auth/presentation/state/providers/auth_provider.dart';
+import 'package:well_trust_mobile_app/features/auth/presentation/state/state_model/auth_state.dart';
+import 'package:well_trust_mobile_app/shared/state/connectivity_state.dart';
+import 'package:well_trust_mobile_app/shared/widgets/app_text.dart';
+import 'package:well_trust_mobile_app/shared/widgets/back_icon.dart';
+import 'package:well_trust_mobile_app/shared/widgets/bizora_checkbox_widget.dart';
+import 'package:well_trust_mobile_app/shared/widgets/custom_snackbar.dart';
+import 'package:well_trust_mobile_app/shared/widgets/input.dart';
 import 'package:flutter/gestures.dart';
 
 import '../../data/dto/register_request.dart';
@@ -48,8 +45,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final focusPhoneNo = FocusNode();
 
   String selectedCountryCode = "+234";
-
-  final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
 
   @override
   void initState() {
@@ -204,100 +199,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         isTopPosition: false,
       );
     }
-  }
-
-  Future<void> google() async {
-    final connectivityStatusProvider = ref.read(connectivityStatusProviders);
-    final authState =
-        ref.read(authControllerProvider).value ?? const AuthState();
-
-    if (connectivityStatusProvider.value != ConnectivityStatus.isConnected) {
-      showCustomSnackbar(
-        context,
-        title: "Network Connection",
-        content: "No Internet Connection",
-        type: SnackbarType.error,
-        isTopPosition: false,
-      );
-      return;
-    }
-
-    if (!authState.agreedToTerms) {
-      showCustomSnackbar(
-        context,
-        title: "Terms of Service",
-        content: "Please accept terms & condition",
-        type: SnackbarType.error,
-        isTopPosition: false,
-      );
-      return;
-    }
-
-    final result =
-        await ref.read(authControllerProvider.notifier).loginWithGoogle();
-
-    if (!mounted) return;
-
-    if (result.isSuccess && result.loginData != null) {
-      navigateAndReplaceRoute(context, const HomeScreenPage(imdex: 0));
-    } else {
-      showCustomSnackbar(
-        context,
-        title: "Authentication Error",
-        content: result.message ?? "Google sign in failed",
-        type: SnackbarType.error,
-        isTopPosition: false,
-      );
-    }
-  }
-
-  Future<void> apple() async {
-    final connectivityStatusProvider = ref.read(connectivityStatusProviders);
-    final authState =
-        ref.read(authControllerProvider).value ?? const AuthState();
-
-    if (connectivityStatusProvider.value != ConnectivityStatus.isConnected) {
-      showCustomSnackbar(
-        context,
-        title: "Network Connection",
-        content: "No Internet Connection",
-        type: SnackbarType.error,
-        isTopPosition: false,
-      );
-      return;
-    }
-
-    if (!authState.agreedToTerms) {
-      showCustomSnackbar(
-        context,
-        title: "Terms of Service",
-        content: "Please accept terms & condition",
-        type: SnackbarType.error,
-        isTopPosition: false,
-      );
-      return;
-    }
-
-    final result =
-        await ref.read(authControllerProvider.notifier).loginWithApple();
-
-    if (!mounted) return;
-
-    if (result.isSuccess && result.loginData != null) {
-      navigateAndReplaceRoute(context, const HomeScreenPage(imdex: 0));
-    } else {
-      showCustomSnackbar(
-        context,
-        title: "Authentication Error",
-        content: result.message ?? "Apple sign in failed",
-        type: SnackbarType.error,
-        isTopPosition: false,
-      );
-    }
-  }
-
-  Future<void> google1() async {
-    await _googleSignIn.signOut();
   }
 
   @override
@@ -493,13 +394,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                   letterSpacing: 1.2,
                                   // decoration: TextDecoration.underline,
                                 ),
-                                recognizer:
-                                    TapGestureRecognizer()
-                                      ..onTap = () {
-                                        urlString(
-                                          "https://ginilog.com/Home/TermsOfService",
-                                        );
-                                      },
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    urlString(
+                                      "https://ginilog.com/Home/TermsOfService",
+                                    );
+                                  },
                               ),
                               TextSpan(
                                 text: " & ",
@@ -518,13 +418,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                   letterSpacing: 1.2,
                                   // decoration: TextDecoration.underline,
                                 ),
-                                recognizer:
-                                    TapGestureRecognizer()
-                                      ..onTap = () {
-                                        urlString(
-                                          "https://ginilog.com/Home/Privacy",
-                                        );
-                                      },
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    urlString(
+                                      "https://ginilog.com/Home/Privacy",
+                                    );
+                                  },
                               ),
                             ],
                           ),
@@ -535,23 +434,23 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   addVerticalSpacing(2),
                   canSubmit
                       ? AppButton(
-                        text: "Sign Up",
-                        onPressed: isLoading ? null : userRegister,
-                        widthPercent: 100,
-                        heightPercent: 6,
-                        fontSize: 35,
-                        btnColor: AppColors.primary,
-                        isLoading: isLoading,
-                      )
+                          text: "Sign Up",
+                          onPressed: isLoading ? null : userRegister,
+                          widthPercent: 100,
+                          heightPercent: 6,
+                          fontSize: 35,
+                          btnColor: AppColors.primary,
+                          isLoading: isLoading,
+                        )
                       : AppButton(
-                        text: "Sign Up",
-                        onPressed: () {},
-                        widthPercent: 100,
-                        heightPercent: 6,
-                        fontSize: 35,
-                        btnColor: AppColors.grey,
-                        isLoading: false,
-                      ),
+                          text: "Sign Up",
+                          onPressed: () {},
+                          widthPercent: 100,
+                          heightPercent: 6,
+                          fontSize: 35,
+                          btnColor: AppColors.grey,
+                          isLoading: false,
+                        ),
                   addVerticalSpacing(2),
                   Center(
                     child: Text.rich(
@@ -570,134 +469,16 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                               color: AppColors.blue,
                               fontWeight: FontWeight.w800,
                             ),
-                            recognizer:
-                                TapGestureRecognizer()
-                                  ..onTap = () {
-                                    navigateToRoute(
-                                      context,
-                                      const LoginScreens(),
-                                    );
-                                  },
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                navigateToRoute(context, const LoginScreens());
+                              },
                           ),
                         ],
                       ),
                     ),
                   ),
                   addVerticalSpacing(2),
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Divider(
-                          color: Color.fromRGBO(218, 218, 218, 1),
-                          thickness: 1,
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      AppText(
-                        text: "Or sign up with",
-                        textAlign: TextAlign.center,
-                        color: AppColors.black,
-                        type: AppTextType.bodySmall,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: Divider(
-                          color: Color.fromRGBO(218, 218, 218, 1),
-                          thickness: 1,
-                        ),
-                      ),
-                    ],
-                  ),
-                  addVerticalSpacing(2),
-                  Platform.isIOS
-                      ? Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        spacing: 5,
-                        children: [
-                          IconButton(
-                            onPressed: isLoading ? null : google,
-                            style: ButtonStyle(
-                              shape: WidgetStatePropertyAll(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                              ),
-                              // elevation: const WidgetStatePropertyAll(6),
-                              // backgroundColor: WidgetStatePropertyAll(
-                              //   AppColors.black.withValues(alpha: 0.1),
-                              // ),
-                              padding: const WidgetStatePropertyAll(
-                                EdgeInsetsGeometry.symmetric(
-                                  horizontal: 15,
-                                  vertical: 12,
-                                ),
-                              ),
-                            ),
-                            icon: SvgPicture.asset(
-                              'assets/svgs/google.svg',
-                              height: 30,
-                              width: 30,
-                            ),
-                          ),
-                          addHorizontalSpacing(6),
-                          IconButton(
-                            onPressed: isLoading ? null : apple,
-                            style: ButtonStyle(
-                              shape: WidgetStatePropertyAll(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                              ),
-                              // elevation: const WidgetStatePropertyAll(6),
-                              // backgroundColor: WidgetStatePropertyAll(
-                              //   AppColors.black.withValues(alpha: 0.1),
-                              // ),
-                              padding: const WidgetStatePropertyAll(
-                                EdgeInsetsGeometry.symmetric(
-                                  horizontal: 15,
-                                  vertical: 12,
-                                ),
-                              ),
-                            ),
-                            icon: SvgPicture.asset(
-                              'assets/svgs/apple.svg',
-                              height: 30,
-                              width: 30,
-                            ),
-                          ),
-                        ],
-                      )
-                      : Center(
-                        child: IconButton(
-                          onPressed: isLoading ? null : google,
-                          style: ButtonStyle(
-                            shape: WidgetStatePropertyAll(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                            ),
-                            // elevation: const WidgetStatePropertyAll(6),
-                            // backgroundColor: WidgetStatePropertyAll(
-                            //   AppColors.black.withValues(alpha: 0.1),
-                            // ),
-                            padding: const WidgetStatePropertyAll(
-                              EdgeInsetsGeometry.symmetric(
-                                horizontal: 15,
-                                vertical: 12,
-                              ),
-                            ),
-                          ),
-                          icon: SvgPicture.asset(
-                            'assets/svgs/google.svg',
-                            height: 30,
-                            width: 30,
-                          ),
-                        ),
-                      ),
-                  addVerticalSpacing(5),
                 ],
               ),
             ),

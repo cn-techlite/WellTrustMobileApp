@@ -1,6 +1,7 @@
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:ginilog_customer_app/core/utils/constants.dart';
-import 'package:ginilog_customer_app/features/auth/data/model/login_response_model.dart';
+import 'package:well_trust_mobile_app/core/utils/constants.dart';
+import 'package:well_trust_mobile_app/features/auth/data/model/login_response_model.dart';
+
+import '../../../../core/utils/package_export.dart';
 
 class AuthLocalStorageService {
   static const _secureStorage = FlutterSecureStorage();

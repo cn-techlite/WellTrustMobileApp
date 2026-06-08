@@ -1,12 +1,12 @@
-import 'package:ginilog_customer_app/core/utils/app_buttons.dart';
-import 'package:ginilog_customer_app/core/utils/colors.dart';
-import 'package:ginilog_customer_app/core/utils/package_export.dart';
-import 'package:ginilog_customer_app/core/utils/size_config.dart';
-import 'package:ginilog_customer_app/features/account/states/account_provider.dart';
-import 'package:ginilog_customer_app/shared/widgets/app_text.dart';
-import 'package:ginilog_customer_app/shared/widgets/back_icon.dart';
-import 'package:ginilog_customer_app/shared/widgets/custom_snackbar.dart';
-import 'package:ginilog_customer_app/shared/widgets/input.dart';
+import 'package:well_trust_mobile_app/core/utils/app_buttons.dart';
+import 'package:well_trust_mobile_app/core/utils/colors.dart';
+import 'package:well_trust_mobile_app/core/utils/package_export.dart';
+import 'package:well_trust_mobile_app/core/utils/size_config.dart';
+import 'package:well_trust_mobile_app/features/account/states/account_provider.dart';
+import 'package:well_trust_mobile_app/shared/widgets/app_text.dart';
+import 'package:well_trust_mobile_app/shared/widgets/back_icon.dart';
+import 'package:well_trust_mobile_app/shared/widgets/custom_snackbar.dart';
+import 'package:well_trust_mobile_app/shared/widgets/input.dart';
 
 class FeedbackPage extends ConsumerStatefulWidget {
   const FeedbackPage({super.key});
@@ -122,155 +122,152 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
           onTap: () {
             _focusFeedback.unfocus();
           },
-          child:
-              isAccountLoading
-                  ? Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.primary,
-                      strokeWidth: 2,
-                    ),
-                  )
-                  : ListView(
-                    children: [
-                      const SizedBox(height: 10),
-
-                      Image.asset(
-                        'assets/images/logo_path.png',
-                        height: 150,
-                        color: AppColors.primary,
-                      ),
-
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: width / 20,
-                          right: width / 20,
-                          top: 10,
-                        ),
-                        child: const AppText(
-                          text:
-                              "If you are having trouble placing and completing orders, or you have any question or queries, please feel free to email us",
-                          textAlign: TextAlign.start,
-                          color: AppColors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: width / 20,
-                          right: width / 20,
-                          top: 10,
-                        ),
-                        child: GestureDetector(
-                          onTap: () async {
-                            final uri = Uri.parse('mailto:info@ginilog.com');
-                            await launchUrl(uri);
-                          },
-                          child: const AppText(
-                            text: "info@ginilog.com",
-                            textAlign: TextAlign.start,
-                            color: AppColors.primary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: width / 20,
-                          right: width / 20,
-                          top: 10,
-                        ),
-                        child: GestureDetector(
-                          onTap: () async {
-                            final uri = Uri.parse('tel:08166516944');
-                            await launchUrl(uri);
-                          },
-                          child: const AppText(
-                            text: "0816 651 6944",
-                            textAlign: TextAlign.start,
-                            color: AppColors.primary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: width / 20,
-                          right: width / 20,
-                          top: 10,
-                        ),
-                        child: const AppText(
-                          text: "A member of our team will attend to you",
-                          textAlign: TextAlign.start,
-                          color: AppColors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-
-                      Container(
-                        margin: const EdgeInsets.symmetric(vertical: 0),
-                        child: Form(
-                          key: _formKey,
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(
-                                  left: width / 20,
-                                  right: width / 20,
-                                  top: 10,
-                                ),
-                                child: const AppText(
-                                  text: "Leave a message with us",
-                                  textAlign: TextAlign.start,
-                                  color: AppColors.black,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                  top: 10,
-                                  left: 10,
-                                  right: 10,
-                                ),
-                                child: GlobalTextField(
-                                  fieldName: 'What Complaints do you have?',
-                                  keyBoardType: TextInputType.text,
-                                  obscureText: false,
-                                  removeSpace: false,
-                                  isNotePad: true,
-                                  textController: _feedback,
-                                  onChanged: (value) {},
-                                ),
-                              ),
-
-                              addVerticalSpacing(3),
-
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: AppButton(
-                                  text: "Send",
-                                  onPressed:
-                                      _isProcessing || user == null
-                                          ? () {}
-                                          : _sendFeedback,
-                                  widthPercent: 100,
-                                  heightPercent: 6,
-                                  btnColor:
-                                      user == null
-                                          ? AppColors.grey
-                                          : AppColors.primary,
-                                  isLoading: _isProcessing,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
+          child: isAccountLoading
+              ? Center(
+                  child: CircularProgressIndicator(
+                    color: AppColors.primary,
+                    strokeWidth: 2,
                   ),
+                )
+              : ListView(
+                  children: [
+                    const SizedBox(height: 10),
+
+                    Image.asset(
+                      'assets/images/logo_path.png',
+                      height: 150,
+                      color: AppColors.primary,
+                    ),
+
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: width / 20,
+                        right: width / 20,
+                        top: 10,
+                      ),
+                      child: const AppText(
+                        text:
+                            "If you are having trouble placing and completing orders, or you have any question or queries, please feel free to email us",
+                        textAlign: TextAlign.start,
+                        color: AppColors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: width / 20,
+                        right: width / 20,
+                        top: 10,
+                      ),
+                      child: GestureDetector(
+                        onTap: () async {
+                          final uri = Uri.parse('mailto:info@ginilog.com');
+                          await launchUrl(uri);
+                        },
+                        child: const AppText(
+                          text: "info@ginilog.com",
+                          textAlign: TextAlign.start,
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: width / 20,
+                        right: width / 20,
+                        top: 10,
+                      ),
+                      child: GestureDetector(
+                        onTap: () async {
+                          final uri = Uri.parse('tel:08166516944');
+                          await launchUrl(uri);
+                        },
+                        child: const AppText(
+                          text: "0816 651 6944",
+                          textAlign: TextAlign.start,
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: width / 20,
+                        right: width / 20,
+                        top: 10,
+                      ),
+                      child: const AppText(
+                        text: "A member of our team will attend to you",
+                        textAlign: TextAlign.start,
+                        color: AppColors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    Container(
+                      margin: const EdgeInsets.symmetric(vertical: 0),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: width / 20,
+                                right: width / 20,
+                                top: 10,
+                              ),
+                              child: const AppText(
+                                text: "Leave a message with us",
+                                textAlign: TextAlign.start,
+                                color: AppColors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                top: 10,
+                                left: 10,
+                                right: 10,
+                              ),
+                              child: GlobalTextField(
+                                fieldName: 'What Complaints do you have?',
+                                keyBoardType: TextInputType.text,
+                                obscureText: false,
+                                removeSpace: false,
+                                isNotePad: true,
+                                textController: _feedback,
+                                onChanged: (value) {},
+                              ),
+                            ),
+
+                            addVerticalSpacing(3),
+
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: AppButton(
+                                text: "Send",
+                                onPressed: _isProcessing || user == null
+                                    ? () {}
+                                    : _sendFeedback,
+                                widthPercent: 100,
+                                heightPercent: 6,
+                                btnColor: user == null
+                                    ? AppColors.grey
+                                    : AppColors.primary,
+                                isLoading: _isProcessing,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
         ),
       ),
     );

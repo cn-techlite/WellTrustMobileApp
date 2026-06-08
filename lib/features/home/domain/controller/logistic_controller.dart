@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:ginilog_customer_app/core/utils/package_export.dart';
-import 'package:ginilog_customer_app/features/home/data/model/company_response_model.dart';
-import 'package:ginilog_customer_app/features/home/domain/usecases/home_repository.dart';
-import 'package:ginilog_customer_app/features/home/presentation/state/provider/home_provider.dart';
-import 'package:ginilog_customer_app/features/home/presentation/state/state_model/logistic_state.dart';
-import 'package:ginilog_customer_app/shared/model/response_result_model.dart';
+import 'package:well_trust_mobile_app/core/utils/package_export.dart';
+import 'package:well_trust_mobile_app/features/home/data/model/company_response_model.dart';
+import 'package:well_trust_mobile_app/features/home/domain/usecases/home_repository.dart';
+import 'package:well_trust_mobile_app/features/home/presentation/state/provider/home_provider.dart';
+import 'package:well_trust_mobile_app/features/home/presentation/state/state_model/logistic_state.dart';
+import 'package:well_trust_mobile_app/shared/model/response_result_model.dart';
 
 class LogisticController extends AsyncNotifier<LogisticState> {
   late final HomeRepository _repository;
@@ -187,8 +187,9 @@ class LogisticController extends AsyncNotifier<LogisticState> {
 
       final existingIds = current.listLogistic.map((e) => e.id).toSet();
 
-      final filteredNewItems =
-          newItems.where((e) => !existingIds.contains(e.id)).toList();
+      final filteredNewItems = newItems
+          .where((e) => !existingIds.contains(e.id))
+          .toList();
 
       _cacheList(filteredNewItems);
 

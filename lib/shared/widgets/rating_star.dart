@@ -1,4 +1,4 @@
-import 'package:ginilog_customer_app/core/utils/package_export.dart';
+import 'package:well_trust_mobile_app/core/utils/package_export.dart';
 
 class StarRating extends StatelessWidget {
   final double rating; // Rating value (e.g., 4.5)
@@ -30,9 +30,11 @@ class StarRating extends StatelessWidget {
           icon = Icons.star_border; // Empty star
         }
 
-        return Icon(icon,
-            size: starSize,
-            color: rating >= starValue ? filledColor : emptyColor);
+        return Icon(
+          icon,
+          size: starSize,
+          color: rating >= starValue ? filledColor : emptyColor,
+        );
       }),
     );
   }

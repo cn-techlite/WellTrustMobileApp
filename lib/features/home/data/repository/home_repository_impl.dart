@@ -1,13 +1,13 @@
 import 'dart:convert';
 
-import 'package:ginilog_customer_app/core/extension/error_handling.dart';
-import 'package:ginilog_customer_app/features/home/data/model/advert_response_model.dart';
-import 'package:ginilog_customer_app/features/home/data/model/company_response_model.dart';
-import 'package:ginilog_customer_app/features/home/data/model/notification_model.dart';
-import 'package:ginilog_customer_app/features/home/data/model/riders_response_model.dart';
-import 'package:ginilog_customer_app/features/home/data/services/home_remote_service.dart';
-import 'package:ginilog_customer_app/features/home/domain/usecases/home_repository.dart';
-import 'package:ginilog_customer_app/shared/model/response_result_model.dart';
+import 'package:well_trust_mobile_app/core/extension/error_handling.dart';
+import 'package:well_trust_mobile_app/features/home/data/model/advert_response_model.dart';
+import 'package:well_trust_mobile_app/features/home/data/model/company_response_model.dart';
+import 'package:well_trust_mobile_app/features/home/data/model/notification_model.dart';
+import 'package:well_trust_mobile_app/features/home/data/model/riders_response_model.dart';
+import 'package:well_trust_mobile_app/features/home/data/services/home_remote_service.dart';
+import 'package:well_trust_mobile_app/features/home/domain/usecases/home_repository.dart';
+import 'package:well_trust_mobile_app/shared/model/response_result_model.dart';
 
 class HomeRepositoryImpl implements HomeRepository {
   final HomeRemoteService _remoteService;

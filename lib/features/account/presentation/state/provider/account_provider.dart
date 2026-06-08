@@ -1,4 +1,4 @@
-import 'package:ginilog_customer_app/features/account/data/model/user_response_model.dart';
+import 'package:well_trust_mobile_app/features/account/data/model/user_response_model.dart';
 
 class AccountStateModel {
   final RegisterResponseModel? userData;

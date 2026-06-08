@@ -1,6 +1,6 @@
-import 'package:ginilog_customer_app/core/utils/colors.dart';
-import 'package:ginilog_customer_app/core/utils/package_export.dart';
-import 'package:ginilog_customer_app/shared/widgets/app_text.dart';
+import 'package:well_trust_mobile_app/core/utils/colors.dart';
+import 'package:well_trust_mobile_app/core/utils/package_export.dart';
+import 'package:well_trust_mobile_app/shared/widgets/app_text.dart';
 
 class CustomListTile extends StatelessWidget {
   final String title;

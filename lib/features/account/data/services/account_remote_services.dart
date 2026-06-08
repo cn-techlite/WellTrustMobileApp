@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:ginilog_customer_app/core/extension/error_handling.dart';
+import 'package:well_trust_mobile_app/core/extension/error_handling.dart';
 import 'package:http/http.dart' as http;
 import '../../../../core/helpers/endpoints.dart';
 import '../../../../core/helpers/globals.dart';

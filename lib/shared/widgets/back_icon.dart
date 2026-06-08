@@ -1,7 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
-import 'package:ginilog_customer_app/core/utils/colors.dart';
-import 'package:ginilog_customer_app/core/utils/package_export.dart';
+import 'package:well_trust_mobile_app/core/utils/colors.dart';
+import 'package:well_trust_mobile_app/core/utils/package_export.dart';
 
 AppBar buildFlexibleAppBar({
   required BuildContext context,
@@ -26,21 +26,19 @@ AppBar buildFlexibleAppBar({
     foregroundColor: foregroundColor,
     elevation: 0,
     centerTitle: centerTitle,
-    leading:
-        showBackButton
-            ? IconButton(
-              onPressed: onBack ?? () => Navigator.pop(context),
-              icon: SvgPicture.asset(backIconAsset, width: iconWidth),
-            )
-            : null,
+    leading: showBackButton
+        ? IconButton(
+            onPressed: onBack ?? () => Navigator.pop(context),
+            icon: SvgPicture.asset(backIconAsset, width: iconWidth),
+          )
+        : null,
     title: title,
     actions: actions,
-    bottom:
-        bottomWidget != null
-            ? PreferredSize(
-              preferredSize: Size.fromHeight(bottomHeight),
-              child: bottomWidget,
-            )
-            : null,
+    bottom: bottomWidget != null
+        ? PreferredSize(
+            preferredSize: Size.fromHeight(bottomHeight),
+            child: bottomWidget,
+          )
+        : null,
   );
 }

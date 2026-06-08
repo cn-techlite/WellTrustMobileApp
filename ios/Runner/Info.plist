@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Well Trust Mobile App</string>
+	<string>WellTrust Staff App</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -66,5 +66,50 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+
+	    <key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.373128411315-13eumvvguk08q1ls9isfsbfdc3v5irem</string>
+			</array>
+		</dict>
+	</array>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<true/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>google</string>
+		<string>com.google</string>
+	</array>
+
+	<!-- ✅ REQUIRED PRIVACY USAGE DESCRIPTIONS -->
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>This app uses the local network to enable debugging and communication.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We use your location to help you find nearby accommodations and track your deliveries while the app is in use.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>We use your location to provide accurate delivery tracking and enable background updates even when the app is not active.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app uses your camera to capture parcel images and scan QR codes for delivery verification.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We need access to your photo library to upload parcel images or proof of delivery.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>We use your microphone for voice calls and audio features within delivery tracking.</string>
+	<key>NSPushNotificationsUsageDescription</key>
+	<string>We use push notifications to keep you updated about deliveries and promotions.</string>
+
+
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
+	<key>aps-environment</key>
+	<string>development</string>
+
 </dict>
 </plist>

@@ -1,13 +1,13 @@
-import 'package:ginilog_customer_app/core/helpers/globals.dart';
-import 'package:ginilog_customer_app/core/utils/app_buttons.dart';
-import 'package:ginilog_customer_app/core/utils/colors.dart';
-import 'package:ginilog_customer_app/core/utils/size_config.dart';
-import 'package:ginilog_customer_app/features/auth/presentation/screen/email_dialog.dart';
-import 'package:ginilog_customer_app/features/auth/presentation/state/providers/auth_provider.dart';
-import 'package:ginilog_customer_app/features/auth/presentation/state/state_model/auth_state.dart';
-import 'package:ginilog_customer_app/shared/widgets/app_text.dart';
-import 'package:ginilog_customer_app/shared/widgets/back_icon.dart';
-import 'package:ginilog_customer_app/shared/widgets/custom_snackbar.dart';
+import 'package:well_trust_mobile_app/core/helpers/globals.dart';
+import 'package:well_trust_mobile_app/core/utils/app_buttons.dart';
+import 'package:well_trust_mobile_app/core/utils/colors.dart';
+import 'package:well_trust_mobile_app/core/utils/size_config.dart';
+import 'package:well_trust_mobile_app/features/auth/presentation/screen/email_dialog.dart';
+import 'package:well_trust_mobile_app/features/auth/presentation/state/providers/auth_provider.dart';
+import 'package:well_trust_mobile_app/features/auth/presentation/state/state_model/auth_state.dart';
+import 'package:well_trust_mobile_app/shared/widgets/app_text.dart';
+import 'package:well_trust_mobile_app/shared/widgets/back_icon.dart';
+import 'package:well_trust_mobile_app/shared/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pinput/pinput.dart';
@@ -208,10 +208,9 @@ class _ConfirmEmailAddressScreenState
                     return Text(
                       'Code expires in: $displayTime',
                       style: TextStyle(
-                        color:
-                            globals.stopWatchTimer!.isRunning
-                                ? AppColors.primary
-                                : AppColors.white,
+                        color: globals.stopWatchTimer!.isRunning
+                            ? AppColors.primary
+                            : AppColors.white,
                       ),
                     );
                   },
@@ -219,8 +218,9 @@ class _ConfirmEmailAddressScreenState
                 addVerticalSpacing(5),
                 AppButton(
                   borderRadius: 20,
-                  onPressed:
-                      globals.stopWatchTimer!.isRunning ? null : resendCode,
+                  onPressed: globals.stopWatchTimer!.isRunning
+                      ? null
+                      : resendCode,
                   btnColor: AppColors.white,
                   text: "Send again",
                   fontSize: 20,

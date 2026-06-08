@@ -1,13 +1,13 @@
 import 'dart:convert';
 
-import 'package:ginilog_customer_app/core/extension/error_handling.dart';
-import 'package:ginilog_customer_app/core/helpers/endpoints.dart';
-import 'package:ginilog_customer_app/core/helpers/globals.dart';
-import 'package:ginilog_customer_app/core/utils/constants.dart';
-import 'package:ginilog_customer_app/features/home/data/model/advert_response_model.dart';
-import 'package:ginilog_customer_app/features/home/data/model/company_response_model.dart';
-import 'package:ginilog_customer_app/features/home/data/model/notification_model.dart';
-import 'package:ginilog_customer_app/features/home/data/model/riders_response_model.dart';
+import 'package:well_trust_mobile_app/core/extension/error_handling.dart';
+import 'package:well_trust_mobile_app/core/helpers/endpoints.dart';
+import 'package:well_trust_mobile_app/core/helpers/globals.dart';
+import 'package:well_trust_mobile_app/core/utils/constants.dart';
+import 'package:well_trust_mobile_app/features/home/data/model/advert_response_model.dart';
+import 'package:well_trust_mobile_app/features/home/data/model/company_response_model.dart';
+import 'package:well_trust_mobile_app/features/home/data/model/notification_model.dart';
+import 'package:well_trust_mobile_app/features/home/data/model/riders_response_model.dart';
 import 'package:http/http.dart' as http;
 
 class HomeRemoteService {

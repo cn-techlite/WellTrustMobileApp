@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'dart:io';
-import 'package:ginilog_customer_app/core/utils/constants.dart';
+import 'package:well_trust_mobile_app/core/utils/constants.dart';
 
 import '../utils/package_export.dart';
 

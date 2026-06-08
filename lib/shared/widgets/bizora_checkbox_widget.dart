@@ -1,5 +1,5 @@
-import 'package:ginilog_customer_app/core/utils/colors.dart';
-import 'package:ginilog_customer_app/core/utils/package_export.dart';
+import 'package:well_trust_mobile_app/core/utils/colors.dart';
+import 'package:well_trust_mobile_app/core/utils/package_export.dart';
 
 class BizoraCheckBoxWidget extends StatelessWidget {
   const BizoraCheckBoxWidget({
@@ -26,10 +26,9 @@ class BizoraCheckBoxWidget extends StatelessWidget {
           ),
           borderRadius: BorderRadius.circular(2),
         ),
-        child:
-            isChecked
-                ? Icon(Icons.check, size: 18, color: AppColors.primaryDark)
-                : null,
+        child: isChecked
+            ? Icon(Icons.check, size: 18, color: AppColors.primaryDark)
+            : null,
       ),
     );
   }

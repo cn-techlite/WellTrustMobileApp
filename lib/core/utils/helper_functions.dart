@@ -1,6 +1,6 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: strict_top_level_inference, deprecated_member_use
 
-import 'package:ginilog_customer_app/features/home_screen.dart';
+import 'package:well_trust_mobile_app/features/home_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -104,15 +104,15 @@ void navigateTabAndRemoveUntilRoute(BuildContext context, dynamic routeClass) {
   );
 }
 
-navPush(BuildContext context, String route) {
+void navPush(BuildContext context, String route) {
   Navigator.push(context, generateRoute(RouteSettings(name: route)));
 }
 
-navTabPush(BuildContext context, String route) {
+void navTabPush(BuildContext context, String route) {
   navKey.currentState!.push(generateRoute(RouteSettings(name: route)));
 }
 
-displayBottomSheet(context, Widget bottomSheet) {
+void displayBottomSheet(context, Widget bottomSheet) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -123,11 +123,10 @@ displayBottomSheet(context, Widget bottomSheet) {
         topRight: Radius.circular(30.0),
       ),
     ),
-    builder:
-        (context) => Padding(
-          padding: MediaQuery.of(context).viewInsets,
-          child: GestureDetector(onTap: dismissKeyboard, child: bottomSheet),
-        ),
+    builder: (context) => Padding(
+      padding: MediaQuery.of(context).viewInsets,
+      child: GestureDetector(onTap: dismissKeyboard, child: bottomSheet),
+    ),
   );
 }
 
@@ -145,14 +144,10 @@ class MyBehavior extends ScrollBehavior {
 class KeyboardUtils {
   static bool isKeyboardShowing() {
     // ignore: unnecessary_null_comparison
-    if (WidgetsBinding.instance != null) {
-      return WidgetsBinding.instance.window.viewInsets.bottom > 0;
-    } else {
-      return false;
-    }
+    return WidgetsBinding.instance.window.viewInsets.bottom > 0;
   }
 
-  static closeKeyboard(BuildContext context) {
+  static void closeKeyboard(BuildContext context) {
     FocusScopeNode currentFocus = FocusScope.of(context);
     if (!currentFocus.hasPrimaryFocus) {
       currentFocus.unfocus();
@@ -164,10 +159,9 @@ class DashedLineVerticalPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     double dashHeight = 10, dashSpace = 3, startY = 0;
-    final paint =
-        Paint()
-          ..color = AppColors.green
-          ..strokeWidth = size.width * 2;
+    final paint = Paint()
+      ..color = AppColors.green
+      ..strokeWidth = size.width * 2;
     while (startY < size.height) {
       canvas.drawLine(Offset(0, startY), Offset(0, startY + dashHeight), paint);
       startY += dashHeight + dashSpace;
@@ -176,4 +170,11 @@ class DashedLineVerticalPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => false;
+}
+
+String greeting() {
+  final h = DateTime.now().hour;
+  if (h < 12) return 'Good morning,';
+  if (h < 18) return 'Good afternoon,';
+  return 'Good evening,';
 }

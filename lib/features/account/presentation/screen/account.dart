@@ -1,20 +1,19 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 // ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
 
-import 'package:ginilog_customer_app/core/utils/app_buttons.dart';
-import 'package:ginilog_customer_app/core/utils/helper_functions.dart';
-import 'package:ginilog_customer_app/core/utils/size_config.dart';
-import 'package:ginilog_customer_app/features/auth/presentation/screen/delete_account.dart';
-import 'package:ginilog_customer_app/features/auth/presentation/screen/logins.dart';
-import 'package:ginilog_customer_app/shared/widgets/back_icon.dart';
-import 'package:ginilog_customer_app/shared/widgets/list_tile_widget.dart';
-import 'package:ginilog_customer_app/features/account/presentation/screen/report/statement_reports_page.dart';
-import 'package:ginilog_customer_app/features/account/presentation/screen/about_us.dart';
-import 'package:ginilog_customer_app/features/account/presentation/screen/feed_back.dart';
-import 'package:ginilog_customer_app/features/account/presentation/screen/personal_detail.dart';
-import 'package:ginilog_customer_app/features/account/presentation/screen/privacy_policy_screen.dart';
-import 'package:ginilog_customer_app/features/account/presentation/screen/terms_of_service.dart';
-import 'package:ginilog_customer_app/features/account/presentation/screen/notification_page.dart';
+import 'package:well_trust_mobile_app/core/utils/app_buttons.dart';
+import 'package:well_trust_mobile_app/core/utils/helper_functions.dart';
+import 'package:well_trust_mobile_app/core/utils/size_config.dart';
+import 'package:well_trust_mobile_app/features/auth/presentation/screen/delete_account.dart';
+import 'package:well_trust_mobile_app/features/auth/presentation/screen/logins.dart';
+import 'package:well_trust_mobile_app/shared/widgets/back_icon.dart';
+import 'package:well_trust_mobile_app/shared/widgets/list_tile_widget.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/screen/about_us.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/screen/feed_back.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/screen/personal_detail.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/screen/privacy_policy_screen.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/screen/terms_of_service.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/screen/notification_page.dart';
 
 import '../../../../core/utils/colors.dart';
 import '../../../../core/utils/package_export.dart';
@@ -88,17 +87,16 @@ class _LoginPageState extends ConsumerState<AccountPage> {
                       CircleAvatar(
                         backgroundColor: Colors.white,
                         radius: 37,
-                        backgroundImage:
-                            user!.profilePicture.toString().isEmpty
-                                ? const NetworkImage(
-                                  "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Microsoft_Account.svg/512px-Microsoft_Account.svg.png?20170218203212",
-                                )
-                                // ignore: unnecessary_null_comparison
-                                : user.profilePicture == null
-                                ? const NetworkImage(
-                                  "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Microsoft_Account.svg/512px-Microsoft_Account.svg.png?20170218203212",
-                                )
-                                : NetworkImage(user.profilePicture.toString()),
+                        backgroundImage: user!.profilePicture.toString().isEmpty
+                            ? const NetworkImage(
+                                "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Microsoft_Account.svg/512px-Microsoft_Account.svg.png?20170218203212",
+                              )
+                            // ignore: unnecessary_null_comparison
+                            : user.profilePicture == null
+                            ? const NetworkImage(
+                                "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Microsoft_Account.svg/512px-Microsoft_Account.svg.png?20170218203212",
+                              )
+                            : NetworkImage(user.profilePicture.toString()),
                       ),
                       Expanded(
                         child: Column(
@@ -106,10 +104,9 @@ class _LoginPageState extends ConsumerState<AccountPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             AppText(
-                              text:
-                                  isLoading
-                                      ? ""
-                                      : "${user.firstName} ${user.lastName}",
+                              text: isLoading
+                                  ? ""
+                                  : "${user.firstName} ${user.lastName}",
                               textAlign: TextAlign.start,
 
                               color: AppColors.black,
@@ -145,19 +142,7 @@ class _LoginPageState extends ConsumerState<AccountPage> {
                     },
                   ),
                 ),
-                Card(
-                  color: AppColors.white,
-                  shape: RoundedRectangleBorder(),
-                  child: CustomListTile(
-                    title: "Bookings Reports",
-                    subtitle: "View your bookings, reservations and payments",
-                    imageUrl:
-                        "assets/images/reports.png", // Replace with actual image
-                    onTap: () {
-                      navigateToRoute(context, const StatementReportScreen());
-                    },
-                  ),
-                ),
+
                 Card(
                   color: AppColors.white,
                   shape: RoundedRectangleBorder(),
@@ -171,19 +156,7 @@ class _LoginPageState extends ConsumerState<AccountPage> {
                     },
                   ),
                 ),
-                // Card(
-                //   color: AppColors.white,
-                //   shape: RoundedRectangleBorder(),
-                //   child: CustomListTile(
-                //     title: "Card & Bank account settings",
-                //     subtitle: "change cards, delete card details",
-                //     imageUrl:
-                //         "assets/images/wallet_icon.png", // Replace with actual image
-                //     onTap: () {
-                //       //  navigateToRoute(context, const NotificationPage());
-                //     },
-                //   ),
-                // ),
+
                 Card(
                   color: AppColors.white,
                   shape: RoundedRectangleBorder(),
@@ -248,77 +221,76 @@ class _LoginPageState extends ConsumerState<AccountPage> {
                       showDialog(
                         context: context,
                         barrierDismissible: true,
-                        builder:
-                            (context) => Dialog(
-                              shape: const RoundedRectangleBorder(),
-                              elevation: 0,
-                              backgroundColor: Colors.transparent,
-                              child: Container(
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  color: AppColors.white,
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                    vertical: 15,
+                        builder: (context) => Dialog(
+                          shape: const RoundedRectangleBorder(),
+                          elevation: 0,
+                          backgroundColor: Colors.transparent,
+                          child: Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: AppColors.white,
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 15,
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  addVerticalSpacing(4),
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: IconButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop(false);
+                                      },
+                                      icon: Icon(
+                                        Icons.close,
+                                        color: AppColors.primary,
+                                      ),
+                                    ),
                                   ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      addVerticalSpacing(4),
-                                      Align(
-                                        alignment: Alignment.centerRight,
-                                        child: IconButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop(false);
-                                          },
-                                          icon: Icon(
-                                            Icons.close,
-                                            color: AppColors.primary,
-                                          ),
-                                        ),
-                                      ),
-                                      Image.asset(
-                                        "assets/images/logout_icon.png",
-                                        height: 100,
-                                        width: 100,
-                                      ),
-                                      addVerticalSpacing(4),
-                                      Text(
-                                        'Do You want to log out?',
-                                        style: TextStyle(
-                                          color: AppColors.black,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: "Inter",
-                                          fontSize: 20.textSize,
-                                        ),
-                                      ),
-                                      addVerticalSpacing(10),
-                                      AppButton(
-                                        text: "Log Out",
-                                        onPressed: () {
-                                          ref
-                                              .read(accountProvider.notifier)
-                                              .handleSignOut();
-                                          navigateAndRemoveUntilRoute(
-                                            context,
-                                            const LoginScreens(),
-                                          );
-                                        },
-                                        widthPercent: 70,
-                                        heightPercent: 5,
-                                        btnColor: AppColors.primary,
-                                        isLoading: false,
-                                      ),
-                                      addVerticalSpacing(4),
-                                    ],
+                                  Image.asset(
+                                    "assets/images/logout_icon.png",
+                                    height: 100,
+                                    width: 100,
                                   ),
-                                ),
+                                  addVerticalSpacing(4),
+                                  Text(
+                                    'Do You want to log out?',
+                                    style: TextStyle(
+                                      color: AppColors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Inter",
+                                      fontSize: 20.textSize,
+                                    ),
+                                  ),
+                                  addVerticalSpacing(10),
+                                  AppButton(
+                                    text: "Log Out",
+                                    onPressed: () {
+                                      ref
+                                          .read(accountProvider.notifier)
+                                          .handleSignOut();
+                                      navigateAndRemoveUntilRoute(
+                                        context,
+                                        const LoginScreens(),
+                                      );
+                                    },
+                                    widthPercent: 70,
+                                    heightPercent: 5,
+                                    btnColor: AppColors.primary,
+                                    isLoading: false,
+                                  ),
+                                  addVerticalSpacing(4),
+                                ],
                               ),
                             ),
+                          ),
+                        ),
                       );
                     },
                   ),

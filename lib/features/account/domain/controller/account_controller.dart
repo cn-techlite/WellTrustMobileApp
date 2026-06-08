@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:ginilog_customer_app/core/utils/constants.dart';
-import 'package:ginilog_customer_app/core/utils/package_export.dart';
-import 'package:ginilog_customer_app/features/account/domain/usercases/account_repository.dart';
-import 'package:ginilog_customer_app/features/account/presentation/state/provider/account_provider.dart';
-import 'package:ginilog_customer_app/features/account/states/account_provider.dart';
-import 'package:ginilog_customer_app/shared/model/response_result_model.dart';
+import 'package:well_trust_mobile_app/core/utils/constants.dart';
+import 'package:well_trust_mobile_app/core/utils/package_export.dart';
+import 'package:well_trust_mobile_app/features/account/domain/usercases/account_repository.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/state/provider/account_provider.dart';
+import 'package:well_trust_mobile_app/features/account/states/account_provider.dart';
+import 'package:well_trust_mobile_app/shared/model/response_result_model.dart';
 
 class AccountController extends AsyncNotifier<AccountStateModel> {
   late final AccountRepository _repository;
@@ -277,8 +277,6 @@ class AccountController extends AsyncNotifier<AccountStateModel> {
     removeFromLocalStorage(name: "address");
     removeFromLocalStorage(name: "latitude");
     removeFromLocalStorage(name: "longitude");
-
-    await GoogleSignIn.instance.signOut();
 
     state = const AsyncData(AccountStateModel());
   }

@@ -24,4 +24,20 @@ class AppColors {
   static const Color red = Color(0xFF250452);
   static const Color darkBlue = Color(0xFF250452);
   static const Color blue = Color(0xff418BFA);
+  static const bg = Color(0xFFF5F2EC);
+  static const surface = Color(0xFFFBF9F4);
+  static const cream = Color(0xFFEDE6D3);
+  static const ink = Color(0xFF1A1D1A);
+  static const ink2 = Color(0xFF44483F);
+  static const muted = Color(0xFF8A8578);
+  static const line = Color(0xFFE4DDCD);
+  static const line2 = Color(0xFFD2C9B4);
+  static const navy = Color(0xFF1E3A6F);
+  static const navyDeep = Color(0xFF122548);
+  static const navyDeepest = Color(0xFF0A1530);
+  static const gold = Color(0xFFB8924F);
+  static const goldDeep = Color(0xFF8C6A25);
+  static const rose = Color(0xFFB85048);
+  static const sage = Color(0xFF5D7A58);
+  static const amber = Color(0xFFC97B3F);
 }

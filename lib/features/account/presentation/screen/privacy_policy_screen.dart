@@ -1,10 +1,10 @@
 // ignore_for_file: library_private_types_in_public_api
 
-import 'package:ginilog_customer_app/core/utils/colors.dart';
-import 'package:ginilog_customer_app/core/utils/package_export.dart';
-import 'package:ginilog_customer_app/core/utils/size_config.dart';
-import 'package:ginilog_customer_app/shared/widgets/app_text.dart';
-import 'package:ginilog_customer_app/shared/widgets/back_icon.dart';
+import 'package:well_trust_mobile_app/core/utils/colors.dart';
+import 'package:well_trust_mobile_app/core/utils/package_export.dart';
+import 'package:well_trust_mobile_app/core/utils/size_config.dart';
+import 'package:well_trust_mobile_app/shared/widgets/app_text.dart';
+import 'package:well_trust_mobile_app/shared/widgets/back_icon.dart';
 
 class PrivacyPolicyScreen extends StatefulWidget {
   const PrivacyPolicyScreen({super.key});
@@ -74,7 +74,10 @@ class _LoginPageState extends State<PrivacyPolicyScreen> {
             fontSize: 15.textSize,
             fontFamily: "Inter",
           ),
-          children: [TextSpan(text: "• "), TextSpan(text: text)],
+          children: [
+            TextSpan(text: "• "),
+            TextSpan(text: text),
+          ],
         ),
       ),
     );
@@ -176,10 +179,9 @@ class _LoginPageState extends State<PrivacyPolicyScreen> {
               padding: EdgeInsets.only(left: 10.0, right: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children:
-                    personalInformation
-                        .map((item) => _buildBulletPoint(item))
-                        .toList(),
+                children: personalInformation
+                    .map((item) => _buildBulletPoint(item))
+                    .toList(),
               ),
             ),
             addVerticalSpacing(5),
@@ -210,10 +212,9 @@ class _LoginPageState extends State<PrivacyPolicyScreen> {
               padding: EdgeInsets.only(left: 10.0, right: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children:
-                    nonPersonalInformation
-                        .map((item) => _buildBulletPoint(item))
-                        .toList(),
+                children: nonPersonalInformation
+                    .map((item) => _buildBulletPoint(item))
+                    .toList(),
               ),
             ),
             addVerticalSpacing(5),
@@ -244,10 +245,9 @@ class _LoginPageState extends State<PrivacyPolicyScreen> {
               padding: EdgeInsets.only(left: 10.0, right: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children:
-                    usingInformation
-                        .map((item) => _buildBulletPoint(item))
-                        .toList(),
+                children: usingInformation
+                    .map((item) => _buildBulletPoint(item))
+                    .toList(),
               ),
             ),
             addVerticalSpacing(5),
@@ -278,10 +278,9 @@ class _LoginPageState extends State<PrivacyPolicyScreen> {
               padding: EdgeInsets.only(left: 10.0, right: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children:
-                    shareInformation
-                        .map((item) => _buildBulletPoint(item))
-                        .toList(),
+                children: shareInformation
+                    .map((item) => _buildBulletPoint(item))
+                    .toList(),
               ),
             ),
             addVerticalSpacing(5),
@@ -312,10 +311,9 @@ class _LoginPageState extends State<PrivacyPolicyScreen> {
               padding: EdgeInsets.only(left: 10.0, right: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children:
-                    rightAndChoices
-                        .map((item) => _buildBulletPoint(item))
-                        .toList(),
+                children: rightAndChoices
+                    .map((item) => _buildBulletPoint(item))
+                    .toList(),
               ),
             ),
             addVerticalSpacing(5),

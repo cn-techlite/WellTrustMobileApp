@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:ginilog_customer_app/core/utils/package_export.dart';
+import 'package:well_trust_mobile_app/core/utils/package_export.dart';
 
 enum ConnectivityStatus { notDetermined, isConnected, isDisconnected }
 
@@ -29,10 +29,9 @@ class ConnectivityNotifier extends AsyncNotifier<ConnectivityStatus> {
           result == ConnectivityResult.vpn,
     );
 
-    final initialStatus =
-        hasConnection
-            ? ConnectivityStatus.isConnected
-            : ConnectivityStatus.isDisconnected;
+    final initialStatus = hasConnection
+        ? ConnectivityStatus.isConnected
+        : ConnectivityStatus.isDisconnected;
 
     // ✅ Start listening AFTER initial value
     _listenToConnectivity();
@@ -52,10 +51,9 @@ class ConnectivityNotifier extends AsyncNotifier<ConnectivityStatus> {
             result == ConnectivityResult.vpn,
       );
 
-      final newStatus =
-          hasConnection
-              ? ConnectivityStatus.isConnected
-              : ConnectivityStatus.isDisconnected;
+      final newStatus = hasConnection
+          ? ConnectivityStatus.isConnected
+          : ConnectivityStatus.isDisconnected;
 
       // Only update if changed
       if (state.value != newStatus) {

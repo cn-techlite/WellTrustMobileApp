@@ -1,4 +1,4 @@
-import 'package:ginilog_customer_app/core/helpers/globals.dart';
+import 'package:well_trust_mobile_app/core/helpers/globals.dart';
 
 class AuthSessionService {
   Future<void> initialize() async {

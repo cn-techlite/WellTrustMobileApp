@@ -1,10 +1,10 @@
 //AdvertExplore
 import 'dart:async';
 
-import 'package:ginilog_customer_app/core/utils/package_export.dart';
-import 'package:ginilog_customer_app/features/home/domain/usecases/home_repository.dart';
-import 'package:ginilog_customer_app/features/home/presentation/state/provider/home_provider.dart';
-import 'package:ginilog_customer_app/features/home/presentation/state/state_model/advert_state.dart';
+import 'package:well_trust_mobile_app/core/utils/package_export.dart';
+import 'package:well_trust_mobile_app/features/home/domain/usecases/home_repository.dart';
+import 'package:well_trust_mobile_app/features/home/presentation/state/provider/home_provider.dart';
+import 'package:well_trust_mobile_app/features/home/presentation/state/state_model/advert_state.dart';
 
 class AdvertController extends AsyncNotifier<AdvertStateModel> {
   late final HomeRepository _home;

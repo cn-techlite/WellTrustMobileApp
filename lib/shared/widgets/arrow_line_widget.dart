@@ -1,7 +1,7 @@
 // CustomPainter for horizontal line with arrow
 import 'dart:math';
 
-import 'package:ginilog_customer_app/core/utils/package_export.dart';
+import 'package:well_trust_mobile_app/core/utils/package_export.dart';
 
 class ArrowPainter extends CustomPainter {
   final bool isArrowAtStart;
@@ -25,8 +25,9 @@ class ArrowPainter extends CustomPainter {
     canvas.drawLine(Offset(startX, centerY), Offset(endX, centerY), paint);
 
     // Draw arrow at start (←) or at end (→)
-    Offset arrowTip =
-        isArrowAtStart ? Offset(startX, centerY) : Offset(endX, centerY);
+    Offset arrowTip = isArrowAtStart
+        ? Offset(startX, centerY)
+        : Offset(endX, centerY);
     Offset arrowLeft = Offset(
       arrowTip.dx +
           (isArrowAtStart ? arrowSize * cos(angle) : -arrowSize * cos(angle)),

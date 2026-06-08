@@ -1,12 +1,12 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:ginilog_customer_app/core/constants/api_constants.dart';
-import 'package:ginilog_customer_app/features/auth/data/service/auth_local_storage_service.dart';
-import 'package:ginilog_customer_app/features/auth/domain/usercases/auth_repository.dart';
-import 'package:ginilog_customer_app/shared/state/connectivity_state.dart';
-import 'package:ginilog_customer_app/shared/state/theme_state.dart';
-import 'package:ginilog_customer_app/core/utils/constants.dart';
-import 'package:ginilog_customer_app/core/utils/size_config.dart';
+import 'package:well_trust_mobile_app/core/constants/api_constants.dart';
+import 'package:well_trust_mobile_app/features/auth/data/service/auth_local_storage_service.dart';
+import 'package:well_trust_mobile_app/features/auth/domain/usercases/auth_repository.dart';
+import 'package:well_trust_mobile_app/shared/state/connectivity_state.dart';
+import 'package:well_trust_mobile_app/shared/state/theme_state.dart';
+import 'package:well_trust_mobile_app/core/utils/constants.dart';
+import 'package:well_trust_mobile_app/core/utils/size_config.dart';
 import 'package:geolocator/geolocator.dart';
 
 import 'core/helpers/globals.dart';
@@ -34,13 +34,13 @@ void main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-  await Firebase.initializeApp();
-  await GoogleSignIn.instance.initialize();
+  // await Firebase.initializeApp();
   getIt.registerLazySingleton<AppGlobals>(() => AppGlobals());
   await setupLocator();
-  await FirebaseMessaging.instance.getInitialMessage();
-  await _pushMessagingNotification.initialize();
-  //Handle Push Notification when app is in background and when app is terminated
+  // await FirebaseMessaging.instance.getInitialMessage();
+  //  await _pushMessagingNotification.initialize();
+
+  //!Handle Push Notification when app is in background and when app is terminated
   FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
 
   await globals.init();
@@ -49,19 +49,23 @@ void main() async {
   final navigatorKey = GlobalKey<NavigatorState>();
   String? route = await initialRoute();
 
-  runApp(ProviderScope(child: MyApp(route: route, navigatorKey: navigatorKey)));
+  runApp(
+    ProviderScope(
+      child: MyApp(route: route, navigatorKey: navigatorKey),
+    ),
+  );
 }
 
 Future<void> _refreshSessionOnAppOpen() async {
   final hasAnySavedSession =
-      globals.userId!.isNotEmpty ||
-      globals.token!.isNotEmpty ||
+      globals.userId.isNotEmpty ||
+      globals.token.isNotEmpty ||
       globals.refreshToken.isNotEmpty;
 
   if (!hasAnySavedSession) return;
 
   final canRefresh =
-      globals.userEmail!.trim().isNotEmpty &&
+      globals.userEmail.trim().isNotEmpty &&
       globals.refreshToken.trim().isNotEmpty;
 
   final localStorageService = getIt<AuthLocalStorageService>();
@@ -218,7 +222,7 @@ class _MyAppState extends ConsumerState<MyApp> {
               SizeConfig.init(context);
               return MaterialApp(
                 debugShowCheckedModeBanner: false,
-                title: 'Ginilog',
+                title: 'WellTrust Staff',
                 themeMode: themeMode,
                 theme: ThemeData.light(), // Light theme
                 darkTheme: ThemeData.dark(), // Dark theme

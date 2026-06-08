@@ -1,14 +1,14 @@
-import 'package:ginilog_customer_app/core/utils/app_buttons.dart';
-import 'package:ginilog_customer_app/core/utils/colors.dart';
-import 'package:ginilog_customer_app/core/utils/helper_functions.dart';
-import 'package:ginilog_customer_app/core/utils/size_config.dart';
-import 'package:ginilog_customer_app/features/auth/presentation/screen/forgot_password_code.dart';
-import 'package:ginilog_customer_app/features/auth/presentation/screen/logins.dart';
-import 'package:ginilog_customer_app/features/auth/presentation/state/providers/auth_provider.dart';
-import 'package:ginilog_customer_app/shared/widgets/app_text.dart';
-import 'package:ginilog_customer_app/shared/widgets/back_icon.dart';
-import 'package:ginilog_customer_app/shared/widgets/custom_snackbar.dart';
-import 'package:ginilog_customer_app/shared/widgets/input.dart';
+import 'package:well_trust_mobile_app/core/utils/app_buttons.dart';
+import 'package:well_trust_mobile_app/core/utils/colors.dart';
+import 'package:well_trust_mobile_app/core/utils/helper_functions.dart';
+import 'package:well_trust_mobile_app/core/utils/size_config.dart';
+import 'package:well_trust_mobile_app/features/auth/presentation/screen/forgot_password_code.dart';
+import 'package:well_trust_mobile_app/features/auth/presentation/screen/logins.dart';
+import 'package:well_trust_mobile_app/features/auth/presentation/state/providers/auth_provider.dart';
+import 'package:well_trust_mobile_app/shared/widgets/app_text.dart';
+import 'package:well_trust_mobile_app/shared/widgets/back_icon.dart';
+import 'package:well_trust_mobile_app/shared/widgets/custom_snackbar.dart';
+import 'package:well_trust_mobile_app/shared/widgets/input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -126,21 +126,21 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                       addVerticalSpacing(5),
                       canSubmit
                           ? AppButton(
-                            text: "Send OTP",
-                            onPressed: isLoading ? null : onSubmit,
-                            widthPercent: 100,
-                            heightPercent: 6,
-                            btnColor: AppColors.primary,
-                            isLoading: isLoading,
-                          )
+                              text: "Send OTP",
+                              onPressed: isLoading ? null : onSubmit,
+                              widthPercent: 100,
+                              heightPercent: 6,
+                              btnColor: AppColors.primary,
+                              isLoading: isLoading,
+                            )
                           : AppButton(
-                            text: "Send OTP",
-                            onPressed: () {},
-                            widthPercent: 100,
-                            heightPercent: 6,
-                            btnColor: AppColors.grey,
-                            isLoading: false,
-                          ),
+                              text: "Send OTP",
+                              onPressed: () {},
+                              widthPercent: 100,
+                              heightPercent: 6,
+                              btnColor: AppColors.grey,
+                              isLoading: false,
+                            ),
                       addVerticalSpacing(5),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,

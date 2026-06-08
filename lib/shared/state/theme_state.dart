@@ -1,5 +1,5 @@
 // Notifier to manage theme state
-import 'package:ginilog_customer_app/core/utils/package_export.dart';
+import 'package:well_trust_mobile_app/core/utils/package_export.dart';
 
 class ThemeNotifier extends Notifier<ThemeMode> {
   @override

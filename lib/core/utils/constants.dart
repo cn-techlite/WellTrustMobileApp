@@ -51,7 +51,7 @@ class FormUtils {
 }
 
 //
-void printData(identifier, data) {
+void printData(String identifier, data) {
   return log('===> $identifier <=== $data');
 }
 

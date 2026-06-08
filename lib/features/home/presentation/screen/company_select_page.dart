@@ -1,9 +1,9 @@
 // ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
 
-import 'package:ginilog_customer_app/features/home/presentation/state/provider/home_provider.dart';
-import 'package:ginilog_customer_app/features/home/presentation/state/state_model/logistic_state.dart';
-import 'package:ginilog_customer_app/shared/widgets/app_text.dart';
-import 'package:ginilog_customer_app/features/home/presentation/widget/region_search_widget.dart';
+import 'package:well_trust_mobile_app/features/home/presentation/state/provider/home_provider.dart';
+import 'package:well_trust_mobile_app/features/home/presentation/state/state_model/logistic_state.dart';
+import 'package:well_trust_mobile_app/shared/widgets/app_text.dart';
+import 'package:well_trust_mobile_app/features/home/presentation/widget/region_search_widget.dart';
 
 import '../../../../core/utils/colors.dart';
 import '../../../../core/utils/package_export.dart';
@@ -86,97 +86,92 @@ class _CompanySelectPageState extends ConsumerState<CompanySelectPage> {
         ),
       ),
       body: SafeArea(
-        child:
-            isFirstLoading
-                ? Center(
-                  child: CircularProgressIndicator(
-                    color: AppColors.primary,
-                    strokeWidth: 2,
-                  ),
-                )
-                : RefreshIndicator(
-                  onRefresh: notifier.refreshList,
-                  child:
-                      logistics.isEmpty
-                          ? ListView(
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            children: const [
-                              SizedBox(height: 120),
-                              Center(
-                                child: AppText(
-                                  text: "No company found",
-                                  textAlign: TextAlign.center,
-
-                                  color: AppColors.black,
-
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          )
-                          : ListView.separated(
-                            controller: _scrollController,
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            itemCount:
-                                logistics.length + (data.isLoadingMore ? 1 : 0),
-                            separatorBuilder:
-                                (context, index) => const Divider(),
-                            itemBuilder: (context, index) {
-                              if (index >= logistics.length) {
-                                return const Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 20),
-                                  child: Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                );
-                              }
-
-                              final logistic = logistics[index];
-
-                              return ListTile(
-                                leading: CircleAvatar(
-                                  backgroundColor: AppColors.grey,
-                                  backgroundImage:
-                                      logistic.companyLogo == null ||
-                                              logistic.companyLogo!.isEmpty
-                                          ? null
-                                          : NetworkImage(logistic.companyLogo!),
-                                  child:
-                                      logistic.companyLogo == null ||
-                                              logistic.companyLogo!.isEmpty
-                                          ? const Icon(Icons.business)
-                                          : null,
-                                ),
-                                title: AppText(
-                                  text: logistic.companyName ?? "",
-                                  textAlign: TextAlign.start,
-
-                                  color: AppColors.black.withAlpha(162),
-
-                                  fontWeight: FontWeight.w800,
-                                ),
-                                subtitle: AppText(
-                                  text: logistic.companyInfo ?? "",
-                                  textAlign: TextAlign.start,
-
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 3,
-                                  color: AppColors.black.withValues(alpha: 0.4),
-
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                trailing: const Icon(
-                                  Icons.arrow_forward_ios,
-                                  color: Colors.grey,
-                                  size: 18,
-                                ),
-                                onTap: () {
-                                  Navigator.pop(context, logistic);
-                                },
-                              );
-                            },
-                          ),
+        child: isFirstLoading
+            ? Center(
+                child: CircularProgressIndicator(
+                  color: AppColors.primary,
+                  strokeWidth: 2,
                 ),
+              )
+            : RefreshIndicator(
+                onRefresh: notifier.refreshList,
+                child: logistics.isEmpty
+                    ? ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        children: const [
+                          SizedBox(height: 120),
+                          Center(
+                            child: AppText(
+                              text: "No company found",
+                              textAlign: TextAlign.center,
+
+                              color: AppColors.black,
+
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      )
+                    : ListView.separated(
+                        controller: _scrollController,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        itemCount:
+                            logistics.length + (data.isLoadingMore ? 1 : 0),
+                        separatorBuilder: (context, index) => const Divider(),
+                        itemBuilder: (context, index) {
+                          if (index >= logistics.length) {
+                            return const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 20),
+                              child: Center(child: CircularProgressIndicator()),
+                            );
+                          }
+
+                          final logistic = logistics[index];
+
+                          return ListTile(
+                            leading: CircleAvatar(
+                              backgroundColor: AppColors.grey,
+                              backgroundImage:
+                                  logistic.companyLogo == null ||
+                                      logistic.companyLogo!.isEmpty
+                                  ? null
+                                  : NetworkImage(logistic.companyLogo!),
+                              child:
+                                  logistic.companyLogo == null ||
+                                      logistic.companyLogo!.isEmpty
+                                  ? const Icon(Icons.business)
+                                  : null,
+                            ),
+                            title: AppText(
+                              text: logistic.companyName ?? "",
+                              textAlign: TextAlign.start,
+
+                              color: AppColors.black.withAlpha(162),
+
+                              fontWeight: FontWeight.w800,
+                            ),
+                            subtitle: AppText(
+                              text: logistic.companyInfo ?? "",
+                              textAlign: TextAlign.start,
+
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 3,
+                              color: AppColors.black.withValues(alpha: 0.4),
+
+                              fontWeight: FontWeight.w500,
+                            ),
+                            trailing: const Icon(
+                              Icons.arrow_forward_ios,
+                              color: Colors.grey,
+                              size: 18,
+                            ),
+                            onTap: () {
+                              Navigator.pop(context, logistic);
+                            },
+                          );
+                        },
+                      ),
+              ),
       ),
     );
   }

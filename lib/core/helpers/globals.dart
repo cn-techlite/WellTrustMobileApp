@@ -1,10 +1,9 @@
-import 'package:ginilog_customer_app/core/constants/api_constants.dart';
-import 'package:ginilog_customer_app/features/auth/data/repository/auth_repository_impl.dart';
-import 'package:ginilog_customer_app/features/auth/data/service/auth_local_storage_service.dart';
-import 'package:ginilog_customer_app/features/auth/data/service/auth_remote_service.dart';
-import 'package:ginilog_customer_app/features/auth/data/service/auth_session_service.dart';
-import 'package:ginilog_customer_app/features/auth/data/service/social_auth_service.dart';
-import 'package:ginilog_customer_app/features/auth/domain/usercases/auth_repository.dart';
+import 'package:well_trust_mobile_app/core/constants/api_constants.dart';
+import 'package:well_trust_mobile_app/features/auth/data/repository/auth_repository_impl.dart';
+import 'package:well_trust_mobile_app/features/auth/data/service/auth_local_storage_service.dart';
+import 'package:well_trust_mobile_app/features/auth/data/service/auth_remote_service.dart';
+import 'package:well_trust_mobile_app/features/auth/data/service/auth_session_service.dart';
+import 'package:well_trust_mobile_app/features/auth/domain/usercases/auth_repository.dart';
 
 import '../utils/constants.dart';
 import '../utils/package_export.dart';
@@ -114,9 +113,7 @@ Future<void> setupLocator() async {
     getIt.registerLazySingleton<AuthRemoteService>(() => AuthRemoteService());
   }
 
-  if (!getIt.isRegistered<SocialAuthService>()) {
-    getIt.registerLazySingleton<SocialAuthService>(() => SocialAuthService());
-  }
+
 
   if (!getIt.isRegistered<AuthSessionService>()) {
     getIt.registerLazySingleton<AuthSessionService>(() => AuthSessionService());
@@ -126,7 +123,6 @@ Future<void> setupLocator() async {
     getIt.registerLazySingleton<AuthRepository>(
       () => AuthRepositoryImpl(
         remoteService: getIt<AuthRemoteService>(),
-        socialAuthService: getIt<SocialAuthService>(),
         localStorageService: getIt<AuthLocalStorageService>(),
         sessionService: getIt<AuthSessionService>(),
       ),
