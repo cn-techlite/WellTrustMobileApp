@@ -1,40 +1,21 @@
-import 'package:well_trust_mobile_app/features/account/data/model/user_response_model.dart';
+import 'package:well_trust_mobile_app/core/utils/package_export.dart';
+import 'package:well_trust_mobile_app/features/account/data/repository/account_repository_impl.dart';
+import 'package:well_trust_mobile_app/features/account/data/services/account_remote_services.dart';
+import 'package:well_trust_mobile_app/features/account/domain/controller/account_controller.dart';
+import 'package:well_trust_mobile_app/features/account/domain/usercases/account_repository.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/state/state_model/account_state_model.dart';
 
-class AccountStateModel {
-  final RegisterResponseModel? userData;
+final _accountRemoteServiceProvider = Provider<AccountRemoteService>((ref) {
+  return AccountRemoteService();
+});
 
-  final bool hasFetchedAccount;
-  final int accountVisitCount;
+final accountRepositoryProvider = Provider<AccountRepository>((ref) {
+  return AccountRepositoryImpl(ref.read(_accountRemoteServiceProvider));
+});
 
-  final String? error;
-  final String? successMessage;
+//!Account Provider
 
-  const AccountStateModel({
-    this.userData,
-    this.hasFetchedAccount = false,
-    this.accountVisitCount = 0,
-
-    this.error,
-    this.successMessage,
-  });
-
-  AccountStateModel copyWith({
-    RegisterResponseModel? userData,
-
-    bool? hasFetchedAccount,
-    int? accountVisitCount,
-
-    String? error,
-    String? successMessage,
-  }) {
-    return AccountStateModel(
-      userData: userData ?? this.userData,
-
-      hasFetchedAccount: hasFetchedAccount ?? this.hasFetchedAccount,
-      accountVisitCount: accountVisitCount ?? this.accountVisitCount,
-
-      error: error ?? this.error,
-      successMessage: successMessage ?? this.successMessage,
+final accountControllerProvider =
+    AsyncNotifierProvider<AccountController, AccountStateModel>(
+      AccountController.new,
     );
-  }
-}

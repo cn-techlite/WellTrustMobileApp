@@ -6,7 +6,7 @@ import 'package:well_trust_mobile_app/core/utils/colors.dart';
 import 'package:well_trust_mobile_app/core/utils/package_export.dart';
 import 'package:well_trust_mobile_app/core/utils/size_config.dart';
 import 'package:well_trust_mobile_app/features/account/data/model/user_response_model.dart';
-import 'package:well_trust_mobile_app/features/account/states/account_provider.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/state/provider/account_provider.dart';
 import 'package:well_trust_mobile_app/shared/widgets/app_text.dart';
 import 'package:well_trust_mobile_app/shared/widgets/back_icon.dart';
 import 'package:well_trust_mobile_app/shared/widgets/custom_snackbar.dart';
@@ -41,7 +41,7 @@ class _AccountDetailsPageState extends ConsumerState<AccountDetailsPage> {
     super.initState();
 
     Future.microtask(() {
-      ref.read(accountProvider.notifier).getAccount();
+      ref.read(accountControllerProvider.notifier).getAccount();
     });
   }
 
@@ -69,7 +69,7 @@ class _AccountDetailsPageState extends ConsumerState<AccountDetailsPage> {
       final imageUrl = await ApiService.upload(image.path);
 
       final response = await ref
-          .read(accountProvider.notifier)
+          .read(accountControllerProvider.notifier)
           .updateProfile(
             firstName: user.firstName ?? "",
             lastName: user.lastName ?? "",
@@ -128,7 +128,7 @@ class _AccountDetailsPageState extends ConsumerState<AccountDetailsPage> {
     });
 
     final response = await ref
-        .read(accountProvider.notifier)
+        .read(accountControllerProvider.notifier)
         .updateProfile(
           firstName: _firstName.text.trim(),
           lastName: _lastName.text.trim(),
@@ -367,7 +367,7 @@ class _AccountDetailsPageState extends ConsumerState<AccountDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final accountAsync = ref.watch(accountProvider);
+    final accountAsync = ref.watch(accountControllerProvider);
     final account = accountAsync.value;
     final user = account?.userData;
 
@@ -390,7 +390,7 @@ class _AccountDetailsPageState extends ConsumerState<AccountDetailsPage> {
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {
-            await ref.read(accountProvider.notifier).refreshAccount();
+            await ref.read(accountControllerProvider.notifier).refreshAccount();
             _hasFilledFields = false;
           },
           child: isLoading

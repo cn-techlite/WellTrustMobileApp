@@ -6,140 +6,109 @@ import 'package:well_trust_mobile_app/core/utils/size_config.dart';
 import 'package:well_trust_mobile_app/shared/widgets/app_text.dart';
 import '../../core/utils/colors.dart';
 
-class SerachInput extends StatelessWidget {
-  final String? hintText;
-  final String? Function(String?)? validator;
-  final Function(String?)? onSaved;
-  final Function(String?)? onChanged;
-  final Function? toggleEye;
-  final TextInputType? keyboard;
-  final String? init;
-  final bool isPassword;
-  final bool readOnly;
-  final Color? isPasswordColor;
-  //final bool showObscureText;
-  final bool obscureText;
-  final Color? styleColor;
-  final Color? hintStyleColor;
-  final bool enable;
-  final String? labelText;
-  final String? errorText;
-  final dynamic maxLines;
-  final Color? borderColor;
-  final Color? fillColor;
-  final Color? hintColor;
-  final Color? textColor;
-  final Color? labelColor;
-  final String? inputIcon;
-  final Widget? prefix;
-  final Widget? suffix;
-  final Key? key;
-  final IconData? prefixIcon;
-  final TextEditingController? controller;
-  //final List<TextInputFormatter> inputFormatters;
-  final FocusNode? focusNode;
-  //final bool alignLabelWithHint;
-  final FloatingLabelBehavior? floatingLabelBehavior;
-  final Function onTap;
-  final double? borderRadius;
+class SearchWidget extends StatefulWidget {
+  final String text;
+  final ValueChanged<String> onChanged;
+  final String hintText;
 
-  const SerachInput({
-    this.hintText,
-    this.labelColor,
-    this.fillColor,
-    this.textColor,
-    this.borderRadius,
-    this.validator,
-    this.hintColor,
-    required this.onSaved,
-    required this.toggleEye,
-    this.init,
-    this.isPassword = false,
-    this.readOnly = false,
-    this.isPasswordColor,
-    //this.showObscureText,
-    this.obscureText = false,
-    this.keyboard,
-    this.styleColor,
-    this.hintStyleColor,
-    this.enable = true,
-    this.labelText,
-    this.maxLines = 1,
-    this.borderColor = Colors.white,
+  const SearchWidget({
+    super.key,
+    required this.text,
     required this.onChanged,
-    this.prefix,
-    this.suffix,
-    this.key,
-    this.controller,
-    this.focusNode,
-    this.prefixIcon,
-
-    ///this.alignLabelWithHint,
-    this.floatingLabelBehavior,
-    required this.onTap,
-    this.errorText,
-    this.inputIcon,
+    required this.hintText,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      cursorColor: AppColors.white,
-      focusNode: focusNode,
-      onTap: onTap as void Function()?,
-      keyboardType: keyboard,
-      controller: controller,
-      key: key,
-      enabled: enable,
-      onSaved: onSaved!,
-      onChanged: onChanged!,
-      validator: validator!,
-      obscureText: obscureText,
-      initialValue: init,
-      readOnly: readOnly,
-      style: TextStyle(
-        color: styleColor ?? AppColors.white,
-        fontSize: 25.textSize,
-      ),
-      decoration: InputDecoration(
-        prefixIcon: prefix,
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5),
-          borderSide: BorderSide(color: Colors.grey, width: 1.0),
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5),
-          borderSide: const BorderSide(color: AppColors.black),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5),
-          borderSide: BorderSide(color: Colors.red, width: 2.0),
-        ),
+  State<SearchWidget> createState() => _SearchWidgetState();
+}
 
-        fillColor: !enable
-            ? fillColor ?? Color(0xFFeeeeee)
-            : fillColor ?? Colors.transparent,
-        // fillColor: Colors.white,
-        filled: false,
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5),
-          borderSide: BorderSide(color: Colors.grey, width: 2.0),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5),
-          borderSide: BorderSide(color: AppColors.grey, width: 2.0),
-        ),
-        hintText: hintText,
-        hintStyle: TextStyle(
-          color: hintStyleColor ?? Colors.white,
-          fontSize: 14,
-        ),
+class _SearchWidgetState extends State<SearchWidget> {
+  late final TextEditingController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = TextEditingController(text: widget.text);
+  }
+
+  @override
+  void didUpdateWidget(covariant SearchWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.text != widget.text && controller.text != widget.text) {
+      controller.text = widget.text;
+      controller.selection = TextSelection.fromPosition(
+        TextPosition(offset: controller.text.length),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    const borderColor = Color(0xffE2D8C7);
+    const hintColor = Color(0xff8E8A82);
+
+    return Container(
+      height: 6.heightAdjusted,
+      // margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: borderColor, width: 1.4),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.search, color: hintColor, size: 24),
+
+          const SizedBox(width: 10),
+
+          Expanded(
+            child: TextField(
+              controller: controller,
+              onChanged: widget.onChanged,
+              cursorColor: AppColors.black,
+              style: const TextStyle(
+                color: AppColors.black,
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+              ),
+              decoration: InputDecoration(
+                hintText: widget.hintText,
+                hintStyle: const TextStyle(
+                  color: hintColor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                ),
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                isDense: true,
+                contentPadding: EdgeInsets.zero,
+              ),
+            ),
+          ),
+
+          if (widget.text.isNotEmpty)
+            GestureDetector(
+              onTap: () {
+                controller.clear();
+                widget.onChanged('');
+                FocusScope.of(context).unfocus();
+              },
+              child: const Icon(Icons.close, color: hintColor, size: 24),
+            ),
+        ],
       ),
     );
   }
 }
-
-enum KeyboardType { NUMBER, TEXT, EMAIL, PHONE }
 
 class GlobalTextField extends StatefulWidget {
   final String fieldName;

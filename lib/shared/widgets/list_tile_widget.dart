@@ -37,3 +37,29 @@ class CustomListTile extends StatelessWidget {
     );
   }
 }
+
+class SectionHead extends StatelessWidget {
+  final String title;
+  final Widget? trailing;
+
+  const SectionHead(this.title, {super.key, this.trailing});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Expanded(
+          child: AppText(
+            text: title,
+            textAlign: TextAlign.start,
+            color: AppColors.ink,
+            type: AppTextType.bodyLarge,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        ?trailing,
+      ],
+    );
+  }
+}

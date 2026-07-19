@@ -1,11 +1,14 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
+import 'package:well_trust_mobile_app/core/utils/colors.dart';
 
-void showCustomSnackbar2(BuildContext context,
-    {required String title,
-    required String content,
-    required SnackbarType type}) {
+void showCustomSnackbar2(
+  BuildContext context, {
+  required String title,
+  required String content,
+  required SnackbarType type,
+}) {
   final snackBar = SnackBar(
     backgroundColor: Colors.transparent,
     elevation: 0,
@@ -13,18 +16,23 @@ void showCustomSnackbar2(BuildContext context,
     content: Builder(
       builder: (BuildContext context) {
         return CustomSnackbarContent(
-            title: title, content: content, type: type);
+          title: title,
+          content: content,
+          type: type,
+        );
       },
     ),
   );
   ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }
 
-void showCustomSnackbar(BuildContext context,
-    {required String title,
-    required String content,
-    required SnackbarType type,
-    bool? isTopPosition}) {
+void showCustomSnackbar(
+  BuildContext context, {
+  required String title,
+  required String content,
+  required SnackbarType type,
+  bool? isTopPosition,
+}) {
   if (isTopPosition == true) {
     final overlay = Overlay.of(context);
     final overlayEntry = OverlayEntry(
@@ -52,7 +60,10 @@ void showCustomSnackbar(BuildContext context,
       content: Builder(
         builder: (BuildContext context) {
           return CustomSnackbarContent(
-              title: title, content: content, type: type);
+            title: title,
+            content: content,
+            type: type,
+          );
         },
       ),
     );
@@ -68,12 +79,13 @@ class CustomSnackbarContent extends StatefulWidget {
   final SnackbarType type;
   final bool isTopPosition;
 
-  const CustomSnackbarContent(
-      {super.key,
-      required this.title,
-      required this.content,
-      required this.type,
-      this.isTopPosition = false});
+  const CustomSnackbarContent({
+    super.key,
+    required this.title,
+    required this.content,
+    required this.type,
+    this.isTopPosition = false,
+  });
 
   @override
   _CustomSnackbarContentState createState() => _CustomSnackbarContentState();
@@ -109,15 +121,15 @@ class _CustomSnackbarContentState extends State<CustomSnackbarContent>
       duration: const Duration(milliseconds: 500),
       vsync: this,
     );
-    _offsetAnimation = Tween<Offset>(
-      begin: widget.isTopPosition == true
-          ? const Offset(0.0, -1.0)
-          : const Offset(0.0, 1.0), // From the top
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOut,
-    ));
+    _offsetAnimation =
+        Tween<Offset>(
+          begin: widget.isTopPosition == true
+              ? const Offset(0.0, -1.0)
+              : const Offset(0.0, 1.0), // From the top
+          end: Offset.zero,
+        ).animate(
+          CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+        );
     _animationController.forward();
   }
 
@@ -176,7 +188,9 @@ class _CustomSnackbarContentState extends State<CustomSnackbarContent>
                                   maxLines: 3,
                                   overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
-                                      color: Colors.white, fontSize: 14),
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                  ),
                                 ),
                               ],
                             ),
@@ -222,7 +236,9 @@ class _CustomSnackbarContentState extends State<CustomSnackbarContent>
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
-                              color: Colors.white, fontSize: 14),
+                            color: Colors.white,
+                            fontSize: 14,
+                          ),
                         ),
                       ],
                     ),
@@ -232,4 +248,31 @@ class _CustomSnackbarContentState extends State<CustomSnackbarContent>
             ),
           );
   }
+}
+
+/// Toast → SnackBar.
+void showToast(BuildContext context, String msg, {bool error = false}) {
+  showToastVia(ScaffoldMessenger.of(context), msg, error: error);
+}
+
+/// Variant that takes an already-resolved [ScaffoldMessengerState]. Capture the
+/// messenger with `ScaffoldMessenger.of(context)` BEFORE calling
+/// `Navigator.pop`, then call this afterwards — the messenger outlives the
+/// popped route, so this avoids "looking up a deactivated widget's ancestor".
+void showToastVia(
+  ScaffoldMessengerState messenger,
+  String msg, {
+  bool error = false,
+}) {
+  messenger.clearSnackBars();
+  messenger.showSnackBar(
+    SnackBar(
+      content: Text(msg, style: const TextStyle(color: Colors.white)),
+      backgroundColor: error ? AppColors.rose : AppColors.navyDeep,
+      behavior: SnackBarBehavior.floating,
+      margin: const EdgeInsets.fromLTRB(16, 0, 16, 96),
+      duration: const Duration(seconds: 3),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    ),
+  );
 }

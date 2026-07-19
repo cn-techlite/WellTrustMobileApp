@@ -4,7 +4,7 @@ import 'package:well_trust_mobile_app/core/utils/constants.dart';
 import 'package:well_trust_mobile_app/core/utils/package_export.dart';
 import 'package:well_trust_mobile_app/features/account/domain/usercases/account_repository.dart';
 import 'package:well_trust_mobile_app/features/account/presentation/state/provider/account_provider.dart';
-import 'package:well_trust_mobile_app/features/account/states/account_provider.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/state/state_model/account_state_model.dart';
 import 'package:well_trust_mobile_app/shared/model/response_result_model.dart';
 
 class AccountController extends AsyncNotifier<AccountStateModel> {

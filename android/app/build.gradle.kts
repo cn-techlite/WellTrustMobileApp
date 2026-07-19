@@ -13,6 +13,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        isCoreLibraryDesugaringEnabled = true  // ✅ Enable desugaring
     }
 
     kotlinOptions {
@@ -41,4 +42,15 @@ android {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5") // ✅ Add this
+    implementation("com.google.firebase:firebase-messaging:23.3.1") {
+        exclude(group = "com.google.android.play", module = "core")
+    }
+    implementation ("com.android.support:multidex:1.0.3")
+    implementation ("com.google.android.gms:play-services-auth:21.3.0")
+    implementation ("com.android.support:multidex:1.0.3")
+    implementation("com.google.firebase:firebase-appcheck-playintegrity")
 }

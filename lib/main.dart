@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:well_trust_mobile_app/core/constants/api_constants.dart';
 import 'package:well_trust_mobile_app/features/auth/data/service/auth_local_storage_service.dart';
 import 'package:well_trust_mobile_app/features/auth/domain/usercases/auth_repository.dart';
 import 'package:well_trust_mobile_app/shared/state/connectivity_state.dart';
@@ -21,7 +20,7 @@ import 'package:geolocator/geolocator.dart' as positions;
 final RouteObserver<ModalRoute<void>> routeObserver =
     RouteObserver<ModalRoute<void>>();
 
-final _pushMessagingNotification = getIt<PushNotificationService>();
+//final _pushMessagingNotification = getIt<PushNotificationService>();
 
 Future myBackgroundMessageHandler(RemoteMessage message) async {
   debugPrint("onBackgroundMessage: ${message.notification?.title}");

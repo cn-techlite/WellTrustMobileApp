@@ -4,11 +4,11 @@ import 'dart:ui';
 import 'package:well_trust_mobile_app/core/helpers/globals.dart';
 import 'package:well_trust_mobile_app/core/utils/constants.dart';
 import 'package:well_trust_mobile_app/features/account/presentation/screen/account.dart';
-import 'package:well_trust_mobile_app/features/account/states/account_provider.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/state/provider/account_provider.dart';
 import 'package:well_trust_mobile_app/features/meds/presentation/screen/med_screen.dart';
-import 'package:well_trust_mobile_app/features/visits/presentation/screen/bookings.dart';
+import 'package:well_trust_mobile_app/features/visits/presentation/screen/visit_screen.dart';
 import 'package:well_trust_mobile_app/features/home/presentation/screen/home.dart';
-import 'package:well_trust_mobile_app/features/notes/presentation/screen/order_history.dart';
+import 'package:well_trust_mobile_app/features/notes/presentation/screen/notes_screen.dart';
 import 'package:geolocator/geolocator.dart' as positions;
 import 'package:geolocator/geolocator.dart';
 
@@ -39,7 +39,7 @@ class _NavBarfeaturestate extends ConsumerState<HomeScreenPage>
       _currentIndex = widget.imdex;
     });
     WidgetsBinding.instance.addObserver(this); // Add observer
-    setStatus(true);
+    //  setStatus(true);
   }
 
   @override
@@ -50,7 +50,7 @@ class _NavBarfeaturestate extends ConsumerState<HomeScreenPage>
 
   void setStatus(bool status) async {
     await ref
-        .read(accountProvider.notifier)
+        .read(accountControllerProvider.notifier)
         .updateProfile(
           firstName: "",
           lastName: "",

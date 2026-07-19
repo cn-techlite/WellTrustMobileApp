@@ -2,7 +2,7 @@ import 'package:well_trust_mobile_app/core/utils/app_buttons.dart';
 import 'package:well_trust_mobile_app/core/utils/colors.dart';
 import 'package:well_trust_mobile_app/core/utils/package_export.dart';
 import 'package:well_trust_mobile_app/core/utils/size_config.dart';
-import 'package:well_trust_mobile_app/features/account/states/account_provider.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/state/provider/account_provider.dart';
 import 'package:well_trust_mobile_app/shared/widgets/app_text.dart';
 import 'package:well_trust_mobile_app/shared/widgets/back_icon.dart';
 import 'package:well_trust_mobile_app/shared/widgets/custom_snackbar.dart';
@@ -27,7 +27,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
     super.initState();
 
     Future.microtask(() {
-      ref.read(accountProvider.notifier).getAccount();
+      ref.read(accountControllerProvider.notifier).getAccount();
     });
   }
 
@@ -43,7 +43,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
 
     if (!_formKey.currentState!.validate()) return;
 
-    final accountState = ref.read(accountProvider);
+    final accountState = ref.read(accountControllerProvider);
     final user = accountState.value?.userData;
 
     if (user == null) {
@@ -62,7 +62,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
     });
 
     final response = await ref
-        .read(accountProvider.notifier)
+        .read(accountControllerProvider.notifier)
         .sendFeedBack(
           feedback: _feedback.text.trim(),
           phoneNo: user.phoneNo ?? "",
@@ -99,7 +99,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
 
-    final accountState = ref.watch(accountProvider);
+    final accountState = ref.watch(accountControllerProvider);
     final account = accountState.value;
     final user = account?.userData;
 

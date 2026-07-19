@@ -1,10 +1,9 @@
 // ignore_for_file: strict_top_level_inference, deprecated_member_use
 
+import 'package:well_trust_mobile_app/core/utils/package_export.dart';
 import 'package:well_trust_mobile_app/features/home_screen.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'dart:typed_data';
 
 import '../routes/routers.dart';
 import 'colors.dart';
@@ -177,4 +176,20 @@ String greeting() {
   if (h < 12) return 'Good morning,';
   if (h < 18) return 'Good afternoon,';
   return 'Good evening,';
+}
+
+String greetingWithTime() {
+  final now = DateTime.now();
+
+  String greeting;
+
+  if (now.hour < 12) {
+    greeting = 'Morning';
+  } else if (now.hour < 17) {
+    greeting = 'Afternoon';
+  } else {
+    greeting = 'Evening';
+  }
+
+  return '$greeting · ${DateFormat('HH:mm').format(now)}';
 }

@@ -39,41 +39,34 @@ class RegisterResponseModel {
     this.createdAt,
   });
 
-  factory RegisterResponseModel.fromJson(Map<String, dynamic> json) =>
-      RegisterResponseModel(
-        id: json["id"],
-        firstName: json["firstName"],
-        lastName: json["lastName"],
-        email: json["email"],
-        phoneNo: json["phoneNo"],
-        profilePicture: json["profilePicture"],
-        sex: json["sex"],
-        referralCode: json["referralCode"],
-        userAddress:
-            json["userAddress"] == null
-                ? null
-                : UserAddress.fromJson(json["userAddress"]),
-        deliveryAddresses:
-            json["deliveryAddresses"] == null
-                ? []
-                : List<DeliveryAddress>.from(
-                  json["deliveryAddresses"]!.map(
-                    (x) => DeliveryAddress.fromJson(x),
-                  ),
-                ),
-        deviceTokenModels:
-            json["deviceTokenModels"] == null
-                ? []
-                : List<DeviceTokenModel>.from(
-                  json["deviceTokenModels"]!.map(
-                    (x) => DeviceTokenModel.fromJson(x),
-                  ),
-                ),
-        createdAt:
-            json["createdAt"] == null
-                ? null
-                : DateTime.parse(json["createdAt"]),
-      );
+  factory RegisterResponseModel.fromJson(
+    Map<String, dynamic> json,
+  ) => RegisterResponseModel(
+    id: json["id"],
+    firstName: json["firstName"],
+    lastName: json["lastName"],
+    email: json["email"],
+    phoneNo: json["phoneNo"],
+    profilePicture: json["profilePicture"],
+    sex: json["sex"],
+    referralCode: json["referralCode"],
+    userAddress: json["userAddress"] == null
+        ? null
+        : UserAddress.fromJson(json["userAddress"]),
+    deliveryAddresses: json["deliveryAddresses"] == null
+        ? []
+        : List<DeliveryAddress>.from(
+            json["deliveryAddresses"]!.map((x) => DeliveryAddress.fromJson(x)),
+          ),
+    deviceTokenModels: json["deviceTokenModels"] == null
+        ? []
+        : List<DeviceTokenModel>.from(
+            json["deviceTokenModels"]!.map((x) => DeviceTokenModel.fromJson(x)),
+          ),
+    createdAt: json["createdAt"] == null
+        ? null
+        : DateTime.parse(json["createdAt"]),
+  );
 
   RegisterResponseModel copyWith({
     String? id,
@@ -115,14 +108,12 @@ class RegisterResponseModel {
     "sex": sex,
     "referralCode": referralCode,
     "userAddress": userAddress?.toJson(),
-    "deliveryAddresses":
-        deliveryAddresses == null
-            ? []
-            : List<dynamic>.from(deliveryAddresses!.map((x) => x.toJson())),
-    "deviceTokenModels":
-        deviceTokenModels == null
-            ? []
-            : List<dynamic>.from(deviceTokenModels!.map((x) => x.toJson())),
+    "deliveryAddresses": deliveryAddresses == null
+        ? []
+        : List<dynamic>.from(deliveryAddresses!.map((x) => x.toJson())),
+    "deviceTokenModels": deviceTokenModels == null
+        ? []
+        : List<dynamic>.from(deviceTokenModels!.map((x) => x.toJson())),
     "createdAt": createdAt?.toIso8601String(),
   };
 }
@@ -236,10 +227,9 @@ class DeliveryAddress {
         latitude: json["latitude"],
         longitude: json["longitude"],
         usersDataModelTableId: json["usersDataModelTableId"],
-        createdAt:
-            json["createdAt"] == null
-                ? null
-                : DateTime.parse(json["createdAt"]),
+        createdAt: json["createdAt"] == null
+            ? null
+            : DateTime.parse(json["createdAt"]),
       );
 
   DeliveryAddress copyWith({
@@ -325,4 +315,33 @@ class DeviceTokenModel {
     "userId": userId,
     "userType": userType,
   };
+}
+
+/// The person-centred profile — the differentiator described in the source.
+class SuProfile {
+  final String preferredName;
+  final String aboutMe;
+  final String important;
+  final List<String> likes;
+  final List<String> dislikes;
+  final String communication;
+  final String family;
+  final String spiritual;
+  final String food;
+  final String lastReviewedBy;
+  final String lastReviewedNote;
+
+  const SuProfile({
+    required this.preferredName,
+    required this.aboutMe,
+    required this.important,
+    required this.likes,
+    required this.dislikes,
+    required this.communication,
+    required this.family,
+    required this.spiritual,
+    required this.food,
+    required this.lastReviewedBy,
+    required this.lastReviewedNote,
+  });
 }
