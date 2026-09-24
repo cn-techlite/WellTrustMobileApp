@@ -20,7 +20,6 @@ export 'package:permission_handler/permission_handler.dart';
 export 'package:flutter_svg/svg.dart';
 export 'package:upgrader/upgrader.dart';
 export 'package:geocoding/geocoding.dart';
-export 'package:flutter_image_compress/flutter_image_compress.dart';
 export 'package:image_picker/image_picker.dart';
 export 'package:webview_flutter/webview_flutter.dart';
 // ignore: depend_on_referenced_packages

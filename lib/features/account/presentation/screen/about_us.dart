@@ -41,12 +41,12 @@ class _LoginPageState extends State<AboutUsScreen> {
         ),
       ),
       key: key,
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.bg,
       body: SafeArea(
         child: ListView(
           physics: const ScrollPhysics(),
           children: [
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(left: 10.0, right: 10),
               child: AppText(
                 text: "About  Us",
@@ -58,7 +58,7 @@ class _LoginPageState extends State<AboutUsScreen> {
               ),
             ),
             addVerticalSpacing(3),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(left: 10.0, right: 10),
               child: AppText(
                 text:

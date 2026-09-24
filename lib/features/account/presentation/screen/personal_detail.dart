@@ -1,17 +1,22 @@
-import 'dart:io';
-
+import 'package:well_trust_mobile_app/core/helpers/endpoints.dart';
 import 'package:well_trust_mobile_app/core/services/upload_service.dart';
-import 'package:well_trust_mobile_app/core/utils/app_buttons.dart';
+import 'package:well_trust_mobile_app/core/utils/helper_functions.dart';
 import 'package:well_trust_mobile_app/core/utils/colors.dart';
 import 'package:well_trust_mobile_app/core/utils/package_export.dart';
-import 'package:well_trust_mobile_app/core/utils/size_config.dart';
+import 'package:well_trust_mobile_app/features/account/data/dto/staff_requests.dart';
 import 'package:well_trust_mobile_app/features/account/data/model/user_response_model.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/screen/office_records_screen.dart';
 import 'package:well_trust_mobile_app/features/account/presentation/state/provider/account_provider.dart';
-import 'package:well_trust_mobile_app/shared/widgets/app_text.dart';
-import 'package:well_trust_mobile_app/shared/widgets/back_icon.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/widget/compliance_card.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/widget/staff_detail_sheets.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/widget/staff_form.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/widget/staff_record_widgets.dart';
+import 'package:well_trust_mobile_app/features/handover/presentation/widget/handover_widgets.dart';
 import 'package:well_trust_mobile_app/shared/widgets/custom_snackbar.dart';
-import 'package:well_trust_mobile_app/shared/widgets/input.dart';
+import 'package:well_trust_mobile_app/shared/widgets/welltrust_app_bar.dart';
 
+/// The signed-in carer's own record: what they can edit, and what the office
+/// keeps for them (shown read only).
 class AccountDetailsPage extends ConsumerStatefulWidget {
   const AccountDetailsPage({super.key});
 
@@ -20,342 +25,178 @@ class AccountDetailsPage extends ConsumerStatefulWidget {
 }
 
 class _AccountDetailsPageState extends ConsumerState<AccountDetailsPage> {
-  final _formKey = GlobalKey<FormState>();
-
-  final _phoneNo = TextEditingController();
-  final _firstName = TextEditingController();
-  final _lastName = TextEditingController();
-
-  File? pickedImage;
-  String imageFile = "";
-
-  bool _hasFilledFields = false;
-  bool _isUpdatingName = false;
-  bool _isUploadingImage = false;
-
-  static const String defaultAvatar =
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Microsoft_Account.svg/512px-Microsoft_Account.svg.png?20170218203212";
+  bool _uploadingPhoto = false;
 
   @override
   void initState() {
     super.initState();
-
     Future.microtask(() {
       ref.read(accountControllerProvider.notifier).getAccount();
     });
   }
 
-  @override
-  void dispose() {
-    _phoneNo.dispose();
-    _firstName.dispose();
-    _lastName.dispose();
-    super.dispose();
-  }
-
-  Future<void> _pickAndUploadProfileImage(RegisterResponseModel user) async {
-    try {
-      final picker = ImagePicker();
-      final image = await picker.pickImage(source: ImageSource.gallery);
-
-      if (image == null) return;
-
-      setState(() {
-        pickedImage = File(image.path);
-        imageFile = image.path;
-        _isUploadingImage = true;
-      });
-
-      final imageUrl = await ApiService.upload(image.path);
-
-      final response = await ref
-          .read(accountControllerProvider.notifier)
-          .updateProfile(
-            firstName: user.firstName ?? "",
-            lastName: user.lastName ?? "",
-            imageFile: imageUrl,
-            phoneNo: user.phoneNo ?? "",
-            availability: true,
-          );
-
-      if (!mounted) return;
-
-      setState(() {
-        _isUploadingImage = false;
-      });
-
-      if (response.isSuccess == true) {
-        showCustomSnackbar(
-          context,
-          title: "Profile Updated",
-          content: response.message ?? "Profile picture updated successfully",
-          type: SnackbarType.success,
-          isTopPosition: false,
-        );
-      } else {
-        showCustomSnackbar(
-          context,
-          title: "Update Failed",
-          content: response.message ?? "Unable to update profile picture",
-          type: SnackbarType.error,
-          isTopPosition: false,
-        );
-      }
-    } catch (e) {
-      if (!mounted) return;
-
-      setState(() {
-        _isUploadingImage = false;
-      });
-
-      showCustomSnackbar(
-        context,
-        title: "Upload Failed",
-        content: e.toString(),
-        type: SnackbarType.error,
-        isTopPosition: false,
-      );
+  ImageProvider? _photo(RegisterResponseModel user) {
+    final image = user.imagePath?.trim() ?? '';
+    if (image.isEmpty) return null;
+    // The API sends a path on its own server, e.g. /uploads/staff-photos/x.jpg.
+    if (image.startsWith('/')) {
+      final host = Endpoints.appBaseUrl.replaceFirst(RegExp(r'/+$'), '');
+      return NetworkImage('$host$image');
     }
-  }
-
-  Future<void> _updateName(RegisterResponseModel user) async {
-    if (!_formKey.currentState!.validate()) return;
-
-    FocusScope.of(context).unfocus();
-
-    setState(() {
-      _isUpdatingName = true;
-    });
-
-    final response = await ref
-        .read(accountControllerProvider.notifier)
-        .updateProfile(
-          firstName: _firstName.text.trim(),
-          lastName: _lastName.text.trim(),
-          imageFile: user.profilePicture ?? "",
-          phoneNo: user.phoneNo ?? "",
-          availability: true,
-        );
-
-    if (!mounted) return;
-
-    setState(() {
-      _isUpdatingName = false;
-    });
-
-    if (response.isSuccess == true) {
-      showCustomSnackbar(
-        context,
-        title: "Profile Updated",
-        content: response.message ?? "Profile updated successfully",
-        type: SnackbarType.success,
-        isTopPosition: false,
-      );
-    } else {
-      showCustomSnackbar(
-        context,
-        title: "Update Failed",
-        content: response.message ?? "Unable to update profile",
-        type: SnackbarType.error,
-        isTopPosition: false,
-      );
-    }
-  }
-
-  void _fillFieldsOnce(RegisterResponseModel user) {
-    if (_hasFilledFields) return;
-
-    _firstName.text = user.firstName ?? "";
-    _lastName.text = user.lastName ?? "";
-    _phoneNo.text = user.phoneNo ?? "";
-
-    _hasFilledFields = true;
-  }
-
-  ImageProvider _profileImage(RegisterResponseModel user) {
-    if (pickedImage != null) {
-      return FileImage(pickedImage!);
-    }
-
-    final image = user.profilePicture?.trim() ?? "";
-
-    if (image.isEmpty) {
-      return const NetworkImage(defaultAvatar);
-    }
-
     return NetworkImage(image);
   }
 
-  Widget _buildContent(RegisterResponseModel user) {
-    _fillFieldsOnce(user);
+  String _initials(RegisterResponseModel user) {
+    final f = (user.firstName ?? '').trim();
+    final s = (user.surName ?? '').trim();
+    final out = '${f.isEmpty ? '' : f[0]}${s.isEmpty ? '' : s[0]}';
+    return out.isEmpty ? '?' : out.toUpperCase();
+  }
 
-    return SingleChildScrollView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+  Future<void> _changePhoto() async {
+    if (_uploadingPhoto) return;
+    try {
+      final image = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 85,
+      );
+      if (image == null) return;
+
+      setState(() => _uploadingPhoto = true);
+      final url = await ApiService.upload(
+        image.path,
+        folder: UploadFolder.images,
+      );
+
+      final result = await ref
+          .read(accountControllerProvider.notifier)
+          .updateProfile(UpdateStaffRequest(imagePath: url));
+      _toast(
+        result.isSuccess ? 'Photo saved' : 'Photo not saved',
+        result.message ?? '',
+        result.isSuccess,
+      );
+    } on UploadException catch (e) {
+      _toast('Photo not saved', e.message, false);
+    } catch (_) {
+      _toast(
+        'Photo not saved',
+        'Something went wrong. Please try again.',
+        false,
+      );
+    } finally {
+      if (mounted) setState(() => _uploadingPhoto = false);
+    }
+  }
+
+  void _toast(String title, String content, bool ok) {
+    if (!mounted) return;
+    showCustomSnackbar(
+      context,
+      title: title,
+      content: content,
+      type: ok ? SnackbarType.success : SnackbarType.error,
+      isTopPosition: false,
+    );
+  }
+
+  String _mask(String? v) {
+    final t = v?.trim() ?? '';
+    if (t.length <= 4) return t;
+    return '••••${t.substring(t.length - 4)}';
+  }
+
+  /// Joins the parts with commas, skipping empty ones and any part the text
+  /// already contains (the API often puts the town inside the address line).
+  String? _join(Iterable<String?> parts) {
+    var out = '';
+    for (final p in parts) {
+      final t = p?.trim() ?? '';
+      if (t.isEmpty || out.toLowerCase().contains(t.toLowerCase())) continue;
+      out = out.isEmpty ? t : '$out, $t';
+    }
+    return out.isEmpty ? null : out;
+  }
+
+  Widget _header(RegisterResponseModel user) {
+    final name = '${user.firstName ?? ''} ${user.surName ?? ''}'.trim();
+    return DesignCard(
+      child: Row(
         children: [
-          Center(
+          GestureDetector(
+            onTap: _changePhoto,
             child: Stack(
               children: [
-                Container(
-                  margin: const EdgeInsets.only(top: 20),
-                  child: GestureDetector(
-                    onTap: _isUploadingImage
-                        ? null
-                        : () => _pickAndUploadProfileImage(user),
-                    child: CircleAvatar(
-                      radius: 50,
-                      backgroundColor: Colors.grey,
-                      child: CircleAvatar(
-                        backgroundColor: Colors.white,
-                        radius: 47,
-                        backgroundImage: _profileImage(user),
-                        child: _isUploadingImage
-                            ? CircularProgressIndicator(
-                                color: AppColors.primary,
-                                strokeWidth: 2,
-                              )
-                            : null,
-                      ),
-                    ),
-                  ),
+                CircleAvatar(
+                  radius: 36,
+                  backgroundColor: AppColors.gold,
+                  foregroundImage: _photo(user),
+                  onForegroundImageError: _photo(user) == null
+                      ? null
+                      : (_, _) {},
+                  child: _uploadingPhoto
+                      ? CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppColors.navy,
+                        )
+                      : Text(
+                          _initials(user),
+                          style: TextStyle(
+                            color: AppColors.navy,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 24,
+                          ),
+                        ),
                 ),
-                const Positioned(
-                  top: 96,
-                  left: 50,
-                  right: 20,
-                  child: Icon(
-                    Icons.camera_alt,
-                    color: AppColors.primary,
-                    size: 30,
+                Positioned(
+                  right: 0,
+                  bottom: 0,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: AppColors.surface, width: 2),
+                    ),
+                    child: Icon(
+                      Icons.camera_alt,
+                      size: 14,
+                      color: AppColors.onPrimary,
+                    ),
                   ),
                 ),
               ],
             ),
           ),
-
-          addVerticalSpacing(2),
-
-          ListTile(
-            title: const AppText(
-              text: "Email",
-              textAlign: TextAlign.start,
-
-              color: AppColors.black,
-
-              fontWeight: FontWeight.bold,
-            ),
-            subtitle: AppText(
-              text: user.email ?? "",
-              textAlign: TextAlign.start,
-
-              color: AppColors.black,
-
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-
-          ListTile(
-            title: const AppText(
-              text: "Phone Number",
-              textAlign: TextAlign.start,
-
-              color: AppColors.black,
-
-              fontWeight: FontWeight.bold,
-            ),
-            subtitle: AppText(
-              text: user.phoneNo ?? "",
-              textAlign: TextAlign.start,
-
-              color: AppColors.black,
-
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-
-          Padding(
-            padding: const EdgeInsets.only(left: 0, right: 0),
-            child: ExpansionTile(
-              backgroundColor: AppColors.white,
-              collapsedBackgroundColor: AppColors.white,
-              collapsedIconColor: AppColors.primary,
-              iconColor: AppColors.primary,
-              textColor: AppColors.primary,
-              collapsedTextColor: AppColors.white,
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const AppText(
-                    text: "Name",
-                    textAlign: TextAlign.start,
-
-                    color: AppColors.black,
-
-                    fontWeight: FontWeight.bold,
-                  ),
-                  AppText(
-                    text: "${user.firstName ?? ""} ${user.lastName ?? ""}",
-                    textAlign: TextAlign.start,
-
-                    color: AppColors.black,
-
-                    fontWeight: FontWeight.w600,
-                  ),
-                ],
-              ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  color: AppColors.white,
-                  padding: const EdgeInsets.all(20),
-                  width: double.infinity,
-                  child: Column(
-                    children: [
-                      Form(
-                        key: _formKey,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            GlobalTextField(
-                              fieldName: 'First Name',
-                              keyBoardType: TextInputType.name,
-                              removeSpace: false,
-                              obscureText: false,
-                              textController: _firstName,
-                              onChanged: (value) {},
-                            ),
-
-                            addVerticalSpacing(5),
-
-                            GlobalTextField(
-                              fieldName: 'Last Name',
-                              keyBoardType: TextInputType.name,
-                              removeSpace: false,
-                              obscureText: false,
-                              textController: _lastName,
-                              onChanged: (value) {},
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      addVerticalSpacing(3),
-
-                      Padding(
-                        padding: const EdgeInsets.only(left: 35, right: 35),
-                        child: AppButton(
-                          text: "Update",
-                          onPressed: _isUpdatingName
-                              ? () {}
-                              : () => _updateName(user),
-                          widthPercent: 100,
-                          heightPercent: 5,
-                          btnColor: AppColors.primary,
-                          isLoading: _isUpdatingName,
-                        ),
-                      ),
-                    ],
+                Text(
+                  name.isEmpty ? 'Staff member' : name,
+                  style: TextStyle(
+                    fontFamily: 'Playfair Display',
+                    fontWeight: FontWeight.w700,
+                    fontSize: 22,
+                    color: AppColors.ink,
                   ),
+                ),
+                if (applicable(user.staffCode) != null)
+                  Text(
+                    'Staff code ${user.staffCode}',
+                    style: TextStyle(color: AppColors.muted),
+                  ),
+                const SizedBox(height: 6),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 4,
+                  children: [
+                    if (applicable(user.staffStatus) != null)
+                      statusPill(user.staffStatus),
+                    if (applicable(user.complianceStatus) != null)
+                      statusPill(user.complianceStatus),
+                  ],
                 ),
               ],
             ),
@@ -365,66 +206,290 @@ class _AccountDetailsPageState extends ConsumerState<AccountDetailsPage> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final accountAsync = ref.watch(accountControllerProvider);
-    final account = accountAsync.value;
-    final user = account?.userData;
+  List<Widget> _content(RegisterResponseModel user) {
+    final profile = user.profile;
+    final contact = user.emergencyContact;
+    final c = user.compliance;
+    final pay = user.employmentPay;
+    final letter = user.appointmentLetter;
 
-    final isLoading =
-        accountAsync.isLoading && accountAsync.value?.userData == null;
-
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      appBar: buildFlexibleAppBar(
-        context: context,
-        title: AppText(
-          text: isLoading ? "" : "Profile Updates",
-          textAlign: TextAlign.start,
-
-          color: AppColors.black,
-
-          fontWeight: FontWeight.w800,
+    return [
+      _header(user),
+      SectionCard(
+        title: 'My details',
+        actionLabel: 'Edit',
+        onAction: () => openStaffSheet(context, EditDetailsSheet(user: user)),
+        children: [
+          InfoRow('Email', user.email),
+          InfoRow('Phone number', user.phoneNo),
+          InfoRow('Sex', user.sex),
+          InfoRow('Date of birth', fmtDate(user.dateOfBirth)),
+          InfoRow('Nationality', user.nationality),
+          InfoRow('Address', _join([user.address, user.locality, user.state])),
+          InfoRow(
+            'Next of kin',
+            _join([user.nextOfKin, user.nextOfKinPhoneNo]),
+          ),
+          InfoRow('Reference 1', user.referenceEmail),
+          InfoRow('Reference 2', user.referenceEmail2),
+          InfoRow('National Insurance number', user.insuranceNo),
+          InfoRow('DBS number', user.dbsCode),
+          InfoRow(
+            'Bank',
+            _join([
+              user.bankAccName,
+              if ((user.bankAccNo ?? '').isNotEmpty) _mask(user.bankAccNo),
+              if ((user.bankSortCode ?? '').isNotEmpty)
+                'sort code ${user.bankSortCode}',
+            ]),
+          ),
+          InfoRow('Branch', user.branch),
+        ],
+      ),
+      SectionCard(
+        title: 'Job and home address',
+        actionLabel: profile == null ? 'Add' : 'Edit',
+        onAction: () => openStaffSheet(
+          context,
+          JobDetailsSheet(
+            profile: profile,
+            fallbackDateOfBirth: user.dateOfBirth,
+          ),
+        ),
+        children: profile == null
+            ? [
+                const SizedBox(height: 10),
+                const EmptyBox(
+                  'Nothing added yet',
+                  body: 'Add your job title and home address.',
+                ),
+              ]
+            : [
+                InfoRow('Job title', profile.jobTitle),
+                InfoRow(
+                  'Employment type',
+                  profile.employmentType == null
+                      ? null
+                      : employmentTypeLabel(profile.employmentType!),
+                ),
+                InfoRow(
+                  'Gender',
+                  profile.gender == null ? null : genderLabel(profile.gender!),
+                ),
+                InfoRow('Date of birth', fmtDate(profile.dateOfBirth)),
+                InfoRow(
+                  'Home address',
+                  _join([
+                    profile.addressLine1,
+                    profile.addressLine2,
+                    profile.city,
+                    profile.county,
+                    profile.postCode,
+                    profile.country,
+                  ]),
+                ),
+                InfoRow('Shift pattern', profile.shiftPattern),
+                InfoRow('Availability', profile.availabilityNotes),
+                InfoRow('Wing or area', profile.wingArea),
+                InfoRow('Key worker for', profile.keyWorkerFor),
+              ],
+      ),
+      SectionCard(
+        title: 'Emergency contact',
+        actionLabel: contact == null ? 'Add' : 'Edit',
+        onAction: () =>
+            openStaffSheet(context, EmergencyContactSheet(contact: contact)),
+        children: contact == null
+            ? [
+                const SizedBox(height: 10),
+                const EmptyBox(
+                  'Nothing added yet',
+                  body: 'Add someone the office can call if they need to.',
+                ),
+              ]
+            : [
+                InfoRow('Name', contact.emergencyContactName),
+                InfoRow('Relationship', contact.emergencyContactRelationship),
+                InfoRow('Phone number', contact.emergencyContactPhone),
+                InfoRow('Notes', contact.notes),
+              ],
+      ),
+      Padding(
+        padding: const EdgeInsets.only(top: 12),
+        child: Text(
+          'Kept by the office',
+          style: TextStyle(
+            fontFamily: 'Playfair Display',
+            fontWeight: FontWeight.w700,
+            fontSize: 20,
+            color: AppColors.ink,
+          ),
         ),
       ),
-      body: SafeArea(
-        child: RefreshIndicator(
-          onRefresh: () async {
-            await ref.read(accountControllerProvider.notifier).refreshAccount();
-            _hasFilledFields = false;
-          },
-          child: isLoading
-              ? ListView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  children: [
-                    SizedBox(height: SizeConfig.heightAdjusted(35)),
-                    Center(
-                      child: CircularProgressIndicator(
-                        color: AppColors.primary,
-                        strokeWidth: 2,
-                      ),
-                    ),
-                  ],
-                )
-              : user == null
-              ? ListView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  children: [
-                    SizedBox(height: SizeConfig.heightAdjusted(30)),
-                    const Center(
-                      child: AppText(
-                        text: "Unable to load profile",
-                        textAlign: TextAlign.center,
+      Text(
+        'You can see these. Only the office can change them, except your right to work record, which you can add once if none is on file. Your supervisions, probation and declarations are under From the office.',
+        style: TextStyle(color: AppColors.muted),
+      ),
+      DesignButton(
+        'From the office',
+        secondary: true,
+        icon: Icons.assignment_outlined,
+        onPressed: () => navigateToRoute(context, const OfficeRecordsScreen()),
+      ),
+      ComplianceCard(compliance: c),
+      SectionCard(
+        title: 'Employment and pay',
+        children: pay == null
+            ? [
+                const SizedBox(height: 10),
+                const EmptyBox('Nothing recorded yet'),
+              ]
+            : [
+                InfoRow('Started', fmtDate(pay.employmentStartDate)),
+                InfoRow(
+                  'Ends',
+                  fmtDate(pay.employmentEndDate) ?? 'No end date',
+                ),
+                InfoRow(
+                  'Hours a week',
+                  pay.hoursPerWeek == null ? null : '${pay.hoursPerWeek}',
+                ),
+                InfoRow('Hourly rate', fmtMoney(pay.hourlyRate, pay.currency)),
+                InfoRow(
+                  'Annual salary',
+                  fmtMoney(pay.annualSalary, pay.currency),
+                ),
+              ],
+      ),
+      SectionCard(
+        title: 'Appointment letter',
+        children: letter == null
+            ? [
+                const SizedBox(height: 10),
+                const EmptyBox('Nothing recorded yet'),
+              ]
+            : [
+                InfoRow(
+                  'Status',
+                  null,
+                  valueWidget: applicable(letter.status) == null
+                      ? Text(
+                          'Not set',
+                          style: TextStyle(
+                            color: AppColors.muted,
+                            fontSize: 16,
+                          ),
+                        )
+                      : Align(
+                          alignment: Alignment.centerLeft,
+                          child: statusPill(letter.status),
+                        ),
+                ),
+                InfoRow('Reference', letter.referenceNumber),
+                InfoRow('Issued', fmtDate(letter.issueDate)),
+                InfoRow('Contract', letter.contractType),
+                InfoRow(
+                  'Probation',
+                  letter.probationPeriodMonths == null
+                      ? null
+                      : '${letter.probationPeriodMonths} months',
+                ),
+                InfoRow('Notice period', letter.noticePeriod),
+                InfoRow('Reports to', letter.reportsTo),
+                InfoRow('Work base', letter.workBase),
+                InfoRow(
+                  'Signed by',
+                  _join([letter.signatoryName, letter.signatoryTitle]),
+                ),
+              ],
+      ),
+      SectionCard(
+        title: 'Access and roles',
+        children: [
+          const SizedBox(height: 10),
+          if (user.roles.isEmpty && user.permissions.isEmpty)
+            const EmptyBox('Nothing recorded yet')
+          else ...[
+            Text(
+              'Roles',
+              style: TextStyle(color: AppColors.muted, fontSize: 13),
+            ),
+            const SizedBox(height: 4),
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: [for (final r in user.roles) Pill.neutral(humanize(r))],
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'What you are allowed to do',
+              style: TextStyle(color: AppColors.muted, fontSize: 13),
+            ),
+            const SizedBox(height: 4),
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: [
+                for (final p in user.permissions) Pill.info(humanize(p)),
+              ],
+            ),
+          ],
+        ],
+      ),
+    ];
+  }
 
-                        color: AppColors.black,
+  @override
+  Widget build(BuildContext context) {
+    final async = ref.watch(accountControllerProvider);
+    final user = async.value?.userData;
 
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                )
-              : _buildContent(user),
+    Widget body;
+    if (user != null) {
+      final items = _content(user);
+      body = ListView.separated(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 40),
+        itemCount: items.length,
+        separatorBuilder: (_, _) => const SizedBox(height: 14),
+        itemBuilder: (_, i) => items[i],
+      );
+    } else if (!async.hasError) {
+      body = Center(
+        child: CircularProgressIndicator(
+          color: AppColors.primary,
+          strokeWidth: 2,
         ),
+      );
+    } else {
+      body = ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.all(16),
+        children: [
+          EmptyBox('Could not load your details', body: async.error.toString()),
+          const SizedBox(height: 14),
+          DesignButton(
+            'Try again',
+            onPressed: () =>
+                ref.read(accountControllerProvider.notifier).refreshAccount(),
+          ),
+        ],
+      );
+    }
+
+    return Scaffold(
+      backgroundColor: AppColors.bg,
+      body: Column(
+        children: [
+          const WellTrustAppBar(title: 'My details', showBack: true),
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: () =>
+                  ref.read(accountControllerProvider.notifier).refreshAccount(),
+              child: body,
+            ),
+          ),
+        ],
       ),
     );
   }

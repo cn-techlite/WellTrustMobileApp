@@ -73,25 +73,26 @@ class AdvertResponseModel {
     createdAt: createdAt ?? this.createdAt,
   );
 
-  factory AdvertResponseModel.fromJson(
-    Map<String, dynamic> json,
-  ) => AdvertResponseModel(
-    id: json["id"] ?? "",
-    adminId: json["adminId"] ?? "",
-    advertItemId: json["advertItemId"] ?? "",
-    advertImage: json["advertImage"] ?? "",
-    advertName: json["advertName"] ?? "",
-    advertType: json["advertType"] ?? "",
-    advertItemDescription: json["advertItemDescription"] ?? "",
-    advertItemCost: json["advertItemCost"] ?? 0,
-    transRef: json["transRef"] ?? "",
-    transStatus: json["transStatus"] ?? false,
-    advertDays4: json["advertDays4"] ?? 0,
-    expiredAt:
-        json["expiredAt"] == null ? null : DateTime.parse(json["expiredAt"]),
-    createdAt:
-        json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
-  );
+  factory AdvertResponseModel.fromJson(Map<String, dynamic> json) =>
+      AdvertResponseModel(
+        id: json["id"] ?? "",
+        adminId: json["adminId"] ?? "",
+        advertItemId: json["advertItemId"] ?? "",
+        advertImage: json["advertImage"] ?? "",
+        advertName: json["advertName"] ?? "",
+        advertType: json["advertType"] ?? "",
+        advertItemDescription: json["advertItemDescription"] ?? "",
+        advertItemCost: json["advertItemCost"] ?? 0,
+        transRef: json["transRef"] ?? "",
+        transStatus: json["transStatus"] ?? false,
+        advertDays4: json["advertDays4"] ?? 0,
+        expiredAt: json["expiredAt"] == null
+            ? null
+            : DateTime.parse(json["expiredAt"]),
+        createdAt: json["createdAt"] == null
+            ? null
+            : DateTime.parse(json["createdAt"]),
+      );
 
   Map<String, dynamic> toJson() => {
     "id": id,

@@ -8,9 +8,9 @@ AppBar buildFlexibleAppBar({
   String backIconAsset = 'assets/svgs/back_button.svg',
   double iconWidth = 15.0,
   VoidCallback? onBack,
-  Color backgroundColor = AppColors.white,
-  Color surfaceTintColor = AppColors.white,
-  Color foregroundColor = AppColors.white,
+  Color? backgroundColor,
+  Color? surfaceTintColor,
+  Color? foregroundColor,
   bool showBackButton = true,
   Widget? title,
   List<Widget>? actions,
@@ -21,15 +21,22 @@ AppBar buildFlexibleAppBar({
 }) {
   return AppBar(
     automaticallyImplyLeading: automaticallyImplyLeading,
-    backgroundColor: backgroundColor,
-    surfaceTintColor: surfaceTintColor,
-    foregroundColor: foregroundColor,
+    backgroundColor: backgroundColor ?? AppColors.surface,
+    surfaceTintColor: surfaceTintColor ?? AppColors.surface,
+    foregroundColor: foregroundColor ?? AppColors.ink,
     elevation: 0,
     centerTitle: centerTitle,
     leading: showBackButton
         ? IconButton(
             onPressed: onBack ?? () => Navigator.pop(context),
-            icon: SvgPicture.asset(backIconAsset, width: iconWidth),
+            icon: SvgPicture.asset(
+              backIconAsset,
+              width: iconWidth,
+              colorFilter: ColorFilter.mode(
+                foregroundColor ?? AppColors.ink,
+                BlendMode.srcIn,
+              ),
+            ),
           )
         : null,
     title: title,

@@ -14,19 +14,10 @@ class LoginErrorModel {
   final String message;
   final bool status;
 
-  LoginErrorModel({
-    required this.message,
-    required this.status,
-  });
+  LoginErrorModel({required this.message, required this.status});
 
   factory LoginErrorModel.fromJson(Map<String, dynamic> json) =>
-      LoginErrorModel(
-        message: json["message"],
-        status: json["status"],
-      );
+      LoginErrorModel(message: json["message"], status: json["status"]);
 
-  Map<String, dynamic> toJson() => {
-        "message": message,
-        "status": status,
-      };
+  Map<String, dynamic> toJson() => {"message": message, "status": status};
 }

@@ -91,8 +91,8 @@ class _MessagesBottomSheetState extends State<MessagesBottomSheet> {
       padding: EdgeInsets.only(bottom: bottomInset),
       child: Container(
         height: MediaQuery.of(context).size.height * .92,
-        decoration: const BoxDecoration(
-          color: Color(0xfffbfaf7),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
           borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
         ),
         child: Column(
@@ -102,7 +102,7 @@ class _MessagesBottomSheetState extends State<MessagesBottomSheet> {
               width: 62,
               height: 6,
               decoration: BoxDecoration(
-                color: const Color(0xffd7d0bf),
+                color: AppColors.line,
                 borderRadius: BorderRadius.circular(20),
               ),
             ),
@@ -111,7 +111,7 @@ class _MessagesBottomSheetState extends State<MessagesBottomSheet> {
               padding: const EdgeInsets.fromLTRB(20, 22, 20, 22),
               child: Row(
                 children: [
-                  const Expanded(
+                  Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -124,7 +124,7 @@ class _MessagesBottomSheetState extends State<MessagesBottomSheet> {
                         SizedBox(height: 6),
                         AppText(
                           text: "Chat with co-ordinator and fellow carers",
-                          color: Color(0xff8a877f),
+                          color: AppColors.muted,
                           type: AppTextType.bodyMedium,
                         ),
                       ],
@@ -135,8 +135,8 @@ class _MessagesBottomSheetState extends State<MessagesBottomSheet> {
                     child: Container(
                       width: 42,
                       height: 42,
-                      decoration: const BoxDecoration(
-                        color: Color(0xfffaf8f3),
+                      decoration: BoxDecoration(
+                        color: AppColors.bg,
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(Icons.close, size: 18),
@@ -146,7 +146,7 @@ class _MessagesBottomSheetState extends State<MessagesBottomSheet> {
               ),
             ),
 
-            Container(height: 1, color: const Color(0xffded6c7)),
+            Container(height: 1, color: AppColors.line),
 
             Expanded(
               child: ListView.builder(
@@ -192,7 +192,7 @@ class _ChatBubble extends StatelessWidget {
                     ),
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: const Color(0xff24447f),
+                      color: AppColors.navy,
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: AppText(
@@ -205,17 +205,14 @@ class _ChatBubble extends StatelessWidget {
                   addVerticalSpacing(1),
                   AppText(
                     text: "${message.senderName} · ${message.time}",
-                    color: const Color(0xff8a877f),
+                    color: AppColors.muted,
                     type: AppTextType.bodySmall,
                   ),
                 ],
               ),
             ),
             addHorizontalSpacing(2),
-            _ChatAvatar(
-              initials: message.initials,
-              color: const Color(0xff24447f),
-            ),
+            _ChatAvatar(initials: message.initials, color: AppColors.navy),
           ],
         ),
       );
@@ -226,10 +223,7 @@ class _ChatBubble extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _ChatAvatar(
-            initials: message.initials,
-            color: const Color(0xffbd9650),
-          ),
+          _ChatAvatar(initials: message.initials, color: AppColors.gold),
           addHorizontalSpacing(2),
           Expanded(
             child: Column(
@@ -241,8 +235,8 @@ class _ChatBubble extends StatelessWidget {
                   ),
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: const Color(0xffded6c7)),
+                    color: AppColors.surface,
+                    border: Border.all(color: AppColors.line),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: AppText(
@@ -255,7 +249,7 @@ class _ChatBubble extends StatelessWidget {
                 addVerticalSpacing(1),
                 AppText(
                   text: "${message.senderName} · ${message.time}",
-                  color: const Color(0xff8a877f),
+                  color: AppColors.muted,
                   type: AppTextType.bodySmall,
                 ),
               ],
@@ -298,7 +292,7 @@ class _MessageInputBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
-      color: Colors.white,
+      color: AppColors.surface,
       child: Row(
         children: [
           Expanded(
@@ -314,7 +308,7 @@ class _MessageInputBar extends StatelessWidget {
             child: AppButton(
               text: "Send",
               onPressed: onSend,
-              btnColor: const Color(0xff24447f),
+              btnColor: AppColors.primary,
               textColor: Colors.white,
               borderRadius: 14,
             ),

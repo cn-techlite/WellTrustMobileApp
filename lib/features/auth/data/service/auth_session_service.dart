@@ -10,6 +10,10 @@ class AuthSessionService {
     globals.refreshToken = "";
     globals.userId = "";
     globals.userEmail = "";
+    globals.username = "";
+    globals.kioskDeviceId = "";
+    globals.kioskDeviceName = "";
+    globals.kioskDeviceReference = "";
     globals.userName = "";
     globals.profilePicture = "";
     globals.roles = [];

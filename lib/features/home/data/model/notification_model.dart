@@ -6,7 +6,8 @@ import 'dart:convert';
 
 List<NotificationResponseModel> notificationResponseModelFromJson(String str) =>
     List<NotificationResponseModel>.from(
-        json.decode(str).map((x) => NotificationResponseModel.fromJson(x)));
+      json.decode(str).map((x) => NotificationResponseModel.fromJson(x)),
+    );
 
 String notificationResponseModelToJson(List<NotificationResponseModel> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
@@ -52,14 +53,14 @@ class NotificationResponseModel {
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "userId": userId,
-        "title": title,
-        "body": body,
-        "deviceToken": deviceToken,
-        "notificationType": notificationType,
-        "imageUrl": imageUrl,
-        "createdAt": createdAt?.toIso8601String(),
-        "updatedAt": updatedAt?.toIso8601String(),
-      };
+    "id": id,
+    "userId": userId,
+    "title": title,
+    "body": body,
+    "deviceToken": deviceToken,
+    "notificationType": notificationType,
+    "imageUrl": imageUrl,
+    "createdAt": createdAt?.toIso8601String(),
+    "updatedAt": updatedAt?.toIso8601String(),
+  };
 }

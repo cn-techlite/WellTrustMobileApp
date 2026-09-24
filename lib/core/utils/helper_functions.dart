@@ -1,3 +1,4 @@
+import 'package:well_trust_mobile_app/core/utils/colors.dart';
 // ignore_for_file: strict_top_level_inference, deprecated_member_use
 
 import 'package:well_trust_mobile_app/core/utils/package_export.dart';
@@ -6,7 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'dart:convert';
 
 import '../routes/routers.dart';
-import 'colors.dart';
 
 Image imageFromBase64String(String base64String) {
   return Image.memory(base64Decode(base64String), width: 40, height: 40);
@@ -115,7 +115,7 @@ void displayBottomSheet(context, Widget bottomSheet) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
-    backgroundColor: Colors.white,
+    backgroundColor: AppColors.surface,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.only(
         topLeft: Radius.circular(30.0),

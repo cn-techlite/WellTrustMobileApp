@@ -1,3 +1,4 @@
+import 'package:well_trust_mobile_app/shared/widgets/brand_logo.dart';
 import 'package:well_trust_mobile_app/core/utils/app_buttons.dart';
 import 'package:well_trust_mobile_app/core/utils/colors.dart';
 import 'package:well_trust_mobile_app/core/utils/package_export.dart';
@@ -107,10 +108,10 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
         accountState.isLoading && account?.userData == null;
 
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.bg,
       appBar: buildFlexibleAppBar(
         context: context,
-        title: const AppText(
+        title: AppText(
           text: "Contact Us",
           textAlign: TextAlign.start,
           color: AppColors.black,
@@ -133,11 +134,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
                   children: [
                     const SizedBox(height: 10),
 
-                    Image.asset(
-                      'assets/images/logo_path.png',
-                      height: 150,
-                      color: AppColors.primary,
-                    ),
+                    const Center(child: WellTrustLogo(height: 150)),
 
                     Padding(
                       padding: EdgeInsets.only(
@@ -145,7 +142,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
                         right: width / 20,
                         top: 10,
                       ),
-                      child: const AppText(
+                      child: AppText(
                         text:
                             "If you are having trouble placing and completing orders, or you have any question or queries, please feel free to email us",
                         textAlign: TextAlign.start,
@@ -165,7 +162,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
                           final uri = Uri.parse('mailto:info@ginilog.com');
                           await launchUrl(uri);
                         },
-                        child: const AppText(
+                        child: AppText(
                           text: "info@ginilog.com",
                           textAlign: TextAlign.start,
                           color: AppColors.primary,
@@ -185,7 +182,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
                           final uri = Uri.parse('tel:08166516944');
                           await launchUrl(uri);
                         },
-                        child: const AppText(
+                        child: AppText(
                           text: "0816 651 6944",
                           textAlign: TextAlign.start,
                           color: AppColors.primary,
@@ -200,7 +197,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
                         right: width / 20,
                         top: 10,
                       ),
-                      child: const AppText(
+                      child: AppText(
                         text: "A member of our team will attend to you",
                         textAlign: TextAlign.start,
                         color: AppColors.black,
@@ -220,7 +217,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
                                 right: width / 20,
                                 top: 10,
                               ),
-                              child: const AppText(
+                              child: AppText(
                                 text: "Leave a message with us",
                                 textAlign: TextAlign.start,
                                 color: AppColors.black,

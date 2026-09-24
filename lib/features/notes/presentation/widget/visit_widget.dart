@@ -23,16 +23,14 @@ class ClientListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(8, 20, 8, 16),
-      decoration: const BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: Color(0xffE2D8C7), width: 1.4),
-        ),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: AppColors.line, width: 1.4)),
       ),
       child: Row(
         children: [
           CircleAvatar(
             radius: 22,
-            backgroundColor: const Color(0xffBF9747),
+            backgroundColor: AppColors.gold,
             child: AppText(
               text: initials,
               textAlign: TextAlign.center,
@@ -59,7 +57,7 @@ class ClientListTile extends StatelessWidget {
                 AppText(
                   text: info,
                   textAlign: TextAlign.start,
-                  color: const Color(0xff8E8A82),
+                  color: AppColors.muted,
                   type: AppTextType.bodySmall,
                   fontWeight: FontWeight.w400,
                 ),
@@ -68,7 +66,7 @@ class ClientListTile extends StatelessWidget {
                   AppText(
                     text: note,
                     textAlign: TextAlign.start,
-                    color: const Color(0xff454A43),
+                    color: AppColors.ink,
                     type: AppTextType.bodySmall,
                     fontWeight: FontWeight.w400,
                   ),
@@ -87,7 +85,7 @@ class ClientListTile extends StatelessWidget {
 
           addHorizontalSpacing(1),
 
-          const Icon(Icons.chevron_right, color: Color(0xff8E8A82), size: 24),
+          Icon(Icons.chevron_right, color: AppColors.muted, size: 24),
         ],
       ),
     );
@@ -101,22 +99,22 @@ class ClientFlagChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color bg = const Color(0xffF8EEE6);
-    Color fg = const Color(0xffC9783D);
+    Color bg = AppColors.roseBg;
+    Color fg = AppColors.amber;
 
     if (label == "DEMENTIA") {
-      bg = const Color(0xffEEF1F6);
+      bg = AppColors.bg;
       fg = AppColors.black;
     }
 
     if (label == "DNAR") {
-      bg = const Color(0xffF8E8E5);
-      fg = const Color(0xffB85048);
+      bg = AppColors.roseBg;
+      fg = AppColors.rose;
     }
 
     if (label.contains("ALLERGY")) {
-      bg = const Color(0xffF4EEE2);
-      fg = const Color(0xff9B7626);
+      bg = AppColors.bg;
+      fg = AppColors.goldDeep;
     }
 
     return Container(

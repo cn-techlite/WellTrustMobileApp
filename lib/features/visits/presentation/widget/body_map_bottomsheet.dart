@@ -63,9 +63,9 @@ class _BodyMapBottomSheetState extends State<BodyMapBottomSheet> {
       padding: EdgeInsets.only(bottom: bottomInset),
       child: Container(
         height: MediaQuery.of(context).size.height * .92,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
         ),
         child: Column(
           children: [
@@ -74,7 +74,7 @@ class _BodyMapBottomSheetState extends State<BodyMapBottomSheet> {
               width: 62,
               height: 6,
               decoration: BoxDecoration(
-                color: const Color(0xffd7d0bf),
+                color: AppColors.line,
                 borderRadius: BorderRadius.circular(20),
               ),
             ),
@@ -83,7 +83,7 @@ class _BodyMapBottomSheetState extends State<BodyMapBottomSheet> {
               padding: const EdgeInsets.fromLTRB(14, 18, 14, 18),
               child: Row(
                 children: [
-                  const Expanded(
+                  Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -96,7 +96,7 @@ class _BodyMapBottomSheetState extends State<BodyMapBottomSheet> {
                         SizedBox(height: 6),
                         AppText(
                           text: "Record marks, wounds, pressure areas",
-                          color: Color(0xff8a877f),
+                          color: AppColors.muted,
                           type: AppTextType.bodySmall,
                         ),
                       ],
@@ -107,8 +107,8 @@ class _BodyMapBottomSheetState extends State<BodyMapBottomSheet> {
                     child: Container(
                       width: 42,
                       height: 42,
-                      decoration: const BoxDecoration(
-                        color: Color(0xfffaf8f3),
+                      decoration: BoxDecoration(
+                        color: AppColors.bg,
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(Icons.close, size: 18),
@@ -118,7 +118,7 @@ class _BodyMapBottomSheetState extends State<BodyMapBottomSheet> {
               ),
             ),
 
-            Container(height: 1, color: const Color(0xffded6c7)),
+            Container(height: 1, color: AppColors.line),
 
             Expanded(
               child: SingleChildScrollView(
@@ -148,7 +148,7 @@ class _BodyMapBottomSheetState extends State<BodyMapBottomSheet> {
                       controller: locationController,
                       hint: "Select...",
                       options: bodyLocations,
-                      borderColor: const Color(0xff24447f),
+                      borderColor: AppColors.navy,
                       onSelected: (value) {
                         setState(() {
                           selectedLocation = value;
@@ -190,14 +190,14 @@ class _BodyMapBottomSheetState extends State<BodyMapBottomSheet> {
                       width: double.infinity,
                       padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
-                        color: const Color(0xfffffcf7),
+                        color: AppColors.surface,
                         borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: const Color(0xffeadcc4)),
+                        border: Border.all(color: AppColors.goldBg),
                       ),
-                      child: const AppText(
+                      child: AppText(
                         text:
                             "📷 Photo: attach a photo if appropriate — would open camera in production. Photos auto-saved to the client's record.",
-                        color: Color(0xff9a711f),
+                        color: AppColors.goldDeep,
                         type: AppTextType.bodySmall,
                         fontWeight: FontWeight.w500,
                       ),
@@ -214,7 +214,7 @@ class _BodyMapBottomSheetState extends State<BodyMapBottomSheet> {
                             onPressed: () => Navigator.pop(context),
                             btnColor: Colors.white,
                             textColor: AppColors.black,
-                            borderColor: const Color(0xffded6c7),
+                            borderColor: AppColors.line,
                             borderRadius: 8,
                           ),
                         ),
@@ -224,7 +224,7 @@ class _BodyMapBottomSheetState extends State<BodyMapBottomSheet> {
                           child: AppButton(
                             text: "Save body map",
                             onPressed: () {},
-                            btnColor: const Color(0xff24447f),
+                            btnColor: AppColors.primary,
                             textColor: Colors.white,
                             borderRadius: 8,
                           ),
@@ -253,7 +253,7 @@ class _BodyMapLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppText(
       text: text,
-      color: const Color(0xff4c5048),
+      color: AppColors.muted,
       type: AppTextType.bodySmall,
       fontWeight: FontWeight.w800,
     );
@@ -265,14 +265,14 @@ class _DropDownField extends StatelessWidget {
   final String hint;
   final List<String> options;
   final ValueChanged<String> onSelected;
-  final Color borderColor;
+  final Color? borderColor;
 
   const _DropDownField({
     required this.controller,
     required this.hint,
     required this.options,
     required this.onSelected,
-    this.borderColor = const Color(0xffd0c8b4),
+    this.borderColor,
   });
 
   @override
@@ -299,8 +299,8 @@ class _DropDownField extends StatelessWidget {
               padding: EdgeInsets.only(bottom: mediaQuery.viewInsets.bottom),
               child: Container(
                 height: mediaQuery.size.height * 0.5,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
+                decoration: BoxDecoration(
+                  color: AppColors.surface,
                   borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                 ),
                 child: CustomDropdownBottomSheet(

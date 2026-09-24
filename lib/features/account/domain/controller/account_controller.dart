@@ -1,7 +1,10 @@
 import 'dart:async';
 
+import 'package:well_trust_mobile_app/core/helpers/globals.dart';
 import 'package:well_trust_mobile_app/core/utils/constants.dart';
 import 'package:well_trust_mobile_app/core/utils/package_export.dart';
+import 'package:well_trust_mobile_app/features/account/data/dto/staff_requests.dart';
+import 'package:well_trust_mobile_app/features/account/data/model/user_response_model.dart';
 import 'package:well_trust_mobile_app/features/account/domain/usercases/account_repository.dart';
 import 'package:well_trust_mobile_app/features/account/presentation/state/provider/account_provider.dart';
 import 'package:well_trust_mobile_app/features/account/presentation/state/state_model/account_state_model.dart';
@@ -34,6 +37,7 @@ class AccountController extends AsyncNotifier<AccountStateModel> {
       state = const AsyncValue.loading();
       state = await AsyncValue.guard(() async {
         final response = await _repository.getUserData();
+        _syncGlobals(response);
         return current.copyWith(
           userData: response,
           hasFetchedAccount: true,
@@ -45,6 +49,7 @@ class AccountController extends AsyncNotifier<AccountStateModel> {
     // Already fetched: do a background refresh (no global loading)
     try {
       final response = await _repository.getUserData();
+      _syncGlobals(response);
       state = AsyncData(
         current.copyWith(
           userData: response,
@@ -66,176 +71,144 @@ class AccountController extends AsyncNotifier<AccountStateModel> {
     await getAccount(forceRefresh: true);
   }
 
-  Future<GeneralResultModel> updateProfile({
-    required String firstName,
-    required String lastName,
-    required String imageFile,
-    required String phoneNo,
-    required bool availability,
+  /// Runs a save, then quietly re-reads the profile so every screen shows what
+  /// the API now holds. The current data stays on screen meanwhile, unlike
+  /// [getAccount], which swaps it for a spinner.
+  Future<GeneralResultModel> _saveThenRefresh(
+    Future<GeneralResultModel> Function() save,
+    String failureMessage, {
+    bool references = false,
   }) async {
-    final previous = _current;
-
-    state = const AsyncLoading();
-
-    final result = await AsyncValue.guard(() async {
-      return await _repository.updateProfile(
-        firstName: firstName,
-        lastName: lastName,
-        imageFile: imageFile,
-        phoneNo: phoneNo,
-        availability: availability,
-      );
-    });
+    final result = await AsyncValue.guard(save);
 
     if (result.hasError) {
       state = AsyncData(
-        previous.copyWith(error: result.error.toString(), successMessage: null),
+        _current.copyWith(error: result.error.toString(), successMessage: null),
       );
-
       return GeneralResultModel(
         isSuccess: false,
         message: result.error.toString(),
       );
     }
 
-    await getAccount(forceRefresh: true);
+    final saved = result.value ?? GeneralResultModel.failure(failureMessage);
+    if (!saved.isSuccess) return saved;
 
-    return result.value ??
-        const GeneralResultModel(
-          isSuccess: false,
-          message: "Profile update failed",
-        );
+    try {
+      final fresh = await _repository.getUserData();
+      _syncGlobals(fresh);
+      state = AsyncData(
+        _current.copyWith(userData: fresh, hasFetchedAccount: true),
+      );
+    } catch (_) {
+      // The save worked; the next refresh will show it.
+    }
+    if (references) await loadReferences();
+    return saved;
   }
 
-  Future<GeneralResultModel> addNewAddress({
-    required String userId,
-    required String address,
-    required String addressPostCodes,
-    required String houseNo,
-    required String city,
-    required String stateFile,
-    required double latitude,
-    required double longitude,
-    required String phoneNo,
-    required String userName,
-  }) async {
-    final previous = _current;
-
-    state = const AsyncLoading();
-
-    final result = await AsyncValue.guard(() async {
-      return await _repository.addNewAddress(
-        userId: userId,
-        address: address,
-        addressPostCodes: addressPostCodes,
-        houseNo: houseNo,
-        city: city,
-        state: stateFile,
-        latitude: latitude,
-        longitude: longitude,
-        phoneNo: phoneNo,
-        userName: userName,
-      );
-    });
-
-    if (result.hasError) {
-      state = AsyncData(
-        previous.copyWith(error: result.error.toString(), successMessage: null),
-      );
-
-      return GeneralResultModel(
-        isSuccess: false,
-        message: result.error.toString(),
-      );
-    }
-
-    await getAccount(forceRefresh: true);
-
-    return result.value ??
-        const GeneralResultModel(
-          isSuccess: false,
-          message: "Address creation failed",
-        );
+  /// Keeps the name shown in the header and greeting current.
+  void _syncGlobals(RegisterResponseModel user) {
+    final name = "${user.firstName ?? ''} ${user.surName ?? ''}".trim();
+    if (name.isNotEmpty) globals.userName = name;
   }
 
-  Future<GeneralResultModel> updateAddress({
-    required String addressId,
-    required String address,
-    required String addressPostCodes,
-    required String houseNo,
-    required String city,
-    required double latitude,
-    required double longitude,
-    required String phoneNo,
-    required String userName,
-  }) async {
-    final previous = _current;
-
-    state = const AsyncLoading();
-
-    final result = await AsyncValue.guard(() async {
-      return await _repository.updateAddress(
-        addressId: addressId,
-        address: address,
-        addressPostCodes: addressPostCodes,
-        houseNo: houseNo,
-        city: city,
-        latitude: latitude,
-        longitude: longitude,
-        phoneNo: phoneNo,
-        userName: userName,
-      );
-    });
-
-    if (result.hasError) {
-      state = AsyncData(
-        previous.copyWith(error: result.error.toString(), successMessage: null),
-      );
-
-      return GeneralResultModel(
-        isSuccess: false,
-        message: result.error.toString(),
-      );
-    }
-
-    await getAccount(forceRefresh: true);
-
-    return result.value ??
-        const GeneralResultModel(
-          isSuccess: false,
-          message: "Address update failed",
-        );
+  Future<GeneralResultModel> updateProfile(UpdateStaffRequest request) {
+    return _saveThenRefresh(
+      () => _repository.updateProfile(request),
+      "Profile update failed",
+    );
   }
 
-  Future<GeneralResultModel> deleteDeliveryAddress({
-    required String addressId,
-  }) async {
-    final previous = _current;
+  /// Adds a list record, or sets job details / emergency contact.
+  Future<GeneralResultModel> saveStaffRecord(StaffRecordRequest request) {
+    final adminStaffId = _current.userData?.id ?? globals.userId;
+    return _saveThenRefresh(
+      () => _repository.saveStaffRecord(request, adminStaffId: adminStaffId),
+      "${request.kind.label} could not be saved",
+      references: request.kind == StaffRecordKind.references,
+    );
+  }
 
-    state = const AsyncLoading();
+  Future<GeneralResultModel> updateStaffRecord(
+    String id,
+    StaffRecordRequest request,
+  ) {
+    return _saveThenRefresh(
+      () => _repository.updateStaffRecord(id, request),
+      "${request.kind.label} could not be updated",
+      references: request.kind == StaffRecordKind.references,
+    );
+  }
 
-    final result = await AsyncValue.guard(() async {
-      return await _repository.deleteDeliveryAddress(addressId: addressId);
-    });
+  Future<GeneralResultModel> deleteStaffRecord(
+    StaffRecordKind kind,
+    String id,
+  ) {
+    return _saveThenRefresh(
+      () => _repository.deleteStaffRecord(kind, id),
+      "${kind.label} could not be deleted",
+      references: kind == StaffRecordKind.references,
+    );
+  }
 
-    if (result.hasError) {
-      state = AsyncData(
-        previous.copyWith(error: result.error.toString(), successMessage: null),
-      );
+  /// Emails the referee a link to the reference portal.
+  Future<GeneralResultModel> sendReferenceRequest(String id) {
+    return _saveThenRefresh(
+      () => _repository.sendReferenceRequest(id),
+      "The request could not be sent",
+      references: true,
+    );
+  }
 
-      return GeneralResultModel(
-        isSuccess: false,
-        message: result.error.toString(),
-      );
+  String get _ownId => _current.userData?.id ?? globals.userId;
+
+  /// Loads the carer's referees. The profile call does not include them.
+  /// Keeps what is on screen if it fails.
+  Future<void> loadReferences() async {
+    try {
+      final rows = await _repository.getReferences(_ownId);
+      state = AsyncData(_current.copyWith(references: rows));
+    } catch (e) {
+      state = AsyncData(_current.copyWith(error: e.toString()));
+    }
+  }
+
+  /// Loads the carer's own supervisions, probation and declarations. Each is
+  /// loaded on its own, so one failing does not hide the others. Returns an
+  /// error message if any of them failed, else null.
+  Future<String?> loadOfficeRecords() async {
+    String? error;
+    Future<T> guarded<T>(Future<T> Function() load, T fallback) async {
+      try {
+        return await load();
+      } catch (e) {
+        error = e.toString();
+        return fallback;
+      }
     }
 
-    await getAccount(forceRefresh: true);
-
-    return result.value ??
-        const GeneralResultModel(
-          isSuccess: false,
-          message: "Address delete failed",
-        );
+    final id = _ownId;
+    final supervisions = await guarded(
+      () => _repository.getSupervisions(id),
+      _current.supervisions,
+    );
+    final probation = await guarded(
+      () => _repository.getProbation(id),
+      _current.probation,
+    );
+    final declarations = await guarded(
+      () => _repository.getDeclarations(id),
+      _current.declarations,
+    );
+    state = AsyncData(
+      _current.copyWith(
+        supervisions: supervisions,
+        probation: probation,
+        declarations: declarations,
+      ),
+    );
+    return error;
   }
 
   Future<GeneralResultModel> sendFeedBack({

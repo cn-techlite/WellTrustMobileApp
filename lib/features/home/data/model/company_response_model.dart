@@ -49,12 +49,11 @@ class LogisticPaginatedModel {
 
   factory LogisticPaginatedModel.fromJson(Map<String, dynamic> json) =>
       LogisticPaginatedModel(
-        data:
-            json["data"] == null
-                ? []
-                : List<LogisticResponseModel>.from(
-                  json["data"]!.map((x) => LogisticResponseModel.fromJson(x)),
-                ),
+        data: json["data"] == null
+            ? []
+            : List<LogisticResponseModel>.from(
+                json["data"]!.map((x) => LogisticResponseModel.fromJson(x)),
+              ),
         totalCount: json["totalCount"],
         page: json["page"],
         pageSize: json["pageSize"],
@@ -64,8 +63,9 @@ class LogisticPaginatedModel {
       );
 
   Map<String, dynamic> toJson() => {
-    "data":
-        data == null ? [] : List<dynamic>.from(data!.map((x) => x.toJson())),
+    "data": data == null
+        ? []
+        : List<dynamic>.from(data!.map((x) => x.toJson())),
     "totalCount": totalCount,
     "page": page,
     "pageSize": pageSize,
@@ -214,26 +214,22 @@ class LogisticResponseModel {
         bankName: json["bankName"],
         accountName: json["accountName"],
         accountNumber: json["accountNumber"],
-        deliveryTypes:
-            json["deliveryTypes"] == null
-                ? []
-                : List<String>.from(json["deliveryTypes"]!.map((x) => x)),
-        serviceAreas:
-            json["serviceAreas"] == null
-                ? []
-                : List<String>.from(json["serviceAreas"]!.map((x) => x)),
-        companyReviewModels:
-            json["companyReviewModels"] == null
-                ? []
-                : List<CompanyReviewModel>.from(
-                  json["companyReviewModels"]!.map(
-                    (x) => CompanyReviewModel.fromJson(x),
-                  ),
+        deliveryTypes: json["deliveryTypes"] == null
+            ? []
+            : List<String>.from(json["deliveryTypes"]!.map((x) => x)),
+        serviceAreas: json["serviceAreas"] == null
+            ? []
+            : List<String>.from(json["serviceAreas"]!.map((x) => x)),
+        companyReviewModels: json["companyReviewModels"] == null
+            ? []
+            : List<CompanyReviewModel>.from(
+                json["companyReviewModels"]!.map(
+                  (x) => CompanyReviewModel.fromJson(x),
                 ),
-        createdAt:
-            json["createdAt"] == null
-                ? null
-                : DateTime.parse(json["createdAt"]),
+              ),
+        createdAt: json["createdAt"] == null
+            ? null
+            : DateTime.parse(json["createdAt"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -259,18 +255,15 @@ class LogisticResponseModel {
     "bankName": bankName,
     "accountName": accountName,
     "accountNumber": accountNumber,
-    "deliveryTypes":
-        deliveryTypes == null
-            ? []
-            : List<dynamic>.from(deliveryTypes!.map((x) => x)),
-    "serviceAreas":
-        serviceAreas == null
-            ? []
-            : List<dynamic>.from(serviceAreas!.map((x) => x)),
-    "companyReviewModels":
-        companyReviewModels == null
-            ? []
-            : List<dynamic>.from(companyReviewModels!.map((x) => x.toJson())),
+    "deliveryTypes": deliveryTypes == null
+        ? []
+        : List<dynamic>.from(deliveryTypes!.map((x) => x)),
+    "serviceAreas": serviceAreas == null
+        ? []
+        : List<dynamic>.from(serviceAreas!.map((x) => x)),
+    "companyReviewModels": companyReviewModels == null
+        ? []
+        : List<dynamic>.from(companyReviewModels!.map((x) => x.toJson())),
     "createdAt": createdAt?.toIso8601String(),
   };
 }
@@ -332,10 +325,9 @@ class CompanyReviewModel {
         companyDataModelId: json["companyDataModelId"] ?? "",
         ratingNum: json["ratingNum"] ?? 0,
         orderId: json["orderId"] ?? "",
-        createdAt:
-            json["createdAt"] == null
-                ? null
-                : DateTime.parse(json["createdAt"]),
+        createdAt: json["createdAt"] == null
+            ? null
+            : DateTime.parse(json["createdAt"]),
       );
 
   Map<String, dynamic> toJson() => {

@@ -6,13 +6,11 @@ import 'package:well_trust_mobile_app/features/auth/presentation/state/providers
 import 'package:well_trust_mobile_app/features/auth/presentation/state/state_model/auth_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../data/dto/register_request.dart';
-
 class AuthController extends AsyncNotifier<AuthState> {
   late final AuthRepository _repository;
 
   @override
-  FutureOr<AuthState> build() async {
+  FutureOr<AuthState> build() {
     _repository = ref.read(authRepositoryProvider);
     return const AuthState();
   }
@@ -23,175 +21,68 @@ class AuthController extends AsyncNotifier<AuthState> {
     state = AsyncData(_current.copyWith(rememberMe: value));
   }
 
-  void toggleTerms(bool value) {
-    state = AsyncData(_current.copyWith(agreedToTerms: value));
+  void onUsernameChanged(String value) {
+    state = AsyncData(_current.copyWith(username: value));
   }
 
-  void selectEmail() {
+  void onPinChanged(String value) {
+    state = AsyncData(_current.copyWith(pin: value));
+  }
+
+  void resetLoginForm() {
+    state = AsyncData(_current.copyWith(username: '', pin: ''));
+  }
+
+  Future<AuthResultModel> _run(
+    Future<AuthResultModel> Function() action, {
+    required String fallbackMessage,
+    bool clearStateOnSuccess = false,
+  }) async {
+    final previous = _current;
+    state = const AsyncLoading();
+
+    late final AuthResultModel result;
+    try {
+      result = await action();
+    } catch (error) {
+      final message = error
+          .toString()
+          .replaceFirst(RegExp(r'^Exception:\s*'), '')
+          .trim();
+      result = AuthResultModel.failure(
+        message.isEmpty ? fallbackMessage : message,
+      );
+    }
+
     state = AsyncData(
-      _current.copyWith(
-        isEmailSelected: true,
-        isPhoneSelected: false,
-        email: '',
-        phone: '',
-      ),
+      clearStateOnSuccess && result.isSuccess ? const AuthState() : previous,
     );
-  }
-
-  void selectPhone() {
-    state = AsyncData(
-      _current.copyWith(
-        isEmailSelected: false,
-        isPhoneSelected: true,
-        email: '',
-        phone: '',
-      ),
-    );
-  }
-
-  void onEmailChanged(String value) {
-    state = AsyncData(_current.copyWith(email: value));
-  }
-
-  void onPasswordChanged(String value) {
-    state = AsyncData(_current.copyWith(password: value));
-  }
-
-  void onPhoneChanged(String value) {
-    state = AsyncData(_current.copyWith(phone: value));
-  }
-
-  void onCountryCodeChanged(String value) {
-    state = AsyncData(_current.copyWith(countryCode: value));
-  }
-
-  void onFirstNameChanged(String value) {
-    state = AsyncData(_current.copyWith(firstName: value));
-  }
-
-  void onLastNameChanged(String value) {
-    state = AsyncData(_current.copyWith(lastName: value));
-  }
-
-  void onConfirmPasswordChanged(String value) {
-    state = AsyncData(_current.copyWith(confirmPassword: value));
-  }
-
-  void onOtpChanged(String value) {
-    state = AsyncData(_current.copyWith(otp: value));
+    return result;
   }
 
   Future<AuthResultModel> login({
-    required String identifier,
-    required String password,
-  }) async {
-    final previous = _current;
-    state = const AsyncLoading();
-
-    final result = await AsyncValue.guard(() async {
-      return await _repository.login(
-        identifier: identifier,
-        password: password,
-      );
-    });
-
-    state = AsyncData(previous);
-    return result.value ??
-        const AuthResultModel(isSuccess: false, message: "Login failed");
+    required String username,
+    required String pin,
+  }) {
+    return _run(
+      () => _repository.login(username: username, pin: pin),
+      fallbackMessage: "Login failed",
+    );
   }
 
-  Future<AuthResultModel> register({required RegisterRequest request}) async {
-    final previous = _current;
-    state = const AsyncLoading();
-
-    final result = await AsyncValue.guard(() async {
-      return await _repository.register(request: request);
-    });
-
-    state = AsyncData(previous);
-    return result.value ??
-        const AuthResultModel(isSuccess: false, message: "Registration failed");
+  Future<AuthResultModel> deleteUser() {
+    return _run(
+      _repository.deleteUser,
+      fallbackMessage: "Delete account failed",
+      clearStateOnSuccess: true,
+    );
   }
 
-  Future<AuthResultModel> verifyEmail({
-    required String token,
-    required String password,
-  }) async {
-    final previous = _current;
-    state = const AsyncLoading();
-
-    final result = await AsyncValue.guard(() async {
-      return await _repository.verifyEmail(token: token, password: password);
-    });
-
-    state = AsyncData(previous);
-    return result.value ??
-        const AuthResultModel(isSuccess: false, message: "Verification failed");
-  }
-
-  Future<AuthResultModel> sendVerificationCode({required String email}) async {
-    return await _repository.sendVerificationCode(email: email);
-  }
-
-  Future<AuthResultModel> resendPasswordCode({required String email}) async {
-    final previous = _current;
-    state = const AsyncLoading();
-
-    final result = await AsyncValue.guard(() async {
-      return await _repository.resendPasswordCode(email: email);
-    });
-
-    state = AsyncData(previous);
-
-    return result.value ??
-        const AuthResultModel(isSuccess: false, message: "Failed to send OTP");
-  }
-
-  Future<AuthResultModel> resetPassword({
-    required String token,
-    required String password,
-  }) async {
-    final previous = _current;
-    state = const AsyncLoading();
-
-    final result = await AsyncValue.guard(() async {
-      return await _repository.resetPassword(token: token, password: password);
-    });
-
-    state = AsyncData(previous);
-    return result.value ??
-        const AuthResultModel(
-          isSuccess: false,
-          message: "Password reset failed",
-        );
-  }
-
-  Future<AuthResultModel> deleteUser() async {
-    final previous = _current;
-    state = const AsyncLoading();
-
-    final result = await AsyncValue.guard(() async {
-      return await _repository.deleteUser();
-    });
-
-    state = AsyncData(previous);
-    return result.value ??
-        const AuthResultModel(
-          isSuccess: false,
-          message: "Delete account failed",
-        );
-  }
-
-  Future<AuthResultModel> logout() async {
-    state = const AsyncLoading();
-
-    final result = await AsyncValue.guard(() async {
-      return await _repository.logout();
-    });
-
-    state = AsyncData(const AuthState());
-
-    return result.value ??
-        const AuthResultModel(isSuccess: false, message: "Logout failed");
+  Future<AuthResultModel> logout() {
+    return _run(
+      _repository.logout,
+      fallbackMessage: "Logout failed",
+      clearStateOnSuccess: true,
+    );
   }
 }

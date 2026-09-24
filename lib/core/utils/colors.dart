@@ -1,43 +1,77 @@
 import 'package:flutter/material.dart';
 
+/// WellTrust Carer design tokens (navy + gold on cool grey), light and dark.
+///
+/// Colours are getters that follow [AppColors.dark], which the app root sets
+/// from the resolved theme. Legacy names are kept so existing screens follow
+/// the design.
 class AppColors {
-  static const Color white = Color(0xFFFFFFFF);
-  static const Color darkWhite = Color(0xFFFAFAFA);
-  static const Color black = Color(0xFF000000);
-  static const Color primary = Color(0xFFFF070F);
-  static const Color primaryLight = Color(0xff3F51B5);
-  static const Color primaryDark = Color(0xff201A62);
-  static const Color disable = Color(0xFFC4E6EB);
-  static const Color grey = Color(0xFFD0D4D8);
-  static const Color green = Color(0xFF369D67);
-  static const Color grey1 = Color(0xff4f4f4f);
-  static const Color grey2 = Color(0xff828282);
-  static const Color grey3 = Color(0xfff6f8ff);
-  static const Color grey4 = Color(0xfffdfdff);
-  static const Color scaffoldBG = Color(0xffF5F5F5);
-  static const Color grey5 = Color(0xffe0e0e0);
-  static const Color grey6 = Color(0xffF5F5F5);
+  /// Set by the app root whenever the resolved brightness changes.
+  static bool dark = false;
 
-  static const Color baselines = Color(0xfff7f7f8);
-  static const Color stroke = Color(0xffeeeeee);
-  static const Color warning = Color(0xfff5a633);
-  static const Color red = Color(0xFF250452);
-  static const Color darkBlue = Color(0xFF250452);
-  static const Color blue = Color(0xff418BFA);
-  static const bg = Color(0xFFF5F2EC);
-  static const surface = Color(0xFFFBF9F4);
-  static const cream = Color(0xFFEDE6D3);
-  static const ink = Color(0xFF1A1D1A);
-  static const ink2 = Color(0xFF44483F);
-  static const muted = Color(0xFF8A8578);
-  static const line = Color(0xFFE4DDCD);
-  static const line2 = Color(0xFFD2C9B4);
-  static const navy = Color(0xFF1E3A6F);
-  static const navyDeep = Color(0xFF122548);
-  static const navyDeepest = Color(0xFF0A1530);
-  static const gold = Color(0xFFB8924F);
-  static const goldDeep = Color(0xFF8C6A25);
-  static const rose = Color(0xFFB85048);
-  static const sage = Color(0xFF5D7A58);
-  static const amber = Color(0xFFC97B3F);
+  static Color _t(int light, int darkValue) => Color(dark ? darkValue : light);
+
+  // Fixed
+  static const Color white = Color(0xFFFFFFFF);
+
+  // Surfaces
+  static Color get outer => _t(0xFFE4E9F2, 0xFF060B16);
+  static Color get bg => _t(0xFFF3F5F9, 0xFF0B1322);
+  static Color get surface => _t(0xFFFFFFFF, 0xFF141F36);
+  static Color get scaffoldBG => bg;
+  static Color get darkWhite => bg;
+  static Color get baselines => bg;
+  static Color get grey3 => bg;
+  static Color get grey4 => surface;
+  static Color get grey6 => bg;
+  static Color get cream => goldBg;
+
+  // Text
+  static Color get ink => _t(0xFF12203A, 0xFFE8EDF8);
+  static Color get black => ink;
+  static Color get ink2 => ink;
+  static Color get muted => _t(0xFF55627C, 0xFFA3B0C9);
+  static Color get grey1 => muted;
+  static Color get grey2 => muted;
+
+  // Lines
+  static Color get line => _t(0xFFDBE1EC, 0xFF26344F);
+  static Color get grey => line;
+  static Color get grey5 => line;
+  static Color get stroke => line;
+  static Color get disable => line;
+  static Color get line2 => _t(0xFF8592AB, 0xFF6A7B9C);
+
+  // Brand (header / masthead) stays navy in both themes
+  static Color get navy => _t(0xFF14264A, 0xFF0F1C36);
+  static Color get navyDeep => _t(0xFF0F1C36, 0xFF0B1322);
+  static const Color navyDeepest = Color(0xFF0B1322);
+  static Color get brandMuted => _t(0xFFB9C4DC, 0xFFA9B6D2);
+  static Color get darkBlue => navy;
+  static Color get primaryDark => navyDeep;
+
+  // Buttons: navy in light, gold in dark. Use onPrimary for the label.
+  static Color get primary => _t(0xFF14264A, 0xFFE2BD6B);
+  static Color get onPrimary => _t(0xFFFFFFFF, 0xFF0E1B33);
+
+  // Gold
+  static Color get gold => _t(0xFFC9A24D, 0xFFE2BD6B);
+  static Color get goldBg => _t(0xFFF6EBCF, 0xFF3B2F12);
+  static Color get goldDeep => _t(0xFF6F5209, 0xFFEFCF8A);
+  static Color get onGold => const Color(0xFF14264A);
+
+  // Status
+  static Color get rose => _t(0xFFB42318, 0xFFFF9A8F);
+  static Color get red => rose;
+  static Color get roseBg => _t(0xFFFDE8E6, 0xFF40191A);
+  static Color get sage => _t(0xFF17683A, 0xFF7FDCA6);
+  static Color get green => sage;
+  static Color get sageBg => _t(0xFFE1F3E8, 0xFF123524);
+  static Color get amber => _t(0xFF7F4B00, 0xFFF0C074);
+  static Color get warning => amber;
+  static Color get amberBg => _t(0xFFFDF0D5, 0xFF3A2A0E);
+  static Color get info => _t(0xFF1E4FBF, 0xFF9BBCFF);
+  static Color get blue => info;
+  static Color get primaryLight => info;
+  static Color get infoBg => _t(0xFFE4ECFC, 0xFF172A55);
 }

@@ -22,10 +22,42 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.373128411315-13eumvvguk08q1ls9isfsbfdc3v5irem</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<true/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>google</string>
+		<string>com.google</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>This app uses your camera to capture parcel images and scan QR codes for delivery verification.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>This app uses the local network to enable debugging and communication.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>We use your location to provide accurate delivery tracking and enable background updates even when the app is not active.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>WellTrust records where you are when you clock in to a visit, so the office can confirm the visit took place. Your location is only read at that moment.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>We use your microphone for voice calls and audio features within delivery tracking.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We need access to your photo library to upload parcel images or proof of delivery.</string>
+	<key>NSPushNotificationsUsageDescription</key>
+	<string>We use push notifications to keep you updated about deliveries and promotions.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -49,6 +81,11 @@
 	</dict>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -66,50 +103,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-
-	    <key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>com.googleusercontent.apps.373128411315-13eumvvguk08q1ls9isfsbfdc3v5irem</string>
-			</array>
-		</dict>
-	</array>
-	<key>FirebaseAppDelegateProxyEnabled</key>
-	<true/>
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-		<string>google</string>
-		<string>com.google</string>
-	</array>
-
-	<!-- ✅ REQUIRED PRIVACY USAGE DESCRIPTIONS -->
-	<key>NSLocalNetworkUsageDescription</key>
-	<string>This app uses the local network to enable debugging and communication.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>We use your location to help you find nearby accommodations and track your deliveries while the app is in use.</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>We use your location to provide accurate delivery tracking and enable background updates even when the app is not active.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>This app uses your camera to capture parcel images and scan QR codes for delivery verification.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>We need access to your photo library to upload parcel images or proof of delivery.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>We use your microphone for voice calls and audio features within delivery tracking.</string>
-	<key>NSPushNotificationsUsageDescription</key>
-	<string>We use push notifications to keep you updated about deliveries and promotions.</string>
-
-
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>fetch</string>
-		<string>remote-notification</string>
-	</array>
 	<key>aps-environment</key>
 	<string>development</string>
-
 </dict>
 </plist>

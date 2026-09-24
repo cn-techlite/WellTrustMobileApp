@@ -4,6 +4,7 @@ import 'package:well_trust_mobile_app/core/utils/package_export.dart';
 import 'package:well_trust_mobile_app/core/utils/size_config.dart';
 import 'package:well_trust_mobile_app/features/notes/presentation/screen/notes_details_screen.dart';
 import 'package:well_trust_mobile_app/shared/widgets/app_text.dart';
+import 'package:well_trust_mobile_app/shared/widgets/welltrust_app_bar.dart';
 import 'package:well_trust_mobile_app/shared/widgets/input.dart';
 
 class NotesScreen extends ConsumerStatefulWidget {
@@ -57,154 +58,124 @@ class _NotesScreenState extends ConsumerState<NotesScreen>
     //  final asyncState = ref.watch(packageOrderControllerProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.bg,
 
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        AppText(
-                          text: "Today's Rota",
-                          textAlign: TextAlign.start,
-                          color: AppColors.muted,
-                          type: AppTextType.bodyMedium,
-                          fontWeight: FontWeight.w500,
-                        ),
-
-                        AppText(
-                          text: DateFormat(
-                            'EEEE d MMMM • h:mm a',
-                          ).format(DateTime.now()),
-                          textAlign: TextAlign.start,
-                          color: AppColors.black,
-                          type: AppTextType.bodyMedium,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  Container(
-                    width: 42,
-                    height: 42,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: const LinearGradient(
-                        colors: [AppColors.navy, AppColors.navyDeep],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      color: AppColors.primaryDark,
-                    ),
-                    alignment: Alignment.center,
-                    child: const AppText(
-                      text: "CN",
-                      textAlign: TextAlign.start,
-                      color: AppColors.black,
-                      type: AppTextType.bodyMedium,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-              addVerticalSpacing(3),
-              SearchWidget(
-                text: searchText,
-                onChanged: _filterItems,
-                hintText: "Search Clients",
-              ),
-              addVerticalSpacing(4),
-              RichText(
-                text: TextSpan(
-                  style: AppTextType.bodyMedium.style(
-                    context,
-                    color: Color(0xff8E8A82),
-                    fontSize: 13,
-                    height: 1.35,
-                  ),
+      body: Column(
+        children: [
+          const WellTrustAppBar(title: 'Notes'),
+          Expanded(
+            child: SafeArea(
+              top: false,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    TextSpan(
-                      text: "Showing 6 clients on your rota. ",
-                      style: AppTextType.bodyMedium.style(
-                        context,
-                        color: Color(0xff444942),
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 1.2,
+                    addVerticalSpacing(3),
+                    SearchWidget(
+                      text: searchText,
+                      onChanged: _filterItems,
+                      hintText: "Search Clients",
+                    ),
+                    addVerticalSpacing(4),
+                    RichText(
+                      text: TextSpan(
+                        style: AppTextType.bodyMedium.style(
+                          context,
+                          color: AppColors.muted,
+                          fontSize: 13,
+                          height: 1.35,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: "Showing 6 clients on your rota. ",
+                            style: AppTextType.bodyMedium.style(
+                              context,
+                              color: AppColors.ink,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                          TextSpan(
+                            text: "Tap a name to open their profile and notes.",
+                          ),
+                        ],
                       ),
                     ),
-                    TextSpan(
-                      text: "Tap a name to open their profile and notes.",
+                    Expanded(
+                      child: Container(
+                        color: AppColors.surface,
+                        child: ListView(
+                          children: [
+                            ClientNoteListTile(
+                              initials: "AP",
+                              name: "Anita Patel",
+                              info:
+                                  "📍 14 Linden Avenue · 84 yrs · 14h/week · 4 calls/day",
+                              note:
+                                  "Vascular dementia, lives alone. Daughter visits weekends...",
+                              tags: ["FALLS RISK", "ALLERGY: PENICILLIN"],
+                              onTap: () {
+                                navigateToRoute(
+                                  context,
+                                  ResidentProfileScreen(),
+                                );
+                              },
+                            ),
+                            ClientNoteListTile(
+                              initials: "GD",
+                              name: "George Davies",
+                              info:
+                                  "📍 52 Beech Drive · 78 yrs · 7h/week · 3 calls/day",
+                              note:
+                                  "Heart failure, stable. Lives with wife (84) who does most...",
+                              tags: [],
+                              onTap: () {
+                                navigateToRoute(
+                                  context,
+                                  ResidentProfileScreen(),
+                                );
+                              },
+                            ),
+                            ClientNoteListTile(
+                              initials: "EH",
+                              name: "Edna Henderson",
+                              info:
+                                  "📍 8 Mill Cottages · 91 yrs · 21h/week · 4 calls/day incl. bath visit",
+                              note:
+                                  "Alzheimer's, advanced. Needs full personal care. DNAR in...",
+                              tags: ["DEMENTIA", "FALLS RISK", "DNAR"],
+                              onTap: () {
+                                navigateToRoute(
+                                  context,
+                                  ResidentProfileScreen(),
+                                );
+                              },
+                            ),
+                            ClientNoteListTile(
+                              initials: "OA",
+                              name: "Oluwaseun Akinola",
+                              info:
+                                  "📍 Flat 4 · 72 yrs · 3.5h/week · 2 short calls/day",
+                              note: "",
+                              tags: [],
+                              onTap: () {
+                                navigateToRoute(
+                                  context,
+                                  ResidentProfileScreen(),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ),
-              Expanded(
-                child: Container(
-                  color: Colors.white,
-                  child: ListView(
-                    children: [
-                      ClientNoteListTile(
-                        initials: "AP",
-                        name: "Anita Patel",
-                        info:
-                            "📍 14 Linden Avenue · 84 yrs · 14h/week · 4 calls/day",
-                        note:
-                            "Vascular dementia, lives alone. Daughter visits weekends...",
-                        tags: ["FALLS RISK", "ALLERGY: PENICILLIN"],
-                        onTap: () {
-                          navigateToRoute(context, ResidentProfileScreen());
-                        },
-                      ),
-                      ClientNoteListTile(
-                        initials: "GD",
-                        name: "George Davies",
-                        info:
-                            "📍 52 Beech Drive · 78 yrs · 7h/week · 3 calls/day",
-                        note:
-                            "Heart failure, stable. Lives with wife (84) who does most...",
-                        tags: [],
-                        onTap: () {
-                          navigateToRoute(context, ResidentProfileScreen());
-                        },
-                      ),
-                      ClientNoteListTile(
-                        initials: "EH",
-                        name: "Edna Henderson",
-                        info:
-                            "📍 8 Mill Cottages · 91 yrs · 21h/week · 4 calls/day incl. bath visit",
-                        note:
-                            "Alzheimer's, advanced. Needs full personal care. DNAR in...",
-                        tags: ["DEMENTIA", "FALLS RISK", "DNAR"],
-                        onTap: () {
-                          navigateToRoute(context, ResidentProfileScreen());
-                        },
-                      ),
-                      ClientNoteListTile(
-                        initials: "OA",
-                        name: "Oluwaseun Akinola",
-                        info:
-                            "📍 Flat 4 · 72 yrs · 3.5h/week · 2 short calls/day",
-                        note: "",
-                        tags: [],
-                        onTap: () {
-                          navigateToRoute(context, ResidentProfileScreen());
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -234,16 +205,14 @@ class ClientNoteListTile extends StatelessWidget {
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.fromLTRB(8, 20, 8, 16),
-        decoration: const BoxDecoration(
-          border: Border(
-            bottom: BorderSide(color: Color(0xffE2D8C7), width: 1.4),
-          ),
+        decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(color: AppColors.line, width: 1.4)),
         ),
         child: Row(
           children: [
             CircleAvatar(
               radius: 22,
-              backgroundColor: const Color(0xffBF9747),
+              backgroundColor: AppColors.gold,
               child: AppText(
                 text: initials,
                 textAlign: TextAlign.center,
@@ -270,7 +239,7 @@ class ClientNoteListTile extends StatelessWidget {
                   AppText(
                     text: info,
                     textAlign: TextAlign.start,
-                    color: const Color(0xff8E8A82),
+                    color: AppColors.muted,
                     type: AppTextType.bodySmall,
                     fontWeight: FontWeight.w400,
                   ),
@@ -279,7 +248,7 @@ class ClientNoteListTile extends StatelessWidget {
                     AppText(
                       text: note,
                       textAlign: TextAlign.start,
-                      color: const Color(0xff454A43),
+                      color: AppColors.ink,
                       type: AppTextType.bodySmall,
                       fontWeight: FontWeight.w400,
                     ),
@@ -301,7 +270,7 @@ class ClientNoteListTile extends StatelessWidget {
 
             addHorizontalSpacing(1),
 
-            const Icon(Icons.chevron_right, color: Color(0xff8E8A82), size: 34),
+            Icon(Icons.chevron_right, color: AppColors.muted, size: 34),
           ],
         ),
       ),
@@ -316,22 +285,22 @@ class ClientNoteFlagChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color bg = const Color(0xffF8EEE6);
-    Color fg = const Color(0xffC9783D);
+    Color bg = AppColors.roseBg;
+    Color fg = AppColors.amber;
 
     if (label == "DEMENTIA") {
-      bg = const Color(0xffEEF1F6);
+      bg = AppColors.bg;
       fg = AppColors.black;
     }
 
     if (label == "DNAR") {
-      bg = const Color(0xffF8E8E5);
-      fg = const Color(0xffB85048);
+      bg = AppColors.roseBg;
+      fg = AppColors.rose;
     }
 
     if (label.contains("ALLERGY")) {
-      bg = const Color(0xffF4EEE2);
-      fg = const Color(0xff9B7626);
+      bg = AppColors.bg;
+      fg = AppColors.goldDeep;
     }
 
     return Container(

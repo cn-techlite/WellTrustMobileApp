@@ -4,13 +4,13 @@ import 'package:well_trust_mobile_app/core/utils/size_config.dart';
 
 Widget buildBookingShimmerCard(BuildContext context) {
   return Shimmer.fromColors(
-    baseColor: Colors.grey.shade300,
-    highlightColor: Colors.grey.shade100,
+    baseColor: AppColors.dark ? AppColors.line : Colors.grey.shade300,
+    highlightColor: AppColors.dark ? AppColors.surface : Colors.grey.shade100,
     child: Container(
       width: SizeConfig.widthAdjusted(100),
       margin: const EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: AppColors.surface,
         borderRadius: const BorderRadius.all(Radius.circular(10)),
       ),
       child: Padding(
@@ -21,7 +21,7 @@ Widget buildBookingShimmerCard(BuildContext context) {
               width: SizeConfig.widthAdjusted(100),
               height: 200,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColors.surface,
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(10),
                   topRight: Radius.circular(10),
@@ -34,22 +34,22 @@ Widget buildBookingShimmerCard(BuildContext context) {
               children: [
                 Row(
                   children: [
-                    Container(height: 20, width: 150, color: Colors.white),
+                    Container(height: 20, width: 150, color: AppColors.surface),
                     const Spacer(),
-                    Container(height: 20, width: 80, color: Colors.white),
+                    Container(height: 20, width: 80, color: AppColors.surface),
                   ],
                 ),
                 const SizedBox(height: 10),
                 Container(
                   height: 15,
                   width: SizeConfig.widthAdjusted(100) * 0.8,
-                  color: Colors.white,
+                  color: AppColors.surface,
                 ),
                 const SizedBox(height: 5),
                 Container(
                   height: 15,
                   width: SizeConfig.widthAdjusted(100) * 0.6,
-                  color: Colors.white,
+                  color: AppColors.surface,
                 ),
               ],
             ),

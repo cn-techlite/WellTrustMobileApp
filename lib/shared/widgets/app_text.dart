@@ -91,13 +91,13 @@ class AppTheme {
 
   static ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
-    fontFamily: "Mulish",
+    fontFamily: 'Source Sans 3',
     textTheme: _textTheme,
   );
 
   static ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
-    fontFamily: "Mulish",
+    fontFamily: 'Source Sans 3',
     textTheme: _textTheme,
   );
 }

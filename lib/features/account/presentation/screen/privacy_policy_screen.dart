@@ -69,10 +69,10 @@ class _LoginPageState extends State<PrivacyPolicyScreen> {
       child: RichText(
         text: TextSpan(
           style: TextStyle(
-            color: Colors.black,
+            color: AppColors.ink,
             fontWeight: FontWeight.w400,
             fontSize: 15.textSize,
-            fontFamily: "Inter",
+            fontFamily: 'Source Sans 3',
           ),
           children: [
             TextSpan(text: "• "),
@@ -100,12 +100,12 @@ class _LoginPageState extends State<PrivacyPolicyScreen> {
         ),
       ),
       key: key,
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.bg,
       body: SafeArea(
         child: ListView(
           physics: const ScrollPhysics(),
           children: [
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(left: 10.0, right: 10),
               child: AppText(
                 text: "Privacy Policy",
@@ -117,7 +117,7 @@ class _LoginPageState extends State<PrivacyPolicyScreen> {
               ),
             ),
             addVerticalSpacing(5),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(left: 10.0, right: 10),
               child: AppText(
                 text: "Introduction",
@@ -128,7 +128,7 @@ class _LoginPageState extends State<PrivacyPolicyScreen> {
                 fontWeight: FontWeight.w800,
               ),
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(left: 10.0, right: 10),
               child: AppText(
                 text:
@@ -141,7 +141,7 @@ class _LoginPageState extends State<PrivacyPolicyScreen> {
               ),
             ),
             addVerticalSpacing(5),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(left: 10.0, right: 10),
               child: AppText(
                 text: "Information We Collect",
@@ -152,7 +152,7 @@ class _LoginPageState extends State<PrivacyPolicyScreen> {
                 fontWeight: FontWeight.w800,
               ),
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(left: 10.0, right: 10),
               child: AppText(
                 text: "Personal Information",
@@ -163,7 +163,7 @@ class _LoginPageState extends State<PrivacyPolicyScreen> {
                 fontWeight: FontWeight.w800,
               ),
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(left: 10.0, right: 10),
               child: AppText(
                 text:
@@ -185,7 +185,7 @@ class _LoginPageState extends State<PrivacyPolicyScreen> {
               ),
             ),
             addVerticalSpacing(5),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(left: 10.0, right: 10),
               child: AppText(
                 text: "Non-Personal Information ",
@@ -196,7 +196,7 @@ class _LoginPageState extends State<PrivacyPolicyScreen> {
                 fontWeight: FontWeight.w800,
               ),
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(left: 10.0, right: 10),
               child: AppText(
                 text:
@@ -218,7 +218,7 @@ class _LoginPageState extends State<PrivacyPolicyScreen> {
               ),
             ),
             addVerticalSpacing(5),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(left: 10.0, right: 10),
               child: AppText(
                 text: "How We Use Your Information",
@@ -229,7 +229,7 @@ class _LoginPageState extends State<PrivacyPolicyScreen> {
                 fontWeight: FontWeight.w800,
               ),
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(left: 10.0, right: 10),
               child: AppText(
                 text:
@@ -251,7 +251,7 @@ class _LoginPageState extends State<PrivacyPolicyScreen> {
               ),
             ),
             addVerticalSpacing(5),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(left: 10.0, right: 10),
               child: AppText(
                 text: "How We Share Your Information ",
@@ -262,7 +262,7 @@ class _LoginPageState extends State<PrivacyPolicyScreen> {
                 fontWeight: FontWeight.w800,
               ),
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(left: 10.0, right: 10),
               child: AppText(
                 text:
@@ -284,7 +284,7 @@ class _LoginPageState extends State<PrivacyPolicyScreen> {
               ),
             ),
             addVerticalSpacing(5),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(left: 10.0, right: 10),
               child: AppText(
                 text: "Security of Your Information ",
@@ -295,7 +295,7 @@ class _LoginPageState extends State<PrivacyPolicyScreen> {
                 fontWeight: FontWeight.w800,
               ),
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(left: 10.0, right: 10),
               child: AppText(
                 text:
@@ -317,7 +317,7 @@ class _LoginPageState extends State<PrivacyPolicyScreen> {
               ),
             ),
             addVerticalSpacing(5),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(left: 10.0, right: 10),
               child: AppText(
                 text: "Third-Party Links ",
@@ -328,7 +328,7 @@ class _LoginPageState extends State<PrivacyPolicyScreen> {
                 fontWeight: FontWeight.w800,
               ),
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(left: 10.0, right: 10),
               child: AppText(
                 text:
@@ -341,7 +341,7 @@ class _LoginPageState extends State<PrivacyPolicyScreen> {
               ),
             ),
             addVerticalSpacing(5),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(left: 10.0, right: 10),
               child: AppText(
                 text: "Changes to This Privacy Policy ",
@@ -352,7 +352,7 @@ class _LoginPageState extends State<PrivacyPolicyScreen> {
                 fontWeight: FontWeight.w800,
               ),
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(left: 10.0, right: 10),
               child: AppText(
                 text:
@@ -365,7 +365,7 @@ class _LoginPageState extends State<PrivacyPolicyScreen> {
               ),
             ),
             addVerticalSpacing(5),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(left: 10.0, right: 10),
               child: AppText(
                 text: "Contact Us",
@@ -376,7 +376,7 @@ class _LoginPageState extends State<PrivacyPolicyScreen> {
                 fontWeight: FontWeight.w800,
               ),
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(left: 10.0, right: 10),
               child: AppText(
                 text:

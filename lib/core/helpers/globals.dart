@@ -21,6 +21,10 @@ class AppGlobals {
   int? isViewed;
   StopWatchTimer? stopWatchTimer;
   String userEmail = "";
+  String username = "";
+  String kioskDeviceId = "";
+  String kioskDeviceName = "";
+  String kioskDeviceReference = "";
   String userPassword = "";
   String token = "";
   String refreshToken = "";
@@ -56,6 +60,26 @@ class AppGlobals {
     userEmail =
         await authStorage.readSecureAuthValue(
           AuthLocalStorageService.userEmailKey,
+        ) ??
+        "";
+    username =
+        await authStorage.readSecureAuthValue(
+          AuthLocalStorageService.usernameKey,
+        ) ??
+        "";
+    kioskDeviceId =
+        await authStorage.readSecureAuthValue(
+          AuthLocalStorageService.deviceIdKey,
+        ) ??
+        "";
+    kioskDeviceName =
+        await authStorage.readSecureAuthValue(
+          AuthLocalStorageService.deviceNameKey,
+        ) ??
+        "";
+    kioskDeviceReference =
+        await authStorage.readSecureAuthValue(
+          AuthLocalStorageService.deviceReferenceKey,
         ) ??
         "";
     userName =
@@ -112,8 +136,6 @@ Future<void> setupLocator() async {
   if (!getIt.isRegistered<AuthRemoteService>()) {
     getIt.registerLazySingleton<AuthRemoteService>(() => AuthRemoteService());
   }
-
-
 
   if (!getIt.isRegistered<AuthSessionService>()) {
     getIt.registerLazySingleton<AuthSessionService>(() => AuthSessionService());

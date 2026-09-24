@@ -47,8 +47,8 @@ class _RaiseConcernBottomSheetState extends State<RaiseConcernBottomSheet> {
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height * .92,
-      decoration: const BoxDecoration(
-        color: Colors.white,
+      decoration: BoxDecoration(
+        color: AppColors.surface,
         borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
       ),
       child: Column(
@@ -58,7 +58,7 @@ class _RaiseConcernBottomSheetState extends State<RaiseConcernBottomSheet> {
             width: 62,
             height: 6,
             decoration: BoxDecoration(
-              color: const Color(0xffd7d0bf),
+              color: AppColors.line,
               borderRadius: BorderRadius.circular(20),
             ),
           ),
@@ -67,7 +67,7 @@ class _RaiseConcernBottomSheetState extends State<RaiseConcernBottomSheet> {
             padding: const EdgeInsets.fromLTRB(10, 12, 10, 12),
             child: Row(
               children: [
-                const Expanded(
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -80,7 +80,7 @@ class _RaiseConcernBottomSheetState extends State<RaiseConcernBottomSheet> {
                       SizedBox(height: 6),
                       AppText(
                         text: "Early warning to the co-ordinator",
-                        color: Color(0xff8a877f),
+                        color: AppColors.muted,
                         type: AppTextType.bodySmall,
                       ),
                     ],
@@ -91,8 +91,8 @@ class _RaiseConcernBottomSheetState extends State<RaiseConcernBottomSheet> {
                   child: Container(
                     width: 42,
                     height: 42,
-                    decoration: const BoxDecoration(
-                      color: Color(0xfffaf8f3),
+                    decoration: BoxDecoration(
+                      color: AppColors.bg,
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(Icons.close, size: 18),
@@ -102,7 +102,7 @@ class _RaiseConcernBottomSheetState extends State<RaiseConcernBottomSheet> {
             ),
           ),
 
-          Container(height: 1, color: const Color(0xffded6c7)),
+          Container(height: 1, color: AppColors.line),
 
           Expanded(
             child: SingleChildScrollView(
@@ -126,7 +126,7 @@ class _RaiseConcernBottomSheetState extends State<RaiseConcernBottomSheet> {
                           title: "Watch",
                           subtitle: "FYI · review next\nweek",
                           selected: selectedSeverity == "Watch",
-                          titleColor: const Color(0xff9a711f),
+                          titleColor: AppColors.goldDeep,
                           onTap: () {
                             setState(() => selectedSeverity = "Watch");
                           },
@@ -139,7 +139,7 @@ class _RaiseConcernBottomSheetState extends State<RaiseConcernBottomSheet> {
                           title: "Worried",
                           subtitle: "Look at within 48h",
                           selected: selectedSeverity == "Worried",
-                          titleColor: const Color(0xffdd7900),
+                          titleColor: AppColors.amber,
                           onTap: () {
                             setState(() => selectedSeverity = "Worried");
                           },
@@ -152,7 +152,7 @@ class _RaiseConcernBottomSheetState extends State<RaiseConcernBottomSheet> {
                           title: "Urgent",
                           subtitle: "Today, please",
                           selected: selectedSeverity == "Urgent",
-                          titleColor: const Color(0xffbf4b45),
+                          titleColor: AppColors.rose,
                           onTap: () {
                             setState(() => selectedSeverity = "Urgent");
                           },
@@ -223,20 +223,20 @@ class _RaiseConcernBottomSheetState extends State<RaiseConcernBottomSheet> {
                           ),
                           decoration: BoxDecoration(
                             color: selected
-                                ? const Color(0xff24447f)
-                                : Colors.white,
+                                ? AppColors.primary
+                                : AppColors.surface,
                             borderRadius: BorderRadius.circular(22),
                             border: Border.all(
                               color: selected
-                                  ? const Color(0xff24447f)
-                                  : const Color(0xffd0c8b4),
+                                  ? AppColors.primary
+                                  : AppColors.line2,
                             ),
                           ),
                           child: AppText(
                             text: category,
                             color: selected
-                                ? Colors.white
-                                : const Color(0xff4c5048),
+                                ? AppColors.onPrimary
+                                : AppColors.muted,
                             type: AppTextType.labelSmall,
                             fontWeight: FontWeight.w800,
                           ),
@@ -279,11 +279,11 @@ class _RaiseConcernBottomSheetState extends State<RaiseConcernBottomSheet> {
                     width: double.infinity,
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                      color: const Color(0xfff8f9fb),
+                      color: AppColors.bg,
                       borderRadius: BorderRadius.circular(6),
-                      border: Border.all(color: const Color(0xffd5dbe6)),
+                      border: Border.all(color: AppColors.line),
                     ),
-                    child: const AppText(
+                    child: AppText(
                       text:
                           "📌 What happens next: Goes to the care co-ordinator's concerns queue. They'll review by the deadline set by severity. You'll get a message back when they've actioned it.",
                       color: AppColors.black,
@@ -303,7 +303,7 @@ class _RaiseConcernBottomSheetState extends State<RaiseConcernBottomSheet> {
                           onPressed: () => Navigator.pop(context),
                           btnColor: Colors.white,
                           textColor: AppColors.black,
-                          borderColor: const Color(0xffded6c7),
+                          borderColor: AppColors.line,
                           borderRadius: 4,
                         ),
                       ),
@@ -313,7 +313,7 @@ class _RaiseConcernBottomSheetState extends State<RaiseConcernBottomSheet> {
                         child: AppButton(
                           text: "Send concern",
                           onPressed: () {},
-                          btnColor: const Color(0xff24447f),
+                          btnColor: AppColors.primary,
                           textColor: Colors.white,
                           borderRadius: 4,
                         ),
@@ -353,8 +353,8 @@ class _RaiseConcernBottomSheetState extends State<RaiseConcernBottomSheet> {
             constraints: BoxConstraints(
               maxWidth: isTablet ? mediaQuery.size.width : double.infinity,
             ),
-            decoration: const BoxDecoration(
-              color: Colors.white,
+            decoration: BoxDecoration(
+              color: AppColors.surface,
               borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
             ),
             child: CustomDropdownBottomSheet(
@@ -376,11 +376,11 @@ class _ConcernInfoBox extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: const Color(0xfffff8f8),
+        color: AppColors.roseBg,
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: const Color(0xfff0c7c7)),
+        border: Border.all(color: AppColors.roseBg),
       ),
-      child: const AppText(
+      child: AppText(
         text:
             "When to use this — early signals worth flagging. Not an emergency or safeguarding. Examples: client seems more confused than usual, fridge looks empty, family haven't visited in weeks, low mood, hygiene declining, environment looks unsafe.",
         color: AppColors.black,
@@ -400,7 +400,7 @@ class _ConcernLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppText(
       text: text,
-      color: const Color(0xff4c5048),
+      color: AppColors.muted,
       type: AppTextType.bodySmall,
       fontWeight: FontWeight.w800,
     );
@@ -432,10 +432,10 @@ class _SeverityCard extends StatelessWidget {
         height: 150,
         padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.surface,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: selected ? titleColor : const Color(0xffded6c7),
+            color: selected ? titleColor : AppColors.line,
             width: selected ? 2.5 : 1.5,
           ),
         ),
@@ -460,7 +460,7 @@ class _SeverityCard extends StatelessWidget {
             addVerticalSpacing(.5),
             AppText(
               text: subtitle,
-              color: const Color(0xff8a877f),
+              color: AppColors.muted,
               type: AppTextType.bodySmall,
               textAlign: TextAlign.center,
             ),

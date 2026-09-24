@@ -32,7 +32,7 @@ class CustomListTile extends StatelessWidget {
         color: AppColors.black.withValues(alpha: 4),
         fontWeight: FontWeight.w500,
       ),
-      trailing: Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 18),
+      trailing: Icon(Icons.arrow_forward_ios, color: AppColors.muted, size: 18),
       onTap: onTap, // Handle tap event
     );
   }

@@ -28,9 +28,21 @@ class ActiveVisitCard extends StatelessWidget {
       //margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
-        color: const Color(0xFFF7F8F5),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.sage, width: 1),
+        color: AppColors.surface,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(6),
+          bottomLeft: Radius.circular(6),
+          topRight: Radius.circular(20),
+          bottomRight: Radius.circular(20),
+        ),
+        border: Border.all(color: AppColors.line),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x240A142D),
+            blurRadius: 22,
+            offset: Offset(0, 8),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,7 +50,7 @@ class ActiveVisitCard extends StatelessWidget {
           /// Header
           Row(
             children: [
-              const Icon(Icons.play_arrow, color: AppColors.sage, size: 22),
+              Icon(Icons.play_arrow, color: AppColors.sage, size: 22),
               const SizedBox(width: 8),
               AppText(
                 text: "Started $startedTime  $elapsedTime",

@@ -19,45 +19,16 @@ class Endpoints {
   }
 
   static String socketBaseUrl = appBaseUrl;
-  static String baseUrl = "$appBaseUrl/api/";
+  // appBaseUrl already ends in a slash, so trim it before adding /api/ or the
+  // URL comes out as ...co.uk//api/.
+  static String baseUrl = "${appBaseUrl.replaceFirst(RegExp(r'/+$'), '')}/api/";
 
-  static String usersUrl = "auth-users";
-  static String usersLoginUrl = "auth-users/login";
-  static String logoutUrl = "auth-users/logout";
-  static String refreshTokenUrl = "auth-users/tokens/refresh";
-  static String updateBrowseModeUrl = "auth-users/update-user-browse-only";
-  static String emailVerificationUrl = "auth-users/email-verification";
-  static String phoneVerificationUrl = "auth-users/phone-no-verification";
-  static String phoneNoVerificationUrl = "auth-users/PhoneNo-Verification";
-  static String twoFactorEnabledUrl = "auth-users/two-factor-enabled";
-  static String forgetPasswordUrl = "auth-users/forgot-password-request-token";
-  static String resetPasswordUrl = "auth-users/reset-password";
-  static String userUpdate = "auth-users/update-user";
-  static String uploadUrl = "upload-file/upload-web-server";
+  static String usersUrl = "admin-users";
+  static String kioskLoginUrl = "welltrust-kiosk/login";
+  static String logoutUrl = "auth/logout";
+  static String refreshTokenUrl = "auth/tokens/refresh";
 
-  static String resendEmailVerificationTokenUrl =
-      "auth-users/email-verification-request-token";
-  static String contactUsUrl = "info/contact-us";
-  static String googleApiKey = "AIzaSyA1WkH5DbnyUVLhPtqo_qj3Bmr0uKPolSw";
-  //Flutterwave
-  static String flutterWaveKey =
-      "FLWPUBK_TEST-0401652f50334af315d414a6568bdf5f-X";
-
-  static String flutterWaveTestedKey =
-      "FLWPUBK_TEST-0401652f50334af315d414a6568bdf5f-X";
-  static String flutterWaveLiveEdKey =
-      "FLWPUBK_TEST-2624c0cbf9db0abffb95401130be6432-X";
-  // Paystack
-  static String paystackSecretKey =
-      "sk_test_bddced709bd1dc7069ed81c77644f531cc86cb74";
-  static String paystackPublicKey =
-      "pk_test_22bfc066e91d081926d5d5fa7701770dd90ce89a";
-  static String paystackSecretTestedKey =
-      "sk_test_bddced709bd1dc7069ed81c77644f531cc86cb74";
-  static String paystackPublicTestedKey =
-      "pk_test_22bfc066e91d081926d5d5fa7701770dd90ce89a";
-  static String paystackSecretLiveKey =
-      "FLWPUBK_TEST-2624c0cbf9db0abffb95401130be6432-X";
-  static String paystackPublicLiveKey =
-      "FLWPUBK_TEST-2624c0cbf9db0abffb95401130be6432-X";
+  static String userUpdate = "admin-users/update";
+  static String staffRecordsUrl = "admin-staff-records";
+  static String uploadUrl = "upload-files/upload-web-server";
 }

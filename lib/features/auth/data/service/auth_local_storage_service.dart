@@ -9,6 +9,10 @@ class AuthLocalStorageService {
   static const tokenKey = "token";
   static const refreshTokenKey = "refreshToken";
   static const userEmailKey = "userEmail";
+  static const usernameKey = "username";
+  static const deviceIdKey = "deviceId";
+  static const deviceNameKey = "deviceName";
+  static const deviceReferenceKey = "deviceReferenceNumber";
   static const userIdKey = "userId";
   static const userNameKey = "userName";
   static const profilePictureKey = "profilePicture";
@@ -16,15 +20,20 @@ class AuthLocalStorageService {
 
   Future<void> saveLoginSession({
     required LoginResponseModel model,
-    String? password,
+    String? username,
   }) async {
     await _saveSecureSession(model);
+    // A refresh keeps the username saved at sign-in.
+    if ((username ?? '').trim().isNotEmpty) {
+      await _writeSecureString(usernameKey, username);
+    }
 
     await setBoolToLocalStorage(name: "isHomeLoaded", data: true);
     await setBoolToLocalStorage(
       name: "isEmailVerified",
       data: model.emailVerified ?? false,
     );
+    await setToLocalStorage(name: "isLoggedIn", data: "isLoggedIn");
     await setListToLocalStorage(name: "roles", data: model.roles ?? []);
     await setListToLocalStorage(
       name: "permissions",
@@ -43,24 +52,6 @@ class AuthLocalStorageService {
       name: "isEmailVerified",
       data: model.emailVerified ?? false,
     );
-    await setListToLocalStorage(name: "roles", data: model.roles ?? []);
-    await setListToLocalStorage(
-      name: "permissions",
-      data: model.permissions ?? [],
-    );
-  }
-
-  Future<void> saveVerifiedEmailSession({
-    required LoginResponseModel model,
-    required String password,
-  }) async {
-    await _saveSecureSession(model);
-
-    await setBoolToLocalStorage(
-      name: "isEmailVerified",
-      data: model.emailVerified ?? false,
-    );
-    await setToLocalStorage(name: "isLoggedIn", data: "isLoggedIn");
     await setListToLocalStorage(name: "roles", data: model.roles ?? []);
     await setListToLocalStorage(
       name: "permissions",
@@ -116,6 +107,9 @@ class AuthLocalStorageService {
     await _writeSecureString(userEmailKey, model.email);
     await _writeSecureString(userIdKey, model.userId);
     await _writeSecureString(userNameKey, model.fullName);
+    await _writeSecureString(deviceIdKey, model.deviceId);
+    await _writeSecureString(deviceNameKey, model.deviceName);
+    await _writeSecureString(deviceReferenceKey, model.deviceReferenceNumber);
     await _writeSecureString(profilePictureKey, model.profileImage);
     await removeFromLocalStorage(name: userPasswordKey);
   }
@@ -141,6 +135,10 @@ const _secureKeys = <String>[
   AuthLocalStorageService.tokenKey,
   AuthLocalStorageService.refreshTokenKey,
   AuthLocalStorageService.userEmailKey,
+  AuthLocalStorageService.usernameKey,
+  AuthLocalStorageService.deviceIdKey,
+  AuthLocalStorageService.deviceNameKey,
+  AuthLocalStorageService.deviceReferenceKey,
   AuthLocalStorageService.userIdKey,
   AuthLocalStorageService.userNameKey,
   AuthLocalStorageService.profilePictureKey,

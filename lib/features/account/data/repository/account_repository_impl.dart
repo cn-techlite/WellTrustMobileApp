@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:http/http.dart' as http;
 import 'package:well_trust_mobile_app/core/extension/error_handling.dart';
+import 'package:well_trust_mobile_app/features/account/data/dto/staff_requests.dart';
 import 'package:well_trust_mobile_app/features/account/data/model/user_response_model.dart';
 import 'package:well_trust_mobile_app/features/account/data/services/account_remote_services.dart';
 import 'package:well_trust_mobile_app/features/account/domain/usercases/account_repository.dart';
@@ -16,136 +18,137 @@ class AccountRepositoryImpl implements AccountRepository {
     return remoteService.getUserData();
   }
 
-  @override
-  Future<GeneralResultModel> updateProfile({
-    required String firstName,
-    required String lastName,
-    required String imageFile,
-    required String phoneNo,
-    required bool availability,
-  }) async {
-    final response = await remoteService.updateProfile(
-      firstName: firstName,
-      lastName: lastName,
-      imageFile: imageFile,
-      phoneNo: phoneNo,
-      availability: availability,
-    );
-    final errorMessage = getErrorMessageFromResponse(
-      response.statusCode,
-      response.body,
-    );
+  /// The API answers with the saved record. Some errors are plain text, so a
+  /// body that is not a JSON object is not treated as a failure.
+  Map<String, dynamic>? _decodeMap(String body) {
+    try {
+      final decoded = json.decode(body);
+      return decoded is Map<String, dynamic> ? decoded : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  GeneralResultModel _result(
+    http.Response response, {
+    required String successMessage,
+  }) {
     if (response.statusCode == 200 || response.statusCode == 201) {
-      final data = json.decode(response.body);
       return GeneralResultModel.success(
         rawData: response.body,
-        message: "Profile updated successfully",
-        data: data,
+        message: successMessage,
+        data: _decodeMap(response.body),
       );
     }
-
-    return GeneralResultModel.failure(errorMessage);
+    if (response.statusCode == 403) {
+      return GeneralResultModel.failure("You can only change your own record.");
+    }
+    return GeneralResultModel.failure(
+      getErrorMessageFromResponse(response.statusCode, response.body),
+    );
   }
 
   @override
-  Future<GeneralResultModel> addNewAddress({
-    required String address,
-    required String city,
-    required String state,
-    required double latitude,
-    required double longitude,
-    required String userId,
-    required String addressPostCodes,
-    required String houseNo,
-    required String phoneNo,
-    required String userName,
-  }) async {
-    final response = await remoteService.addNewAddress(
-      address: address,
-      city: city,
-      state: state,
-      latitude: latitude,
-      longitude: longitude,
-      userId: userId,
-      addressPostCodes: addressPostCodes,
-      houseNo: houseNo,
-      phoneNo: phoneNo,
-      userName: userName,
-    );
-    final errorMessage = getErrorMessageFromResponse(
-      response.statusCode,
-      response.body,
-    );
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      final data = json.decode(response.body);
-      return GeneralResultModel.success(
-        rawData: response.body,
-        message: "Address added successfully",
-        data: data,
-      );
-    }
-    return GeneralResultModel.failure(errorMessage);
+  Future<GeneralResultModel> updateProfile(UpdateStaffRequest request) async {
+    final response = await remoteService.updateProfile(request);
+    return _result(response, successMessage: "Details updated successfully");
   }
 
   @override
-  Future<GeneralResultModel> updateAddress({
-    required String addressId,
-    required String address,
-    required String addressPostCodes,
-    required String houseNo,
-    required String city,
-    required double latitude,
-    required double longitude,
-    required String phoneNo,
-    required String userName,
+  Future<GeneralResultModel> saveStaffRecord(
+    StaffRecordRequest request, {
+    required String adminStaffId,
   }) async {
-    final response = await remoteService.updateAddress(
-      address: address,
-      city: city,
-      latitude: latitude,
-      longitude: longitude,
-      addressId: addressId,
-      addressPostCodes: addressPostCodes,
-      houseNo: houseNo,
-      phoneNo: phoneNo,
-      userName: userName,
+    final response = await remoteService.saveStaffRecord(
+      request,
+      adminStaffId: adminStaffId,
     );
-    final errorMessage = getErrorMessageFromResponse(
-      response.statusCode,
-      response.body,
-    );
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      final data = json.decode(response.body);
-      return GeneralResultModel.success(
-        rawData: response.body,
-        message: "Address updated successfully",
-        data: data,
+    // A carer can add their right to work record once. After that the API
+    // refuses any change from them, whoever the record is for.
+    if (response.statusCode == 403 &&
+        request.kind == StaffRecordKind.compliance) {
+      return GeneralResultModel.failure(
+        "Your right to work record is already on file. Only the office can change it now.",
       );
     }
-    return GeneralResultModel.failure(errorMessage);
+    return _result(
+      response,
+      successMessage: "${request.kind.label} saved successfully",
+    );
   }
 
   @override
-  Future<GeneralResultModel> deleteDeliveryAddress({
-    required String addressId,
-  }) async {
-    final response = await remoteService.deleteDeliveryAddress(
-      addressId: addressId,
+  Future<GeneralResultModel> updateStaffRecord(
+    String id,
+    StaffRecordRequest request,
+  ) async {
+    final response = await remoteService.updateStaffRecord(id, request);
+    return _result(
+      response,
+      successMessage: "${request.kind.label} updated successfully",
     );
-    final errorMessage = getErrorMessageFromResponse(
-      response.statusCode,
-      response.body,
+  }
+
+  @override
+  Future<GeneralResultModel> deleteStaffRecord(
+    StaffRecordKind kind,
+    String id,
+  ) async {
+    final response = await remoteService.deleteStaffRecord(kind, id);
+    return _result(
+      response,
+      successMessage: "${kind.label} deleted successfully",
     );
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      final data = json.decode(response.body);
-      return GeneralResultModel.success(
-        rawData: response.body,
-        message: "Address deleted successfully",
-        data: data,
+  }
+
+  @override
+  Future<GeneralResultModel> sendReferenceRequest(String id) async {
+    final response = await remoteService.sendReferenceRequest(id);
+    if (response.statusCode == 502) {
+      return GeneralResultModel.failure(
+        "The email could not be sent. Please try again later.",
       );
     }
-    return GeneralResultModel.failure(errorMessage);
+    return _result(response, successMessage: "Request sent to the referee");
   }
+
+  @override
+  Future<List<StaffReference>> getReferences(String staffId) async => [
+    for (final j in await remoteService.getStaffRecords(
+      StaffRecordKind.references.segment,
+      staffId,
+    ))
+      StaffReference.fromJson(j),
+  ];
+
+  @override
+  Future<List<StaffSupervision>> getSupervisions(String staffId) async => [
+    for (final j in await remoteService.getStaffRecords(
+      'supervisions',
+      staffId,
+    ))
+      StaffSupervision.fromJson(j),
+  ];
+
+  @override
+  Future<List<StaffProbation>> getProbation(String staffId) async {
+    // The docs list this route as both probation and probations.
+    final rows = await remoteService.getStaffRecords(
+      'probation',
+      staffId,
+      fallbackSegment: 'probations',
+    );
+    return [for (final j in rows) StaffProbation.fromJson(j)];
+  }
+
+  @override
+  Future<List<StaffDeclaration>> getDeclarations(String staffId) async => [
+    for (final j in await remoteService.getStaffRecords(
+      'declarations',
+      staffId,
+    ))
+      StaffDeclaration.fromJson(j),
+  ];
 
   @override
   Future<GeneralResultModel> sendFeedBack({

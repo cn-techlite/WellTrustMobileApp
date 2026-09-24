@@ -1,10 +1,11 @@
+/// Body for POST /api/welltrust-kiosk/login.
 class LoginRequest {
-  final String identifier;
-  final String password;
+  final String username;
+  final String pin;
 
-  const LoginRequest({required this.identifier, required this.password});
+  const LoginRequest({required this.username, required this.pin});
 
   Map<String, dynamic> toJson() {
-    return {"email_PhoneNo": identifier, "password": password};
+    return {"username": username, "passcode": pin};
   }
 }

@@ -75,8 +75,8 @@ class _AddCareNoteBottomSheetState extends State<AddCareNoteBottomSheet> {
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.92,
-      decoration: const BoxDecoration(
-        color: Colors.white,
+      decoration: BoxDecoration(
+        color: AppColors.surface,
         borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
       ),
       child: Column(
@@ -86,7 +86,7 @@ class _AddCareNoteBottomSheetState extends State<AddCareNoteBottomSheet> {
             width: 62,
             height: 6,
             decoration: BoxDecoration(
-              color: const Color(0xffd7d0bf),
+              color: AppColors.line,
               borderRadius: BorderRadius.circular(20),
             ),
           ),
@@ -103,7 +103,7 @@ class _AddCareNoteBottomSheetState extends State<AddCareNoteBottomSheet> {
             onClose: () => Navigator.pop(context),
           ),
 
-          Container(height: 1, color: const Color(0xffded6c7)),
+          Container(height: 1, color: AppColors.line),
 
           Expanded(
             child: PageView(
@@ -190,14 +190,14 @@ class _SheetHeader extends StatelessWidget {
               children: [
                 AppText(
                   text: title,
-                  color: Colors.black,
+                  color: AppColors.ink,
                   type: AppTextType.titleLarge,
                   fontWeight: FontWeight.w800,
                 ),
                 addVerticalSpacing(.5),
                 AppText(
                   text: subtitle,
-                  color: const Color(0xff8a877f),
+                  color: AppColors.muted,
                   type: AppTextType.bodyMedium,
                 ),
               ],
@@ -208,8 +208,8 @@ class _SheetHeader extends StatelessWidget {
             child: Container(
               width: 38,
               height: 38,
-              decoration: const BoxDecoration(
-                color: Color(0xfffaf8f3),
+              decoration: BoxDecoration(
+                color: AppColors.bg,
                 shape: BoxShape.circle,
               ),
               child: const Icon(Icons.close, size: 16),
@@ -237,10 +237,10 @@ class _StepDots extends StatelessWidget {
           height: 10,
           decoration: BoxDecoration(
             color: i == index
-                ? const Color(0xff24447f)
+                ? AppColors.primary
                 : i < index
-                ? const Color(0xff5d825c)
-                : const Color(0xffd7d0bf),
+                ? AppColors.sage
+                : AppColors.line,
             shape: BoxShape.circle,
           ),
         );
@@ -278,14 +278,14 @@ class _PickClientPage extends StatelessWidget {
                   padding: const EdgeInsets.all(18),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: const Color(0xffded6c7)),
-                    color: Colors.white,
+                    border: Border.all(color: AppColors.line),
+                    color: AppColors.surface,
                   ),
                   child: Row(
                     children: [
                       CircleAvatar(
                         radius: 24,
-                        backgroundColor: const Color(0xff24447f),
+                        backgroundColor: AppColors.navy,
                         child: AppText(
                           text: resident.$2,
                           color: Colors.white,
@@ -305,15 +305,15 @@ class _PickClientPage extends StatelessWidget {
                               fontWeight: FontWeight.w800,
                             ),
                             addVerticalSpacing(2),
-                            const AppText(
+                            AppText(
                               text: "Rm",
-                              color: Color(0xff8a877f),
+                              color: AppColors.muted,
                               type: AppTextType.bodySmall,
                             ),
                           ],
                         ),
                       ),
-                      const Icon(Icons.chevron_right, color: Color(0xff8a877f)),
+                      Icon(Icons.chevron_right, color: AppColors.muted),
                     ],
                   ),
                 ),
@@ -328,7 +328,7 @@ class _PickClientPage extends StatelessWidget {
             onPressed: onCancel,
             btnColor: Colors.white,
             textColor: Colors.black,
-            borderColor: const Color(0xffded6c7),
+            borderColor: AppColors.line,
             borderRadius: 16,
           ),
           addVerticalSpacing(2),
@@ -388,8 +388,8 @@ class _PickNoteTypePage extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: const Color(0xffded6c7)),
+                    color: AppColors.surface,
+                    border: Border.all(color: AppColors.line),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Column(
@@ -397,14 +397,14 @@ class _PickNoteTypePage extends StatelessWidget {
                     children: [
                       AppText(
                         text: item.$1,
-                        color: Colors.black,
+                        color: AppColors.ink,
                         type: AppTextType.titleSmall,
                       ),
 
                       addVerticalSpacing(1),
                       AppText(
                         text: item.$2,
-                        color: Colors.black,
+                        color: AppColors.ink,
                         type: AppTextType.bodyLarge,
                         fontWeight: FontWeight.w800,
                       ),
@@ -412,7 +412,7 @@ class _PickNoteTypePage extends StatelessWidget {
                       addVerticalSpacing(.5),
                       AppText(
                         text: item.$3,
-                        color: const Color(0xff8a877f),
+                        color: AppColors.muted,
                         type: AppTextType.bodyMedium,
                       ),
                     ],
@@ -432,7 +432,7 @@ class _PickNoteTypePage extends StatelessWidget {
               onPressed: onBack,
               btnColor: Colors.white,
               textColor: Colors.black,
-              borderColor: const Color(0xffded6c7),
+              borderColor: AppColors.line,
               borderRadius: 16,
             ),
           ),
@@ -499,14 +499,14 @@ class _WriteNotePage extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: const Color(0xffeef3fb),
+              color: AppColors.bg,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xffc3cfe3)),
+              border: Border.all(color: AppColors.line),
             ),
-            child: const AppText(
+            child: AppText(
               text:
                   "✓ CQC EFFECTIVE  Auto-evidenced as: Effective · How staff support people to eat and drink well",
-              color: Color(0xff24447f),
+              color: AppColors.ink,
               type: AppTextType.bodySmall,
               fontWeight: FontWeight.w700,
             ),
@@ -516,10 +516,10 @@ class _WriteNotePage extends StatelessWidget {
 
           Row(
             children: [
-              const Expanded(
+              Expanded(
                 child: AppText(
                   text: "YOUR NOTE *",
-                  color: Color(0xff4c5048),
+                  color: AppColors.muted,
                   type: AppTextType.bodyMedium,
                   fontWeight: FontWeight.w800,
                 ),
@@ -528,7 +528,7 @@ class _WriteNotePage extends StatelessWidget {
                 child: AppButton(
                   text: "✨ Polish",
                   onPressed: () {},
-                  btnColor: const Color(0xff24447f),
+                  btnColor: AppColors.primary,
                   textColor: Colors.white,
                   borderRadius: 14,
                   widthPercent: 50,
@@ -540,8 +540,8 @@ class _WriteNotePage extends StatelessWidget {
                   text: "🎤 Speak",
                   onPressed: () {},
                   btnColor: Colors.white,
-                  textColor: const Color(0xff4c5048),
-                  borderColor: const Color(0xffded6c7),
+                  textColor: AppColors.muted,
+                  borderColor: AppColors.line,
                   borderRadius: 14,
                   widthPercent: 50,
                 ),
@@ -562,19 +562,19 @@ class _WriteNotePage extends StatelessWidget {
 
           addVerticalSpacing(2),
 
-          const AppText(
+          AppText(
             text:
                 "🎙️ Tap Speak to dictate · ✨ Polish tidies your writing while keeping the facts you wrote",
-            color: Color(0xff8a877f),
+            color: AppColors.muted,
             type: AppTextType.bodySmall,
             fontWeight: FontWeight.w500,
           ),
 
           addVerticalSpacing(2),
 
-          const AppText(
+          AppText(
             text: "TAGS (AUTO-SET, EDIT IF NEEDED)",
-            color: Color(0xff4c5048),
+            color: AppColors.muted,
             type: AppTextType.titleSmall,
             fontWeight: FontWeight.w800,
           ),
@@ -595,13 +595,13 @@ class _WriteNotePage extends StatelessWidget {
                     vertical: 8,
                   ),
                   decoration: BoxDecoration(
-                    color: selected ? const Color(0xff24447f) : Colors.white,
-                    borderRadius: BorderRadius.circular(24),
-                    border: Border.all(color: const Color(0xffd0c8b4)),
+                    color: selected ? AppColors.primary : AppColors.surface,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: AppColors.line2),
                   ),
                   child: AppText(
                     text: tag,
-                    color: selected ? Colors.white : const Color(0xff4c5048),
+                    color: selected ? AppColors.onPrimary : AppColors.muted,
                     type: AppTextType.labelSmall,
                     fontWeight: FontWeight.w800,
                   ),
@@ -620,7 +620,7 @@ class _WriteNotePage extends StatelessWidget {
                   onPressed: onBack,
                   btnColor: Colors.white,
                   textColor: Colors.black,
-                  borderColor: const Color(0xffded6c7),
+                  borderColor: AppColors.line,
                   borderRadius: 6,
                 ),
               ),
@@ -629,7 +629,7 @@ class _WriteNotePage extends StatelessWidget {
                 child: AppButton(
                   text: "Save note",
                   onPressed: onSave,
-                  btnColor: const Color(0xff24447f),
+                  btnColor: AppColors.primary,
                   textColor: Colors.white,
                   borderRadius: 6,
                 ),
@@ -659,8 +659,8 @@ class _InfoSelectBox extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: const Color(0xffded6c7)),
+        color: AppColors.surface,
+        border: Border.all(color: AppColors.line),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
@@ -671,14 +671,14 @@ class _InfoSelectBox extends StatelessWidget {
               children: [
                 AppText(
                   text: label,
-                  color: const Color(0xff8a877f),
+                  color: AppColors.muted,
                   type: AppTextType.bodySmall,
                   fontWeight: FontWeight.w800,
                 ),
                 const SizedBox(height: 8),
                 AppText(
                   text: value,
-                  color: Colors.black,
+                  color: AppColors.ink,
                   type: AppTextType.bodyMedium,
                   fontWeight: FontWeight.w800,
                 ),
@@ -687,9 +687,9 @@ class _InfoSelectBox extends StatelessWidget {
           ),
           GestureDetector(
             onTap: onChange,
-            child: const AppText(
+            child: AppText(
               text: "Change ›",
-              color: Color(0xff24447f),
+              color: AppColors.ink,
               type: AppTextType.bodyMedium,
               fontWeight: FontWeight.w800,
             ),

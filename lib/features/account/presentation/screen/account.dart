@@ -1,11 +1,25 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 // ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
 
-import 'package:well_trust_mobile_app/core/utils/size_config.dart';
+import 'package:well_trust_mobile_app/core/helpers/globals.dart';
+import 'package:well_trust_mobile_app/shared/widgets/welltrust_app_bar.dart';
+import 'package:well_trust_mobile_app/core/utils/helper_functions.dart';
+import 'package:well_trust_mobile_app/features/auth/presentation/screen/logins.dart';
+import 'package:well_trust_mobile_app/features/auth/presentation/state/providers/auth_provider.dart';
+import 'package:well_trust_mobile_app/shared/widgets/custom_snackbar.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/screen/help_support.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/screen/more_screens.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/screen/my_documents_screen.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/state/provider/account_provider.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/widget/staff_record_widgets.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/widget/settings_sheet.dart';
+import 'package:well_trust_mobile_app/features/handover/presentation/widget/handover_widgets.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/screen/personal_detail.dart';
+import 'package:well_trust_mobile_app/features/visits/presentation/widget/raise_cocerns_bottomshet.dart';
+import 'package:well_trust_mobile_app/features/visits/presentation/widget/report_incident_bottomsheet.dart';
 
 import '../../../../core/utils/colors.dart';
 import '../../../../core/utils/package_export.dart';
-import '../../../../shared/widgets/app_text.dart';
 
 class AccountPage extends ConsumerStatefulWidget {
   const AccountPage({super.key});
@@ -20,9 +34,9 @@ class _LoginPageState extends ConsumerState<AccountPage> {
   @override
   void initState() {
     super.initState();
-    // final notifier = ref.read(accountControllerProvider.notifier);
+    // Loads the staff record that the document counts below come from.
     Future.microtask(() {
-      //   notifier.getAccount();
+      ref.read(accountControllerProvider.notifier).getAccount();
     });
   }
 
@@ -35,536 +49,308 @@ class _LoginPageState extends ConsumerState<AccountPage> {
     }
   }
 
+  Future<void> _signOut() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Sign out?'),
+        content: const Text('You will need to sign in again to continue.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: const Text('Sign out'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true || !mounted) return;
+
+    final result = await ref.read(authControllerProvider.notifier).logout();
+    if (!mounted) return;
+
+    if (result.isSuccess) {
+      navigateAndRemoveUntilRoute(context, const LoginScreens());
+      return;
+    }
+
+    showCustomSnackbar(
+      context,
+      title: 'Sign out failed',
+      content: result.message ?? 'Please try again.',
+      type: SnackbarType.error,
+      isTopPosition: false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final key = GlobalKey<ScaffoldMessengerState>();
-
-    // final accountAsync = ref.watch(accountControllerProvider);
-    // final account = accountAsync.value;
-    // final user = account?.userData;
-    // final hasLoadedInitially2 = account?.hasFetchedAccount ?? false;
-    // final isLoading = accountAsync.isLoading && !hasLoadedInitially2;
+    final isSigningOut = ref.watch(authControllerProvider).isLoading;
+    final attention = staffAttentionCount(
+      ref.watch(accountControllerProvider).value?.userData,
+    );
+    final name = globals.userName.trim().isEmpty
+        ? 'Staff member'
+        : globals.userName.trim();
 
     return Scaffold(
-      key: key,
-      backgroundColor: AppColors.navyDeepest,
-
-      body: SafeArea(
-        child: ListView(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      backgroundColor: AppColors.bg,
+      body: Column(
+        children: [
+          const WellTrustAppBar(title: 'More'),
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.zero,
               children: [
-                StaffProfileHeaderUi(),
-
-                AppMenuList(
-                  items: [
-                    AppMenuItemData(
-                      icon: '📹',
-                      title: 'Meetings',
-                      subtitle:
-                          'Handovers, supervisions, family meetings · 3 today',
-                      badge: 3,
-                      onTap: () {},
+                Container(
+                  color: AppColors.navy,
+                  padding: const EdgeInsets.fromLTRB(20, 4, 20, 64),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 56,
+                        height: 56,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: AppColors.gold,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Text(
+                          _initials(name),
+                          style: TextStyle(
+                            color: AppColors.navy,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontFamily: 'Playfair Display',
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 24,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              globals.kioskDeviceName.trim().isEmpty
+                                  ? 'Staff carer'
+                                  : 'Staff carer, ${globals.kioskDeviceName.trim()}'
+                                        '${globals.kioskDeviceReference.trim().isEmpty ? '' : ' (${globals.kioskDeviceReference.trim()})'}',
+                              style: TextStyle(color: AppColors.brandMuted),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Transform.translate(
+                  offset: const Offset(0, -44),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      children: [
+                        _MenuTile(
+                          icon: Icons.add_circle_outline,
+                          title: 'Open shifts',
+                          subtitle: '3 shifts you can ask for',
+                          onTap: () => navigateToRoute(
+                            context,
+                            const OpenShiftsScreen(),
+                          ),
+                        ),
+                        _MenuTile(
+                          icon: Icons.access_time,
+                          title: 'My hours',
+                          subtitle: 'Care time and travel from your clock-ins',
+                          onTap: () =>
+                              navigateToRoute(context, const MyHoursScreen()),
+                        ),
+                        _MenuTile(
+                          icon: Icons.assignment_turned_in_outlined,
+                          title: 'Assessments',
+                          subtitle: '2 to complete',
+                          onTap: () => navigateToRoute(
+                            context,
+                            const AssessmentsScreen(),
+                          ),
+                        ),
+                        _MenuTile(
+                          icon: Icons.warning_amber_rounded,
+                          title: 'Incident report',
+                          subtitle: 'Report something that happened',
+                          onTap: () => displayBottomSheet(
+                            context,
+                            ReportIncidentBottomSheet(),
+                          ),
+                        ),
+                        _MenuTile(
+                          icon: Icons.description_outlined,
+                          title: 'Complaints',
+                          subtitle: 'Record a complaint or concern',
+                          onTap: () => displayBottomSheet(
+                            context,
+                            RaiseConcernBottomSheet(),
+                          ),
+                        ),
+                        _MenuTile(
+                          icon: Icons.folder_open_outlined,
+                          title: 'My documents',
+                          subtitle: attention > 0
+                              ? '$attention need attention'
+                              : 'Documents, certificates and qualifications',
+                          badge: attention > 0 ? attention : null,
+                          onTap: () =>
+                              navigateToRoute(context, const DocumentsScreen()),
+                        ),
+                        _MenuTile(
+                          icon: Icons.person_outline,
+                          title: 'My details',
+                          subtitle: 'Your details, job and emergency contact',
+                          onTap: () => navigateToRoute(
+                            context,
+                            const AccountDetailsPage(),
+                          ),
+                        ),
+                        _MenuTile(
+                          icon: Icons.settings_outlined,
+                          title: 'Settings',
+                          subtitle: 'Text size and appearance',
+                          onTap: () => displayBottomSheet(
+                            context,
+                            const SettingsSheet(),
+                          ),
+                        ),
+                        _MenuTile(
+                          icon: Icons.help_outline,
+                          title: 'Help & support',
+                          subtitle: 'Get help with the app',
+                          onTap: () => navigateToRoute(
+                            context,
+                            const HelpAndSupportPage(),
+                          ),
+                        ),
+                        _MenuTile(
+                          icon: Icons.logout,
+                          title: 'Sign out',
+                          subtitle: 'Return to login',
+                          danger: true,
+                          onTap: isSigningOut ? null : _signOut,
+                        ),
+                      ],
                     ),
-                    AppMenuItemData(
-                      icon: '💬',
-                      title: 'Messages',
-                      subtitle: 'Chat with co-ordinator and fellow carers',
-                      badge: 2,
-                      onTap: () {},
-                    ),
-                    AppMenuItemData(
-                      icon: '⚠️',
-                      title: 'Report an incident',
-                      subtitle: 'Falls, medication errors, near-miss',
-                      onTap: () {},
-                    ),
-                    AppMenuItemData(
-                      icon: '🚩',
-                      title: 'Raise a concern',
-                      subtitle: 'Early warning to the co-ordinator',
-                      onTap: () {},
-                    ),
-                    AppMenuItemData(
-                      icon: '📋',
-                      title: 'Competencies',
-                      subtitle: '5 assigned · 3 pending',
-                      badge: 3,
-                      onTap: () {},
-                    ),
-                    AppMenuItemData(
-                      icon: '📜',
-                      title: 'Policies',
-                      subtitle: '6 policies · 2 to read',
-                      badge: 2,
-                      onTap: () {},
-                    ),
-                    AppMenuItemData(
-                      icon: '✍️',
-                      title: 'Declarations',
-                      subtitle: '4 on file · 3 to complete',
-                      badge: 3,
-                      onTap: () {},
-                    ),
-                    AppMenuItemData(
-                      icon: '💡',
-                      title: 'Suggestions & feedback',
-                      subtitle: 'Help shape how the home runs',
-                      onTap: () {},
-                    ),
-                    AppMenuItemData(
-                      icon: '📄',
-                      title: 'My documents',
-                      subtitle: "Upload certificates, see what's expiring",
-                      onTap: () {},
-                    ),
-                    AppMenuItemData(
-                      icon: '🎓',
-                      title: 'Training',
-                      subtitle: '3 modules · 2 expiring in 30 days',
-                      badge: 2,
-                      onTap: () {},
-                    ),
-                    AppMenuItemData(
-                      icon: '🗣',
-                      title: 'Supervisions',
-                      subtitle: 'Last 3 months ago · next due in 2 weeks',
-                      onTap: () {},
-                    ),
-                    AppMenuItemData(
-                      icon: '🏖',
-                      title: 'Holidays',
-                      subtitle: '14 days remaining this year',
-                      onTap: () {},
-                    ),
-                    AppMenuItemData(
-                      icon: '📊',
-                      title: 'Pay & timesheets',
-                      subtitle: 'Last paid: 28 May · next: 28 Jun',
-                      onTap: () {},
-                    ),
-                    AppMenuItemData(
-                      icon: '❓',
-                      title: 'Help & support',
-                      subtitle: 'Get help with the app',
-                      onTap: () {},
-                    ),
-                    AppMenuItemData(
-                      icon: '↩',
-                      title: 'Sign out',
-                      subtitle: 'Return to login',
-                      isDanger: true,
-                      onTap: () {},
-                    ),
-                  ],
+                  ),
                 ),
               ],
             ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class StaffProfileHeaderUi extends StatelessWidget {
-  const StaffProfileHeaderUi({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: AppColors.navyDeepest,
-      padding: const EdgeInsets.fromLTRB(8, 10, 6, 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Container(
-                width: 84,
-                height: 84,
-                decoration: BoxDecoration(
-                  color: AppColors.navy,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: .20),
-                      blurRadius: 28,
-                      offset: const Offset(0, 16),
-                    ),
-                  ],
-                ),
-                alignment: Alignment.center,
-                child: const AppText(
-                  text: "SO",
-                  textAlign: TextAlign.center,
-                  color: Colors.white,
-                  type: AppTextType.headlineLarge,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-              Positioned(
-                right: 4,
-                bottom: 6,
-                child: Container(
-                  width: 22,
-                  height: 22,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                  ),
-                  alignment: Alignment.center,
-                  child: const Icon(
-                    Icons.edit,
-                    color: AppColors.navy,
-                    size: 22,
-                  ),
-                ),
-              ),
-            ],
-          ),
-
-          addVerticalSpacing(3),
-
-          const AppText(
-            text: "Samir Okonjo",
-            textAlign: TextAlign.start,
-            color: Colors.white,
-            type: AppTextType.headlineMedium,
-            fontWeight: FontWeight.w600,
-          ),
-
-          addVerticalSpacing(.3),
-
-          const AppText(
-            text: "Senior Domiciliary Carer · Kettering area",
-            textAlign: TextAlign.start,
-            color: Color(0xFFD8DDEA),
-            type: AppTextType.bodyLarge,
-            fontWeight: FontWeight.w400,
-          ),
-
-          addVerticalSpacing(3),
-
-          const Row(
-            children: [
-              Expanded(
-                child: ProfileStatBox(value: "32h", label: "THIS WEEK"),
-              ),
-              SizedBox(width: 20),
-              Expanded(
-                child: ProfileStatBox(value: "12", label: "NOTES"),
-              ),
-              SizedBox(width: 20),
-              Expanded(
-                child: ProfileStatBox(value: "100%", label: "COMPLIANCE"),
-              ),
-            ],
-          ),
-
-          addVerticalSpacing(1),
-
-          Row(
-            children: [
-              Expanded(
-                child: ProfileActionButton(
-                  text: "🚨 Safeguarding",
-                  backgroundColor: const Color(0xFFB44D45),
-                  onTap: () {},
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: ProfileActionButton(
-                  text: "🚩 Concern",
-                  backgroundColor: const Color(0xFFC97D37),
-                  onTap: () {},
-                ),
-              ),
-            ],
-          ),
-
-          addVerticalSpacing(1),
-
-          const SafetyCheckInfoBox(),
-        ],
-      ),
-    );
-  }
-}
-
-class ProfileStatBox extends StatelessWidget {
-  final String value;
-  final String label;
-
-  const ProfileStatBox({super.key, required this.value, required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 11.heightAdjusted,
-      decoration: BoxDecoration(
-        color: const Color(0xFF2A3A5B),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          AppText(
-            text: value,
-            textAlign: TextAlign.center,
-            color: Colors.white,
-            type: AppTextType.headlineSmall,
-            fontWeight: FontWeight.w700,
-          ),
-          const SizedBox(height: 8),
-          AppText(
-            text: label,
-            textAlign: TextAlign.center,
-            color: const Color(0xFFD8DDEA),
-            type: AppTextType.labelSmall,
-            fontWeight: FontWeight.w400,
           ),
         ],
       ),
     );
   }
+
+  String _initials(String name) => name
+      .split(RegExp(r'\s+'))
+      .where((w) => w.isNotEmpty)
+      .take(2)
+      .map((w) => w[0].toUpperCase())
+      .join();
 }
 
-class ProfileActionButton extends StatelessWidget {
-  final String text;
-  final Color backgroundColor;
-  final VoidCallback? onTap;
-
-  const ProfileActionButton({
-    super.key,
-    required this.text,
-    required this.backgroundColor,
-    this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 6.heightAdjusted,
-      child: ElevatedButton(
-        onPressed: onTap,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: backgroundColor,
-          elevation: 0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        ),
-        child: AppText(
-          text: text,
-          textAlign: TextAlign.center,
-          color: AppColors.white,
-          type: AppTextType.labelMedium,
-          fontWeight: FontWeight.w400,
-        ),
-      ),
-    );
-  }
-}
-
-class SafetyCheckInfoBox extends StatelessWidget {
-  const SafetyCheckInfoBox({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(18, 14, 18, 14),
-      decoration: BoxDecoration(
-        color: const Color(0xFF233150),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFF56627C), width: 1.5),
-      ),
-      child: RichText(
-        text: TextSpan(
-          style: AppTextType.bodySmall.style(
-            context,
-            color: AppColors.white,
-            fontSize: 12,
-            height: 1.45,
-            fontWeight: FontWeight.w400,
-          ),
-          children: [
-            TextSpan(
-              text: "🛡️ Safety check-in: ",
-              style: AppTextType.bodySmall.style(
-                context,
-                color: AppColors.white,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            TextSpan(
-              text:
-                  "When you start a visit, the system watches the clock. If you go ",
-            ),
-            TextSpan(
-              text: "15 min past scheduled end",
-              style: AppTextType.bodySmall.style(
-                context,
-                color: AppColors.white,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            TextSpan(
-              text:
-                  ", you'll get an \"Are you OK?\" prompt. If you don't respond within ",
-            ),
-            TextSpan(
-              text: "5 more min",
-              style: AppTextType.bodySmall.style(
-                context,
-                color: AppColors.white,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            TextSpan(
-              text: ", the on-call manager is alerted automatically.\n\n",
-            ),
-            TextSpan(
-              text:
-                  "Honest demo note: works while the app is open. In production this uses push notifications even when the phone is locked.",
-              style: AppTextType.bodySmall.style(
-                context,
-                color: Color(0xFFD8DDEA),
-                fontStyle: FontStyle.italic,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-//! LIST ITEMS ON ACCOUNT PAGE
-
-class AppMenuList extends StatelessWidget {
-  final List<AppMenuItemData> items;
-
-  const AppMenuList({super.key, required this.items});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: items.map((item) {
-        return AppMenuTile(item: item);
-      }).toList(),
-    );
-  }
-}
-
-class AppMenuTile extends StatelessWidget {
-  final AppMenuItemData item;
-
-  const AppMenuTile({super.key, required this.item});
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: item.onTap,
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(18, 12, 8, 12),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          border: Border(
-            bottom: BorderSide(color: Color(0xFFE2D9C9), width: 1),
-          ),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(6),
-                border: Border.all(color: const Color(0xFFE2D9C9), width: 1.5),
-              ),
-              alignment: Alignment.center,
-              child: AppText(
-                text: item.icon,
-                textAlign: TextAlign.center,
-                color: AppColors.black,
-                type: AppTextType.labelSmall,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-
-            const SizedBox(width: 6),
-
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AppText(
-                    text: item.title,
-                    textAlign: TextAlign.start,
-                    color: item.isDanger
-                        ? const Color(0xFFB85048)
-                        : Colors.black,
-                    type: AppTextType.bodyMedium,
-                    fontWeight: FontWeight.w800,
-                  ),
-                  const SizedBox(height: 5),
-                  AppText(
-                    text: item.subtitle,
-                    textAlign: TextAlign.start,
-                    color: AppColors.muted,
-                    type: AppTextType.bodyMedium,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ],
-              ),
-            ),
-
-            if (item.badge != null) ...[
-              Container(
-                width: 28,
-                height: 28,
-                alignment: Alignment.center,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFB85048),
-                  shape: BoxShape.circle,
-                ),
-                child: AppText(
-                  text: item.badge.toString(),
-                  textAlign: TextAlign.center,
-                  color: Colors.white,
-                  type: AppTextType.bodyMedium,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              const SizedBox(width: 2),
-            ],
-
-            Icon(Icons.chevron_right, color: AppColors.muted, size: 32),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class AppMenuItemData {
-  final String icon;
+/// Menu row from the design's More page (gold icon tile, chevron).
+class _MenuTile extends StatelessWidget {
+  final IconData icon;
   final String title;
   final String subtitle;
   final int? badge;
-  final bool isDanger;
+  final bool danger;
   final VoidCallback? onTap;
 
-  const AppMenuItemData({
+  const _MenuTile({
     required this.icon,
     required this.title,
     required this.subtitle,
     this.badge,
-    this.isDanger = false,
+    this.danger = false,
     this.onTap,
   });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Material(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(14),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(14),
+          child: Container(
+            constraints: const BoxConstraints(minHeight: 68),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: AppColors.line),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 42,
+                  height: 42,
+                  decoration: BoxDecoration(
+                    color: danger ? AppColors.roseBg : AppColors.goldBg,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    icon,
+                    size: 22,
+                    color: danger ? AppColors.rose : AppColors.goldDeep,
+                  ),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 15.5,
+                          color: danger ? AppColors.rose : AppColors.ink,
+                        ),
+                      ),
+                      Text(
+                        subtitle,
+                        style: TextStyle(color: AppColors.muted, fontSize: 13),
+                      ),
+                    ],
+                  ),
+                ),
+                if (badge != null) ...[
+                  Pill.warn('$badge'),
+                  const SizedBox(width: 4),
+                ],
+                Icon(Icons.chevron_right, color: AppColors.muted),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

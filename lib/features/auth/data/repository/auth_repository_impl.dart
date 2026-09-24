@@ -10,10 +10,6 @@ import 'package:well_trust_mobile_app/features/auth/data/service/auth_remote_ser
 import 'package:well_trust_mobile_app/features/auth/data/service/auth_session_service.dart';
 import 'package:well_trust_mobile_app/features/auth/domain/usercases/auth_repository.dart';
 import '../dto/login_request.dart';
-import '../dto/register_request.dart';
-import '../dto/resend_code_request.dart';
-import '../dto/reset_password_request.dart';
-import '../dto/verify_email_request.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteService _remoteService;
@@ -29,39 +25,14 @@ class AuthRepositoryImpl implements AuthRepository {
        _sessionService = sessionService;
 
   @override
-  Future<AuthResultModel> register({required RegisterRequest request}) async {
-    final response = await _remoteService.register(request);
-    final errorMessage = getErrorMessageFromResponse(
-      response.statusCode,
-      response.body,
-    );
-
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      return AuthResultModel.success(
-        rawData: response.body,
-        message: "Registration successful",
-      );
-    }
-
-    return AuthResultModel.failure(errorMessage);
-  }
-
-  @override
   Future<AuthResultModel> login({
-    required String identifier,
-    required String password,
+    required String username,
+    required String pin,
   }) async {
     final response = await _remoteService.login(
-      LoginRequest(identifier: identifier, password: password),
+      LoginRequest(username: username, pin: pin),
     );
-    final Map<String, dynamic> body = jsonDecode(response.body);
-
-    final message = (body["message"] ?? "").toString().trim();
-
-    // Handle unverified email first
-    if (message == "User Email Not Yet Verify") {
-      return AuthResultModel.failure("User Email Not Yet Verify");
-    }
+    final decodedBody = _decodeObject(response.body);
 
     final errorMessage = getErrorMessageFromResponse(
       response.statusCode,
@@ -69,110 +40,34 @@ class AuthRepositoryImpl implements AuthRepository {
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {
-      final model = LoginResponseModel.fromJson(jsonDecode(response.body));
+      if (decodedBody == null) {
+        return AuthResultModel.failure(
+          "The server returned an invalid response.",
+        );
+      }
+
+      // The kiosk login has no email in its response. Keep the one in the
+      // token (if any) so a refresh can still identify the account.
+      final parsed = LoginResponseModel.fromJson(decodedBody);
+      final model = parsed.copyWith(
+        email: parsed.email ?? _emailFromJwt(parsed.token),
+      );
+      if ((model.token ?? '').trim().isEmpty ||
+          (model.userId ?? '').trim().isEmpty) {
+        return AuthResultModel.failure(
+          "The login response did not contain a valid session.",
+        );
+      }
+
       await _localStorageService.saveLoginSession(
         model: model,
-        password: password,
+        username: (model.username ?? '').trim().isNotEmpty
+            ? model.username
+            : username,
       );
       await _sessionService.initialize();
-      await _remoteService.updateDeviceToken();
       await syncDeviceToken();
       return AuthResultModel.success(loginData: model);
-    }
-
-    return AuthResultModel.failure(errorMessage);
-  }
-
-
-  @override
-  Future<AuthResultModel> verifyEmail({
-    required String token,
-    required String password,
-  }) async {
-    final response = await _remoteService.verifyEmail(
-      VerifyEmailRequest(token: token, password: password),
-    );
-
-    final errorMessage = getErrorMessageFromResponse(
-      response.statusCode,
-      response.body,
-    );
-
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      final model = LoginResponseModel.fromJson(jsonDecode(response.body));
-      await _localStorageService.saveVerifiedEmailSession(
-        model: model,
-        password: password,
-      );
-      await _sessionService.initialize();
-
-      return AuthResultModel.success(loginData: model);
-    }
-
-    return AuthResultModel.failure(errorMessage);
-  }
-
-  @override
-  Future<AuthResultModel> sendVerificationCode({required String email}) async {
-    final response = await _remoteService.sendVerificationCode(
-      ResendCodeRequest(email: email),
-    );
-
-    final errorMessage = getErrorMessageFromResponse(
-      response.statusCode,
-      response.body,
-    );
-
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      return AuthResultModel.success(
-        rawData: response.body,
-        message: "Verification code sent",
-      );
-    }
-
-    return AuthResultModel.failure(errorMessage);
-  }
-
-  @override
-  Future<AuthResultModel> resendPasswordCode({required String email}) async {
-    final response = await _remoteService.resendPasswordCode(
-      ResendCodeRequest(email: email),
-    );
-
-    final errorMessage = getErrorMessageFromResponse(
-      response.statusCode,
-      response.body,
-    );
-
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      return AuthResultModel.success(
-        rawData: response.body,
-        message: "Password reset code sent",
-      );
-    }
-
-    return AuthResultModel.failure(errorMessage);
-  }
-
-  @override
-  Future<AuthResultModel> resetPassword({
-    required String token,
-    required String password,
-  }) async {
-    final response = await _remoteService.resetPassword(
-      ResetPasswordRequest(token: token, password: password),
-    );
-
-    final errorMessage = getErrorMessageFromResponse(
-      response.statusCode,
-      response.body,
-    );
-
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      return AuthResultModel.success(
-        rawData: response.body,
-        message: "Password updated successfully",
-      );
     }
 
     return AuthResultModel.failure(errorMessage);
@@ -187,6 +82,8 @@ class AuthRepositoryImpl implements AuthRepository {
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {
+      await _localStorageService.clearAuthSession();
+      await _sessionService.clear();
       return AuthResultModel.success(
         rawData: response.body,
         message: "Account deleted successfully",
@@ -256,14 +153,18 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       await _sessionService.initialize();
 
-      final email = globals.userEmail.trim();
+      final username = globals.username.trim();
       final refreshToken = globals.refreshToken.trim();
 
-      if (email.isEmpty || refreshToken.isEmpty) {
+      if (username.isEmpty || refreshToken.isEmpty) {
         return AuthResultModel.failure("No saved session to refresh");
       }
 
-      final response = await _remoteService.refreshTokens(email, refreshToken);
+      final response = await _remoteService.refreshTokens(
+        username: username,
+        email: globals.userEmail.trim(),
+        refreshToken: refreshToken,
+      );
 
       final errorMessage = getErrorMessageFromResponse(
         response.statusCode,
@@ -283,4 +184,40 @@ class AuthRepositoryImpl implements AuthRepository {
       return AuthResultModel.failure(e.toString());
     }
   }
+}
+
+Map<String, dynamic>? _decodeObject(String responseBody) {
+  try {
+    final decoded = jsonDecode(responseBody);
+    if (decoded is Map<String, dynamic>) return decoded;
+    if (decoded is Map) {
+      return decoded.map((key, value) => MapEntry(key.toString(), value));
+    }
+  } on FormatException {
+    return null;
+  }
+  return null;
+}
+
+/// Reads the email claim from a JWT without verifying it. Only used to tell
+/// the server which account to refresh; the server still validates the token.
+String? _emailFromJwt(String? token) {
+  try {
+    final parts = (token ?? '').split('.');
+    if (parts.length != 3) return null;
+    final payload = jsonDecode(
+      utf8.decode(base64Url.decode(base64Url.normalize(parts[1]))),
+    );
+    if (payload is! Map) return null;
+    for (final key in const [
+      'email',
+      'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress',
+    ]) {
+      final value = payload[key];
+      if (value is String && value.trim().isNotEmpty) return value.trim();
+    }
+  } catch (_) {
+    // Not a readable JWT: nothing to add.
+  }
+  return null;
 }

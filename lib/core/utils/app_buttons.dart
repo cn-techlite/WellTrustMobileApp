@@ -10,9 +10,9 @@ class AppButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final double widthPercent;
   final double heightPercent;
-  final Color btnColor;
+  final Color? btnColor;
   final bool isLoading;
-  final Color textColor;
+  final Color? textColor;
   final double fontSize;
   final double borderRadius;
   final bool safeArea;
@@ -27,16 +27,23 @@ class AppButton extends StatelessWidget {
     required this.onPressed,
     this.widthPercent = 100,
     this.heightPercent = 6,
-    this.btnColor = AppColors.primary,
+    this.btnColor,
     this.isLoading = false,
-    this.textColor = AppColors.white,
+    this.textColor,
     this.fontSize = 12,
-    this.borderRadius = 5,
+    this.borderRadius = 12,
     this.safeArea = false,
     this.child, // ✅ NEW
     this.borderColor,
     this.borderWidth = 1.5,
   });
+
+  Color get _bg => btnColor ?? AppColors.primary;
+  // A plain white label is treated as "automatic" so buttons stay readable on
+  // the light gold used in dark mode.
+  Color get _fg =>
+      (textColor != null && textColor != Colors.white ? textColor : null) ??
+      (_bg.computeLuminance() > 0.5 ? const Color(0xFF0E1B33) : Colors.white);
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +53,7 @@ class AppButton extends StatelessWidget {
       safeArea: safeArea,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: btnColor,
+          color: _bg,
           borderRadius: BorderRadius.circular(borderRadius),
           border: borderColor != null
               ? Border.all(color: borderColor!, width: borderWidth)
@@ -73,7 +80,7 @@ class AppButton extends StatelessWidget {
                 AppText(
                   text: text,
                   textAlign: TextAlign.center,
-                  color: textColor,
+                  color: _fg,
                   fontWeight: FontWeight.w600,
                   type: AppTextType.labelMedium,
                 ),
@@ -85,9 +92,9 @@ class SmallButton extends StatelessWidget {
   final String? text;
   final IconData? icon;
   final VoidCallback onPressed;
-  final Color textColor;
-  final Color iconColor;
-  final Color backgroundColor;
+  final Color? textColor;
+  final Color? iconColor;
+  final Color? backgroundColor;
   final double fontSize;
   final FontWeight fontWeight;
   final double iconSize;
@@ -100,9 +107,9 @@ class SmallButton extends StatelessWidget {
     this.text,
     this.icon,
     required this.onPressed,
-    this.textColor = Colors.blueGrey,
-    this.iconColor = Colors.blueGrey,
-    this.backgroundColor = AppColors.primary,
+    this.textColor,
+    this.iconColor,
+    this.backgroundColor,
     this.fontSize = 15,
     this.fontWeight = FontWeight.w600,
     this.iconSize = 18,
@@ -113,6 +120,11 @@ class SmallButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bg = backgroundColor ?? AppColors.primary;
+    final fg =
+        textColor ??
+        (bg.computeLuminance() > 0.5 ? const Color(0xFF0E1B33) : Colors.white);
+    final iconColor = this.iconColor ?? fg;
     final hasText = text != null && text!.isNotEmpty;
     final hasIcon = icon != null;
 
@@ -131,10 +143,10 @@ class SmallButton extends StatelessWidget {
           child: Text(
             text!,
             style: TextStyle(
-              color: textColor,
+              color: fg,
               fontSize: fontSize.textSize,
               fontWeight: fontWeight,
-              fontFamily: "Manrope",
+              fontFamily: 'Source Sans 3',
             ),
           ),
         ),
@@ -150,7 +162,7 @@ class SmallButton extends StatelessWidget {
       style: TextButton.styleFrom(
         padding: padding,
         minimumSize: Size.zero,
-        backgroundColor: backgroundColor,
+        backgroundColor: bg,
         iconSize: 20,
         shape: isCircular
             ? const CircleBorder()

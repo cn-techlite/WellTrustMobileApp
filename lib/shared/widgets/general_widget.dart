@@ -10,11 +10,11 @@ class FlagChip extends StatelessWidget {
 
   const FlagChip(this.flag, {super.key});
 
-  static const _palette = <String, (Color, Color)>{
-    'dnar': (Color(0x1FB85048), AppColors.rose),
-    'falls': (Color(0x1FC97B3F), AppColors.amber),
-    'allergy': (Color(0x1FB85048), AppColors.rose),
-    'dementia': (Color(0x1F1E3A6F), AppColors.navy),
+  static final _palette = <String, (Color, Color)>{
+    'dnar': (AppColors.rose.withValues(alpha: 0.12), AppColors.rose),
+    'falls': (AppColors.amber.withValues(alpha: 0.12), AppColors.amber),
+    'allergy': (AppColors.rose.withValues(alpha: 0.12), AppColors.rose),
+    'dementia': (AppColors.ink.withValues(alpha: 0.12), AppColors.ink),
   };
 
   @override
@@ -53,7 +53,7 @@ class InitialsAvatar extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           colors: [AppColors.navy, AppColors.navyDeep],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -175,19 +175,19 @@ Widget visitStatusPill(VisitStatus status) {
 
   switch (status) {
     case VisitStatus.inProgress:
-      bg = const Color(0x1F5D7A58);
+      bg = AppColors.sage.withValues(alpha: 0.12);
       fg = AppColors.sage;
       label = '● Live';
       break;
 
     case VisitStatus.complete:
-      bg = const Color(0x1F5D7A58);
+      bg = AppColors.sage.withValues(alpha: 0.12);
       fg = AppColors.sage;
       label = '✓ Done';
       break;
 
     case VisitStatus.missed:
-      bg = const Color(0x1FB85048);
+      bg = AppColors.rose.withValues(alpha: 0.12);
       fg = AppColors.rose;
       label = '⚠ Missed';
       break;

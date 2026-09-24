@@ -8,7 +8,9 @@ import 'package:well_trust_mobile_app/shared/widgets/app_text.dart';
 import 'package:well_trust_mobile_app/shared/widgets/input.dart';
 
 class ReportIncidentBottomSheet extends StatefulWidget {
-  const ReportIncidentBottomSheet({super.key});
+  final String? initialClient;
+
+  const ReportIncidentBottomSheet({super.key, this.initialClient});
 
   @override
   State<ReportIncidentBottomSheet> createState() =>
@@ -17,8 +19,8 @@ class ReportIncidentBottomSheet extends StatefulWidget {
 
 class _ReportIncidentBottomSheetState extends State<ReportIncidentBottomSheet> {
   final typeController = TextEditingController();
-  final clientController = TextEditingController(text: "Edna Henderson");
-  final dateController = TextEditingController(text: "16/06/2026, 09:20");
+  late final TextEditingController clientController;
+  late final TextEditingController dateController;
   final descriptionController = TextEditingController();
   final actionController = TextEditingController();
 
@@ -33,7 +35,7 @@ class _ReportIncidentBottomSheetState extends State<ReportIncidentBottomSheet> {
     "Other",
   ];
 
-  final clients = [
+  final clients = <String>[
     "Anita Patel",
     "George Davies",
     "Edna Henderson",
@@ -41,6 +43,54 @@ class _ReportIncidentBottomSheetState extends State<ReportIncidentBottomSheet> {
     "Maeve O'Connor",
     "Tadeusz Kowalski",
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    final initialClient = widget.initialClient?.trim();
+    if (initialClient != null &&
+        initialClient.isNotEmpty &&
+        !clients.contains(initialClient)) {
+      clients.insert(0, initialClient);
+    }
+    clientController = TextEditingController(
+      text: initialClient?.isNotEmpty == true
+          ? initialClient
+          : 'Edna Henderson',
+    );
+    dateController = TextEditingController(
+      text: DateFormat('dd/MM/yyyy, HH:mm').format(DateTime.now()),
+    );
+  }
+
+  @override
+  void dispose() {
+    typeController.dispose();
+    clientController.dispose();
+    dateController.dispose();
+    descriptionController.dispose();
+    actionController.dispose();
+    super.dispose();
+  }
+
+  void _submit() {
+    final missing = <String>[];
+    if (typeController.text.trim().isEmpty) missing.add('incident type');
+    if (clientController.text.trim().isEmpty) missing.add('client');
+    if (dateController.text.trim().isEmpty) missing.add('date and time');
+    if (descriptionController.text.trim().isEmpty) missing.add('description');
+    if (missing.isNotEmpty) {
+      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+        SnackBar(content: Text('Add the ${missing.join(', ')}.')),
+      );
+      return;
+    }
+    final messenger = ScaffoldMessenger.maybeOf(context);
+    Navigator.pop(context);
+    messenger?.showSnackBar(
+      const SnackBar(content: Text('Incident report submitted to the office.')),
+    );
+  }
 
   Future<String?> showDropDownSheet({
     required String title,
@@ -59,8 +109,8 @@ class _ReportIncidentBottomSheetState extends State<ReportIncidentBottomSheet> {
           padding: EdgeInsets.only(bottom: mediaQuery.viewInsets.bottom),
           child: Container(
             height: mediaQuery.size.height * 0.5,
-            decoration: const BoxDecoration(
-              color: Colors.white,
+            decoration: BoxDecoration(
+              color: AppColors.surface,
               borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
             ),
             child: CustomDropdownBottomSheet(
@@ -117,9 +167,9 @@ class _ReportIncidentBottomSheetState extends State<ReportIncidentBottomSheet> {
       padding: EdgeInsets.only(bottom: bottomInset),
       child: Container(
         height: MediaQuery.of(context).size.height * .92,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
         ),
         child: Column(
           children: [
@@ -128,7 +178,7 @@ class _ReportIncidentBottomSheetState extends State<ReportIncidentBottomSheet> {
               width: 62,
               height: 6,
               decoration: BoxDecoration(
-                color: const Color(0xffd7d0bf),
+                color: AppColors.line,
                 borderRadius: BorderRadius.circular(20),
               ),
             ),
@@ -137,7 +187,7 @@ class _ReportIncidentBottomSheetState extends State<ReportIncidentBottomSheet> {
               padding: const EdgeInsets.fromLTRB(14, 18, 14, 18),
               child: Row(
                 children: [
-                  const Expanded(
+                  Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -150,7 +200,7 @@ class _ReportIncidentBottomSheetState extends State<ReportIncidentBottomSheet> {
                         SizedBox(height: 6),
                         AppText(
                           text: "Co-ordinator will be notified immediately",
-                          color: Color(0xff8a877f),
+                          color: AppColors.muted,
                           type: AppTextType.bodySmall,
                         ),
                       ],
@@ -161,8 +211,8 @@ class _ReportIncidentBottomSheetState extends State<ReportIncidentBottomSheet> {
                     child: Container(
                       width: 42,
                       height: 42,
-                      decoration: const BoxDecoration(
-                        color: Color(0xfffaf8f3),
+                      decoration: BoxDecoration(
+                        color: AppColors.bg,
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(Icons.close, size: 18),
@@ -172,7 +222,7 @@ class _ReportIncidentBottomSheetState extends State<ReportIncidentBottomSheet> {
               ),
             ),
 
-            Container(height: 1, color: const Color(0xffded6c7)),
+            Container(height: 1, color: AppColors.line),
 
             Expanded(
               child: SingleChildScrollView(
@@ -261,14 +311,14 @@ class _ReportIncidentBottomSheetState extends State<ReportIncidentBottomSheet> {
                       width: double.infinity,
                       padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
-                        color: const Color(0xfffff8f8),
+                        color: AppColors.roseBg,
                         borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: const Color(0xfff0c7c7)),
+                        border: Border.all(color: AppColors.roseBg),
                       ),
-                      child: const AppText(
+                      child: AppText(
                         text:
                             "Notifiable? If this involves DoLS breach, abuse, serious injury, or death, the manager must notify CQC within 24h. The system will flag this automatically.",
-                        color: Color(0xffbf4b45),
+                        color: AppColors.rose,
                         type: AppTextType.bodySmall,
                         fontWeight: FontWeight.w500,
                       ),
@@ -285,7 +335,7 @@ class _ReportIncidentBottomSheetState extends State<ReportIncidentBottomSheet> {
                             onPressed: () => Navigator.pop(context),
                             btnColor: Colors.white,
                             textColor: AppColors.black,
-                            borderColor: const Color(0xffded6c7),
+                            borderColor: AppColors.line,
                             borderRadius: 8,
                           ),
                         ),
@@ -294,8 +344,8 @@ class _ReportIncidentBottomSheetState extends State<ReportIncidentBottomSheet> {
                           flex: 3,
                           child: AppButton(
                             text: "Submit incident report",
-                            onPressed: () {},
-                            btnColor: const Color(0xff24447f),
+                            onPressed: _submit,
+                            btnColor: AppColors.primary,
                             textColor: Colors.white,
                             borderRadius: 8,
                           ),
@@ -324,7 +374,7 @@ class _IncidentLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppText(
       text: text,
-      color: const Color(0xff4c5048),
+      color: AppColors.muted,
       type: AppTextType.bodySmall,
       fontWeight: FontWeight.w800,
     );

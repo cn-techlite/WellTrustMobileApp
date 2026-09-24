@@ -1,3 +1,4 @@
+import 'package:well_trust_mobile_app/core/utils/colors.dart';
 // ignore_for_file: deprecated_member_use, use_build_context_synchronously
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -36,18 +37,17 @@ class _CustomDateTimePickerFieldState extends State<CustomDateTimePickerField> {
 
           return Container(
             height: 300,
-            color: Colors.white,
+            color: AppColors.surface,
             child: Column(
               children: [
                 SizedBox(
                   height: 250,
                   child: CupertinoDatePicker(
-                    mode:
-                        widget.showDate && widget.showTime
-                            ? CupertinoDatePickerMode.dateAndTime
-                            : widget.showDate
-                            ? CupertinoDatePickerMode.date
-                            : CupertinoDatePickerMode.time,
+                    mode: widget.showDate && widget.showTime
+                        ? CupertinoDatePickerMode.dateAndTime
+                        : widget.showDate
+                        ? CupertinoDatePickerMode.date
+                        : CupertinoDatePickerMode.time,
                     initialDateTime: now,
                     onDateTimeChanged: (DateTime value) {
                       tempDateTime = value;
@@ -150,18 +150,17 @@ Future<String?> pickDateTime({
       builder: (BuildContext ctx) {
         return Container(
           height: 300,
-          color: Colors.white,
+          color: AppColors.surface,
           child: Column(
             children: [
               SizedBox(
                 height: 250,
                 child: CupertinoDatePicker(
-                  mode:
-                      showDate && showTime
-                          ? CupertinoDatePickerMode.dateAndTime
-                          : showDate
-                          ? CupertinoDatePickerMode.date
-                          : CupertinoDatePickerMode.time,
+                  mode: showDate && showTime
+                      ? CupertinoDatePickerMode.dateAndTime
+                      : showDate
+                      ? CupertinoDatePickerMode.date
+                      : CupertinoDatePickerMode.time,
                   initialDateTime: now,
                   onDateTimeChanged: (DateTime value) {
                     tempDateTime = value;

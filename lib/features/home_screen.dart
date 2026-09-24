@@ -4,8 +4,8 @@ import 'dart:ui';
 import 'package:well_trust_mobile_app/core/helpers/globals.dart';
 import 'package:well_trust_mobile_app/core/utils/constants.dart';
 import 'package:well_trust_mobile_app/features/account/presentation/screen/account.dart';
-import 'package:well_trust_mobile_app/features/account/presentation/state/provider/account_provider.dart';
-import 'package:well_trust_mobile_app/features/meds/presentation/screen/med_screen.dart';
+import 'package:well_trust_mobile_app/features/handover/presentation/screen/handover_screen.dart';
+import 'package:well_trust_mobile_app/features/handover/presentation/state/provider/handover_provider.dart';
 import 'package:well_trust_mobile_app/features/visits/presentation/screen/visit_screen.dart';
 import 'package:well_trust_mobile_app/features/home/presentation/screen/home.dart';
 import 'package:well_trust_mobile_app/features/notes/presentation/screen/notes_screen.dart';
@@ -24,10 +24,8 @@ class HomeScreenPage extends ConsumerStatefulWidget {
   _NavBarfeaturestate createState() => _NavBarfeaturestate();
 }
 
-class _NavBarfeaturestate extends ConsumerState<HomeScreenPage>
-    with WidgetsBindingObserver {
+class _NavBarfeaturestate extends ConsumerState<HomeScreenPage> {
   int _currentIndex = 0;
-  positions.Position? _currentPosition;
   String? _currentAddress;
   String? _city;
   String? _state;
@@ -38,128 +36,90 @@ class _NavBarfeaturestate extends ConsumerState<HomeScreenPage>
     setState(() {
       _currentIndex = widget.imdex;
     });
-    WidgetsBinding.instance.addObserver(this); // Add observer
-    //  setStatus(true);
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this); // Remove observer
     super.dispose();
   }
 
-  void setStatus(bool status) async {
-    await ref
-        .read(accountControllerProvider.notifier)
-        .updateProfile(
-          firstName: "",
-          lastName: "",
-          imageFile: "",
-          phoneNo: "",
-          availability: status,
-        );
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    debugPrint("Lifecycle state: $state");
-    switch (state) {
-      case AppLifecycleState.resumed:
-        setStatus(true); // App is active
-        break;
-      case AppLifecycleState.inactive:
-        debugPrint("App is inactive.");
-        setStatus(false); // Handle inactive state here, if needed
-        break;
-      case AppLifecycleState.paused:
-        setStatus(false); // App is in the background
-        break;
-      case AppLifecycleState.detached:
-        debugPrint("App is detached.");
-        setStatus(false); // Handle detached state here, if needed
-        break;
-      case AppLifecycleState.hidden:
-        debugPrint("App is hidden.");
-        setStatus(false); // Handle hidden state here, if needed
-        break;
-    }
-  }
-
   Future<bool> _handleLocationPermission() async {
-    bool serviceEnabled;
-    positions.LocationPermission permission;
-
-    serviceEnabled = await positions.Geolocator.isLocationServiceEnabled();
+    final serviceEnabled =
+        await positions.Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Location services are disabled. Please enable the services',
-          ),
-        ),
+      _showLocationMessage(
+        'Location services are disabled. Please enable the services',
       );
       return false;
     }
-    permission = await positions.Geolocator.checkPermission();
+
+    var permission = await positions.Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Location permissions are denied')),
-        );
+        _showLocationMessage('Location permissions are denied');
         return false;
       }
     }
     if (permission == LocationPermission.deniedForever) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Location permissions are permanently denied, we cannot request permissions.',
-          ),
-        ),
+      _showLocationMessage(
+        'Location permissions are permanently denied. Enable them in settings.',
       );
       return false;
     }
     return true;
   }
 
-  Future<void> _getCurrentPosition() async {
-    final hasPermission = await _handleLocationPermission();
+  void _showLocationMessage(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.maybeOf(
+      context,
+    )?.showSnackBar(SnackBar(content: Text(message)));
+  }
 
-    if (!hasPermission) return;
-    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
-        .then((positions.Position position) {
-          setState(() => _currentPosition = position);
-          _getAddressFromLatLng(_currentPosition!);
-        })
-        .catchError((e) {
-          debugPrint(e);
-        });
+  Future<void> _getCurrentPosition() async {
+    try {
+      final hasPermission = await _handleLocationPermission();
+      if (!hasPermission) return;
+
+      final position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      if (!mounted) return;
+
+      await _getAddressFromLatLng(position);
+    } catch (error, stackTrace) {
+      debugPrint('Unable to get the current location: $error');
+      debugPrintStack(stackTrace: stackTrace);
+      _showLocationMessage('Unable to access your current location');
+    }
   }
 
   Future<void> _getAddressFromLatLng(positions.Position position) async {
-    await placemarkFromCoordinates(
-          _currentPosition!.latitude,
-          _currentPosition!.longitude,
-        )
-        .then((List<Placemark> placemarks) async {
-          Placemark place = placemarks[0];
-          setState(() {
-            _currentAddress =
-                '${place.street}, ${place.subLocality}, ${place.subAdministrativeArea}, ${place.postalCode}';
-            _city = "${place.subAdministrativeArea}";
-            _state = "${place.administrativeArea}";
-          });
-          await globals.init();
-          printData("Location", _currentAddress!);
-          printData("Latitude", _currentPosition!.latitude);
-          printData("Longitude", _currentPosition!.longitude);
-          printData("City", _city);
-          printData("State", _state);
-        })
-        .catchError((e) {
-          debugPrint(e);
-        });
+    try {
+      final placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+      if (!mounted || placemarks.isEmpty) return;
+
+      final place = placemarks.first;
+      setState(() {
+        _currentAddress =
+            '${place.street}, ${place.subLocality}, ${place.subAdministrativeArea}, ${place.postalCode}';
+        _city = place.subAdministrativeArea;
+        _state = place.administrativeArea;
+      });
+      await globals.init();
+      printData("Location", _currentAddress!);
+      printData("Latitude", position.latitude);
+      printData("Longitude", position.longitude);
+      printData("City", _city);
+      printData("State", _state);
+    } catch (error, stackTrace) {
+      debugPrint('Unable to resolve the current address: $error');
+      debugPrintStack(stackTrace: stackTrace);
+    }
   }
 
   int tabselected = 0;
@@ -176,33 +136,30 @@ class _NavBarfeaturestate extends ConsumerState<HomeScreenPage>
           builder: (context) => BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
             child: AlertDialog(
-              title: const Text(
+              title: Text(
                 'Exit App',
-                style: TextStyle(color: AppColors.primary),
+                style: TextStyle(
+                  color: AppColors.ink,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-              content: const Text(
+              content: Text(
                 'Do you want to exit the app?',
                 style: TextStyle(color: AppColors.primary),
               ),
-              backgroundColor: Colors.white,
+              backgroundColor: AppColors.surface,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15),
               ),
               actions: <Widget>[
                 TextButton(
-                  child: const Text(
-                    'Yes',
-                    style: TextStyle(color: Colors.black),
-                  ),
+                  child: Text('Yes', style: TextStyle(color: AppColors.ink)),
                   onPressed: () {
                     SystemNavigator.pop();
                   },
                 ),
                 TextButton(
-                  child: const Text(
-                    'No',
-                    style: TextStyle(color: AppColors.primary),
-                  ),
+                  child: Text('No', style: TextStyle(color: AppColors.primary)),
                   onPressed: () {
                     Navigator.of(context).pop(false);
                   },
@@ -217,10 +174,10 @@ class _NavBarfeaturestate extends ConsumerState<HomeScreenPage>
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [
-      const HomeScreen(),
+      HomeScreen(onOpenVisits: () => onTabTapped(1)),
       const VisitsScreen(),
+      const HandoverScreen(),
       const NotesScreen(),
-      const MedScreen(),
       const AccountPage(),
     ];
     return Consumer(
@@ -229,98 +186,87 @@ class _NavBarfeaturestate extends ConsumerState<HomeScreenPage>
           onPopInvokedWithResult: _onPopInvoked,
           canPop: false,
           child: Scaffold(
-            backgroundColor: Colors.white,
+            backgroundColor: AppColors.bg,
             body: children[_currentIndex],
-            bottomNavigationBar: BottomNavigationBar(
-              backgroundColor: Colors.white,
-              selectedLabelStyle: const TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.w400,
-                fontFamily: 'Inter',
-              ),
-              unselectedLabelStyle: const TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.w400,
-                fontFamily: 'Inter',
-              ),
-              selectedItemColor: AppColors.primary,
-              unselectedItemColor: Colors.grey,
-              currentIndex: _currentIndex,
-              type: BottomNavigationBarType.fixed,
-              onTap: (index) {
-                onTabTapped(index);
-              },
-              items: [
-                BottomNavigationBarItem(
-                  icon: Padding(
-                    padding: const EdgeInsets.only(bottom: 5.0),
-                    child: Image.asset(
-                      "assets/images/home.png",
-                      width: 20,
-                      color: _currentIndex == 0
-                          ? AppColors.primary
-                          : Colors.grey,
-                    ),
-                  ),
-                  label: 'Home',
-                ),
-                BottomNavigationBarItem(
-                  icon: Padding(
-                    padding: const EdgeInsets.only(bottom: 5.0, right: 8),
-                    child: Image.asset(
-                      "assets/images/calendar_icon.png",
-                      width: 20,
-                      color: _currentIndex == 1
-                          ? AppColors.primary
-                          : Colors.grey,
-                    ),
-                  ),
-                  label: 'Visits',
-                ),
-                BottomNavigationBarItem(
-                  icon: Padding(
-                    padding: const EdgeInsets.only(bottom: 5.0),
-                    child: Image.asset(
-                      "assets/images/notes_icon.png",
-                      width: 20,
-                      color: _currentIndex == 2
-                          ? AppColors.primary
-                          : Colors.grey,
-                    ),
-                  ),
-                  label: 'Notes',
-                ),
-                BottomNavigationBarItem(
-                  icon: Padding(
-                    padding: const EdgeInsets.only(bottom: 5.0),
-                    child: Image.asset(
-                      "assets/images/meds_icon.png",
-                      width: 20,
-                      color: _currentIndex == 3
-                          ? AppColors.primary
-                          : Colors.grey,
-                    ),
-                  ),
-                  label: 'Meds',
-                ),
-                BottomNavigationBarItem(
-                  icon: Padding(
-                    padding: const EdgeInsets.only(bottom: 5.0),
-                    child: Image.asset(
-                      "assets/images/more_horiz_icon.png",
-                      width: 20,
-                      color: _currentIndex == 4
-                          ? AppColors.primary
-                          : Colors.grey,
-                    ),
-                  ),
-                  label: 'More',
-                ),
-              ],
-            ),
+            bottomNavigationBar: _buildNavBar(),
           ),
         );
       },
+    );
+  }
+
+  Widget _buildNavBar() {
+    const items = [
+      (Icons.wb_sunny_outlined, 'Today'),
+      (Icons.calendar_today_outlined, 'Visits'),
+      (Icons.swap_horiz_rounded, 'Handover'),
+      (Icons.edit_outlined, 'Notes'),
+      (Icons.more_horiz_rounded, 'More'),
+    ];
+    final unreadHandover = ref.watch(handoverProvider).unreadTotal;
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        border: Border(top: BorderSide(color: AppColors.line)),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(2, 6, 2, 6),
+          child: Row(
+            children: List.generate(items.length, (i) {
+              final selected = _currentIndex == i;
+              return Expanded(
+                child: InkWell(
+                  onTap: () => onTabTapped(i),
+                  borderRadius: BorderRadius.circular(15),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 54,
+                          height: 30,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: selected
+                                ? AppColors.goldBg
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Badge(
+                            isLabelVisible: i == 2 && unreadHandover > 0,
+                            label: Text('$unreadHandover'),
+                            backgroundColor: AppColors.rose,
+                            child: Icon(
+                              items[i].$1,
+                              size: 22,
+                              color: selected
+                                  ? AppColors.goldDeep
+                                  : AppColors.muted,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          items[i].$2,
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontFamily: 'Source Sans 3',
+                            fontWeight: FontWeight.w600,
+                            color: selected ? AppColors.ink : AppColors.muted,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }),
+          ),
+        ),
+      ),
     );
   }
 

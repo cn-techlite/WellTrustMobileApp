@@ -17,29 +17,6 @@ class HomeRemoteService {
     'Authorization': 'Bearer ${globals.token}',
   };
 
-  Future<http.Response> getPlaceDetails(String placeId) async {
-    final String apiKey = Endpoints.googleApiKey;
-    final String url =
-        "https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$apiKey";
-
-    final response = await http.get(Uri.parse(url));
-    printData('Places Details', response.body);
-    return response;
-  }
-
-  Future<http.Response> getFullAddressFromLatLng(double lat, double lng) async {
-    final apiKey = Endpoints.googleApiKey;
-    final url =
-        "https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&key=$apiKey";
-
-    final response = await http.get(Uri.parse(url));
-    printData("Response", response.body);
-
-    return response;
-  }
-
-  //!LOGISTICS COMPANY DATA
-
   Future<LogisticPaginatedModel> getAllLogisticsData({
     required int page,
     required int pageSize,

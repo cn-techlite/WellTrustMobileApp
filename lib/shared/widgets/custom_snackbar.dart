@@ -1,7 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
-import 'package:well_trust_mobile_app/core/utils/colors.dart';
 
 void showCustomSnackbar2(
   BuildContext context, {
@@ -99,9 +98,9 @@ class _CustomSnackbarContentState extends State<CustomSnackbarContent>
   Color get backgroundColor {
     switch (widget.type) {
       case SnackbarType.success:
-        return Colors.green;
+        return const Color(0xFF17683A);
       case SnackbarType.error:
-        return Colors.red;
+        return const Color(0xFFB42318);
     }
   }
 
@@ -268,7 +267,9 @@ void showToastVia(
   messenger.showSnackBar(
     SnackBar(
       content: Text(msg, style: const TextStyle(color: Colors.white)),
-      backgroundColor: error ? AppColors.rose : AppColors.navyDeep,
+      backgroundColor: error
+          ? const Color(0xFFB42318)
+          : const Color(0xFF14264A),
       behavior: SnackBarBehavior.floating,
       margin: const EdgeInsets.fromLTRB(16, 0, 16, 96),
       duration: const Duration(seconds: 3),

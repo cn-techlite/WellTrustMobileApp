@@ -40,9 +40,9 @@ class _MedsForVisitBottomSheetState extends State<MedsForVisitBottomSheet> {
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height * .88,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
       ),
       child: Column(
         children: [
@@ -52,8 +52,8 @@ class _MedsForVisitBottomSheetState extends State<MedsForVisitBottomSheet> {
             width: 65,
             height: 6,
             decoration: BoxDecoration(
-              color: const Color(0xffd7d0bf),
-              borderRadius: BorderRadius.circular(30),
+              color: AppColors.line,
+              borderRadius: BorderRadius.circular(14),
             ),
           ),
 
@@ -61,7 +61,7 @@ class _MedsForVisitBottomSheetState extends State<MedsForVisitBottomSheet> {
             padding: const EdgeInsets.fromLTRB(12, 18, 12, 18),
             child: Row(
               children: [
-                const Expanded(
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -76,7 +76,7 @@ class _MedsForVisitBottomSheetState extends State<MedsForVisitBottomSheet> {
 
                       AppText(
                         text: "Maeve O'Connor · 12:00–13:00 window",
-                        color: Color(0xff8a877f),
+                        color: AppColors.muted,
                         type: AppTextType.bodySmall,
                       ),
                     ],
@@ -88,8 +88,8 @@ class _MedsForVisitBottomSheetState extends State<MedsForVisitBottomSheet> {
                   child: Container(
                     width: 42,
                     height: 42,
-                    decoration: const BoxDecoration(
-                      color: Color(0xfffaf8f3),
+                    decoration: BoxDecoration(
+                      color: AppColors.bg,
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(Icons.close),
@@ -99,17 +99,17 @@ class _MedsForVisitBottomSheetState extends State<MedsForVisitBottomSheet> {
             ),
           ),
 
-          Container(height: 1, color: const Color(0xffded6c7)),
+          Container(height: 1, color: AppColors.line),
 
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(12),
               child: Column(
                 children: [
-                  const AppText(
+                  AppText(
                     text:
                         "Showing only meds scheduled within 15 min of this visit's time slot (12:00–13:00). Full MAR is on the Meds tab.",
-                    color: Color(0xff8a877f),
+                    color: AppColors.muted,
                     type: AppTextType.bodySmall,
                   ),
 
@@ -136,7 +136,7 @@ class _MedsForVisitBottomSheetState extends State<MedsForVisitBottomSheet> {
                     onPressed: () => Navigator.pop(context),
                     btnColor: Colors.white,
                     textColor: AppColors.black,
-                    borderColor: const Color(0xffded6c7),
+                    borderColor: AppColors.line,
                     borderRadius: 12,
                   ),
 
@@ -163,9 +163,9 @@ class _MedicationCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xffded6c7)),
+        border: Border.all(color: AppColors.line),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -187,10 +187,10 @@ class _MedicationCard extends StatelessWidget {
                   vertical: 8,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xfff7f1e7),
+                  color: AppColors.bg,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const AppText(
+                child: AppText(
                   text: "⏳ Due",
                   color: AppColors.amber,
                   type: AppTextType.labelSmall,
@@ -204,7 +204,7 @@ class _MedicationCard extends StatelessWidget {
 
           AppText(
             text: medication.instruction,
-            color: const Color(0xff8a877f),
+            color: AppColors.muted,
             type: AppTextType.bodySmall,
           ),
 
@@ -213,9 +213,7 @@ class _MedicationCard extends StatelessWidget {
           AppButton(
             text: medication.isGiven ? "✓ Given" : "✓ Sign as given",
             onPressed: onGiven,
-            btnColor: medication.isGiven
-                ? const Color(0xff5d825c)
-                : const Color(0xff24447f),
+            btnColor: medication.isGiven ? AppColors.sage : AppColors.navy,
             textColor: Colors.white,
             borderRadius: 12,
           ),

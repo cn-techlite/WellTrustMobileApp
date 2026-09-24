@@ -32,7 +32,7 @@ class _LoginPageState extends State<HelpAndSupportPage> {
     return Scaffold(
       appBar: buildFlexibleAppBar(
         context: context,
-        backgroundColor: AppColors.white,
+        backgroundColor: AppColors.surface,
         title: AppText(
           text: "Help and Support",
           textAlign: TextAlign.center,
@@ -43,16 +43,16 @@ class _LoginPageState extends State<HelpAndSupportPage> {
       ),
 
       key: key,
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.bg,
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        color: AppColors.white,
+        color: AppColors.surface,
         child: ListView(
           physics: const ScrollPhysics(),
           children: [
             addVerticalSpacing(20),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(left: 10.0, right: 10),
               child: AppText(
                 text: "FAQ",
@@ -68,7 +68,7 @@ class _LoginPageState extends State<HelpAndSupportPage> {
               child: Padding(
                 padding: const EdgeInsets.all(0),
                 child: Container(
-                  color: AppColors.white,
+                  color: AppColors.surface,
                   child: Column(
                     children: <Widget>[
                       ScrollOnExpand(
@@ -80,7 +80,7 @@ class _LoginPageState extends State<HelpAndSupportPage> {
                                 ExpandablePanelHeaderAlignment.center,
                             tapBodyToCollapse: true,
                           ),
-                          header: const Padding(
+                          header: Padding(
                             padding: EdgeInsets.all(10),
                             child: AppText(
                               text: "How does BMG Work?",
@@ -100,7 +100,7 @@ class _LoginPageState extends State<HelpAndSupportPage> {
                               color: AppColors.black,
                               fontSize: 15.textSize,
                               fontWeight: FontWeight.w700,
-                              fontFamily: "Mulish",
+                              fontFamily: 'Source Sans 3',
                             ),
                           ),
                           expanded: Column(
@@ -117,7 +117,7 @@ class _LoginPageState extends State<HelpAndSupportPage> {
                                       color: AppColors.black,
                                       fontSize: 15.textSize,
                                       fontWeight: FontWeight.w700,
-                                      fontFamily: "Mulish",
+                                      fontFamily: 'Source Sans 3',
                                     ),
                                   ),
                                 ),
@@ -151,7 +151,7 @@ class _LoginPageState extends State<HelpAndSupportPage> {
               child: Padding(
                 padding: const EdgeInsets.all(0),
                 child: Container(
-                  color: AppColors.white,
+                  color: AppColors.surface,
                   child: Column(
                     children: <Widget>[
                       ScrollOnExpand(
@@ -163,7 +163,7 @@ class _LoginPageState extends State<HelpAndSupportPage> {
                                 ExpandablePanelHeaderAlignment.center,
                             tapBodyToCollapse: true,
                           ),
-                          header: const Padding(
+                          header: Padding(
                             padding: EdgeInsets.all(10),
                             child: AppText(
                               text:
@@ -184,7 +184,7 @@ class _LoginPageState extends State<HelpAndSupportPage> {
                               color: AppColors.black,
                               fontSize: 15.textSize,
                               fontWeight: FontWeight.w700,
-                              fontFamily: "Mulish",
+                              fontFamily: 'Source Sans 3',
                             ),
                           ),
                           expanded: Column(
@@ -201,7 +201,7 @@ class _LoginPageState extends State<HelpAndSupportPage> {
                                       color: AppColors.black,
                                       fontWeight: FontWeight.w700,
                                       fontSize: 15.textSize,
-                                      fontFamily: "Mulish",
+                                      fontFamily: 'Source Sans 3',
                                     ),
                                   ),
                                 ),
@@ -235,7 +235,7 @@ class _LoginPageState extends State<HelpAndSupportPage> {
               child: Padding(
                 padding: const EdgeInsets.all(0),
                 child: Container(
-                  color: AppColors.white,
+                  color: AppColors.surface,
                   child: Column(
                     children: <Widget>[
                       ScrollOnExpand(
@@ -247,7 +247,7 @@ class _LoginPageState extends State<HelpAndSupportPage> {
                                 ExpandablePanelHeaderAlignment.center,
                             tapBodyToCollapse: true,
                           ),
-                          header: const Padding(
+                          header: Padding(
                             padding: EdgeInsets.all(10),
                             child: AppText(
                               text:
@@ -268,7 +268,7 @@ class _LoginPageState extends State<HelpAndSupportPage> {
                               color: AppColors.black,
                               fontSize: 15.textSize,
                               fontWeight: FontWeight.w700,
-                              fontFamily: "Mulish",
+                              fontFamily: 'Source Sans 3',
                             ),
                           ),
                           expanded: Column(
@@ -285,7 +285,7 @@ class _LoginPageState extends State<HelpAndSupportPage> {
                                       color: AppColors.black,
                                       fontSize: 15.textSize,
                                       fontWeight: FontWeight.w700,
-                                      fontFamily: "Mulish",
+                                      fontFamily: 'Source Sans 3',
                                     ),
                                   ),
                                 ),
@@ -319,7 +319,7 @@ class _LoginPageState extends State<HelpAndSupportPage> {
               child: Padding(
                 padding: const EdgeInsets.all(0),
                 child: Container(
-                  color: AppColors.white,
+                  color: AppColors.surface,
                   child: Column(
                     children: <Widget>[
                       ScrollOnExpand(
@@ -331,7 +331,7 @@ class _LoginPageState extends State<HelpAndSupportPage> {
                                 ExpandablePanelHeaderAlignment.center,
                             tapBodyToCollapse: true,
                           ),
-                          header: const Padding(
+                          header: Padding(
                             padding: EdgeInsets.all(10),
                             child: AppText(
                               text:
@@ -352,7 +352,7 @@ class _LoginPageState extends State<HelpAndSupportPage> {
                               color: AppColors.black,
                               fontSize: 15.textSize,
                               fontWeight: FontWeight.w700,
-                              fontFamily: "Mulish",
+                              fontFamily: 'Source Sans 3',
                             ),
                           ),
                           expanded: Column(
@@ -369,7 +369,7 @@ class _LoginPageState extends State<HelpAndSupportPage> {
                                       color: AppColors.black,
                                       fontSize: 15.textSize,
                                       fontWeight: FontWeight.w700,
-                                      fontFamily: "Mulish",
+                                      fontFamily: 'Source Sans 3',
                                     ),
                                   ),
                                 ),
@@ -403,7 +403,7 @@ class _LoginPageState extends State<HelpAndSupportPage> {
               child: Padding(
                 padding: const EdgeInsets.all(0),
                 child: Container(
-                  color: AppColors.white,
+                  color: AppColors.surface,
                   child: Column(
                     children: <Widget>[
                       ScrollOnExpand(
@@ -415,7 +415,7 @@ class _LoginPageState extends State<HelpAndSupportPage> {
                                 ExpandablePanelHeaderAlignment.center,
                             tapBodyToCollapse: true,
                           ),
-                          header: const Padding(
+                          header: Padding(
                             padding: EdgeInsets.all(10),
                             child: AppText(
                               text: "How can I make a payment for my order?",
@@ -435,7 +435,7 @@ class _LoginPageState extends State<HelpAndSupportPage> {
                               color: AppColors.black,
                               fontSize: 15.textSize,
                               fontWeight: FontWeight.w700,
-                              fontFamily: "Mulish",
+                              fontFamily: 'Source Sans 3',
                             ),
                           ),
                           expanded: Column(
@@ -452,7 +452,7 @@ class _LoginPageState extends State<HelpAndSupportPage> {
                                       color: AppColors.black,
                                       fontSize: 15.textSize,
                                       fontWeight: FontWeight.w700,
-                                      fontFamily: "Mulish",
+                                      fontFamily: 'Source Sans 3',
                                     ),
                                   ),
                                 ),
@@ -486,7 +486,7 @@ class _LoginPageState extends State<HelpAndSupportPage> {
               child: Padding(
                 padding: const EdgeInsets.all(0),
                 child: Container(
-                  color: AppColors.white,
+                  color: AppColors.surface,
                   child: Column(
                     children: <Widget>[
                       ScrollOnExpand(
@@ -498,7 +498,7 @@ class _LoginPageState extends State<HelpAndSupportPage> {
                                 ExpandablePanelHeaderAlignment.center,
                             tapBodyToCollapse: true,
                           ),
-                          header: const Padding(
+                          header: Padding(
                             padding: EdgeInsets.all(10),
                             child: AppText(
                               text: "How can I make an order?",
@@ -518,7 +518,7 @@ class _LoginPageState extends State<HelpAndSupportPage> {
                               color: AppColors.black,
                               fontSize: 15.textSize,
                               fontWeight: FontWeight.w700,
-                              fontFamily: "Mulish",
+                              fontFamily: 'Source Sans 3',
                             ),
                           ),
                           expanded: Column(
@@ -535,7 +535,7 @@ class _LoginPageState extends State<HelpAndSupportPage> {
                                       color: AppColors.black,
                                       fontSize: 15.textSize,
                                       fontWeight: FontWeight.w700,
-                                      fontFamily: "Mulish",
+                                      fontFamily: 'Source Sans 3',
                                     ),
                                   ),
                                 ),
@@ -569,7 +569,7 @@ class _LoginPageState extends State<HelpAndSupportPage> {
               child: Padding(
                 padding: const EdgeInsets.all(0),
                 child: Container(
-                  color: AppColors.white,
+                  color: AppColors.surface,
                   child: Column(
                     children: <Widget>[
                       ScrollOnExpand(
@@ -581,7 +581,7 @@ class _LoginPageState extends State<HelpAndSupportPage> {
                                 ExpandablePanelHeaderAlignment.center,
                             tapBodyToCollapse: true,
                           ),
-                          header: const Padding(
+                          header: Padding(
                             padding: EdgeInsets.all(10),
                             child: AppText(
                               text: "How can I make a complaint about a rider?",
@@ -601,7 +601,7 @@ class _LoginPageState extends State<HelpAndSupportPage> {
                               color: AppColors.black,
                               fontSize: 15.textSize,
                               fontWeight: FontWeight.w700,
-                              fontFamily: "Mulish",
+                              fontFamily: 'Source Sans 3',
                             ),
                           ),
                           expanded: Column(
@@ -618,7 +618,7 @@ class _LoginPageState extends State<HelpAndSupportPage> {
                                       color: AppColors.black,
                                       fontSize: 15.textSize,
                                       fontWeight: FontWeight.w700,
-                                      fontFamily: "Mulish",
+                                      fontFamily: 'Source Sans 3',
                                     ),
                                   ),
                                 ),
@@ -652,7 +652,7 @@ class _LoginPageState extends State<HelpAndSupportPage> {
               child: Padding(
                 padding: const EdgeInsets.all(0),
                 child: Container(
-                  color: AppColors.white,
+                  color: AppColors.surface,
                   child: Column(
                     children: <Widget>[
                       ScrollOnExpand(
@@ -664,7 +664,7 @@ class _LoginPageState extends State<HelpAndSupportPage> {
                                 ExpandablePanelHeaderAlignment.center,
                             tapBodyToCollapse: true,
                           ),
-                          header: const Padding(
+                          header: Padding(
                             padding: EdgeInsets.all(10),
                             child: AppText(
                               text: "How can I track my order?",
@@ -684,7 +684,7 @@ class _LoginPageState extends State<HelpAndSupportPage> {
                               color: AppColors.black,
                               fontSize: 15.textSize,
                               fontWeight: FontWeight.w700,
-                              fontFamily: "Mulish",
+                              fontFamily: 'Source Sans 3',
                             ),
                           ),
                           expanded: Column(
@@ -701,7 +701,7 @@ class _LoginPageState extends State<HelpAndSupportPage> {
                                       color: AppColors.black,
                                       fontSize: 15.textSize,
                                       fontWeight: FontWeight.w700,
-                                      fontFamily: "Mulish",
+                                      fontFamily: 'Source Sans 3',
                                     ),
                                   ),
                                 ),

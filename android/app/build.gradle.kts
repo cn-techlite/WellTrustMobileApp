@@ -1,6 +1,5 @@
 plugins {
     id("com.android.application")
-    id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
@@ -14,10 +13,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
         isCoreLibraryDesugaringEnabled = true  // ✅ Enable desugaring
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
     defaultConfig {
@@ -40,6 +35,12 @@ android {
     }
 }
 
+kotlin {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+    }
+}
+
 flutter {
     source = "../.."
 }
@@ -49,8 +50,5 @@ dependencies {
     implementation("com.google.firebase:firebase-messaging:23.3.1") {
         exclude(group = "com.google.android.play", module = "core")
     }
-    implementation ("com.android.support:multidex:1.0.3")
     implementation ("com.google.android.gms:play-services-auth:21.3.0")
-    implementation ("com.android.support:multidex:1.0.3")
-    implementation("com.google.firebase:firebase-appcheck-playintegrity")
 }

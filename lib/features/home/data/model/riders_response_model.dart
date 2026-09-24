@@ -49,12 +49,11 @@ class RidersPaginatedModel {
 
   factory RidersPaginatedModel.fromJson(Map<String, dynamic> json) =>
       RidersPaginatedModel(
-        data:
-            json["data"] == null
-                ? []
-                : List<RidersResponseModel>.from(
-                  json["data"]!.map((x) => RidersResponseModel.fromJson(x)),
-                ),
+        data: json["data"] == null
+            ? []
+            : List<RidersResponseModel>.from(
+                json["data"]!.map((x) => RidersResponseModel.fromJson(x)),
+              ),
         totalCount: json["totalCount"],
         page: json["page"],
         pageSize: json["pageSize"],
@@ -64,8 +63,9 @@ class RidersPaginatedModel {
       );
 
   Map<String, dynamic> toJson() => {
-    "data":
-        data == null ? [] : List<dynamic>.from(data!.map((x) => x.toJson())),
+    "data": data == null
+        ? []
+        : List<dynamic>.from(data!.map((x) => x.toJson())),
     "totalCount": totalCount,
     "page": page,
     "pageSize": pageSize,
@@ -134,34 +134,29 @@ class RidersResponseModel {
         availability: json["availability"] ?? false,
         rating: json["rating"] ?? 1,
         infoCompleted: json["infoCompleted"] ?? "",
-        riderAddress:
-            json["riderAddress"] == null
-                ? null
-                : RiderAddress.fromJson(json["riderAddress"]),
-        ridersBankModels:
-            json["ridersBankModels"] == null
-                ? null
-                : RidersBankModels.fromJson(json["ridersBankModels"]),
-        ridersReviewModels:
-            json["ridersReviewModels"] == null
-                ? []
-                : List<RidersReviewModel>.from(
-                  json["ridersReviewModels"]!.map(
-                    (x) => RidersReviewModel.fromJson(x),
-                  ),
+        riderAddress: json["riderAddress"] == null
+            ? null
+            : RiderAddress.fromJson(json["riderAddress"]),
+        ridersBankModels: json["ridersBankModels"] == null
+            ? null
+            : RidersBankModels.fromJson(json["ridersBankModels"]),
+        ridersReviewModels: json["ridersReviewModels"] == null
+            ? []
+            : List<RidersReviewModel>.from(
+                json["ridersReviewModels"]!.map(
+                  (x) => RidersReviewModel.fromJson(x),
                 ),
-        deviceTokenModels:
-            json["deviceTokenModels"] == null
-                ? []
-                : List<DeviceTokenModel>.from(
-                  json["deviceTokenModels"]!.map(
-                    (x) => DeviceTokenModel.fromJson(x),
-                  ),
+              ),
+        deviceTokenModels: json["deviceTokenModels"] == null
+            ? []
+            : List<DeviceTokenModel>.from(
+                json["deviceTokenModels"]!.map(
+                  (x) => DeviceTokenModel.fromJson(x),
                 ),
-        createdAt:
-            json["createdAt"] == null
-                ? null
-                : DateTime.parse(json["createdAt"]),
+              ),
+        createdAt: json["createdAt"] == null
+            ? null
+            : DateTime.parse(json["createdAt"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -180,14 +175,12 @@ class RidersResponseModel {
     "rating": rating,
     "infoCompleted": infoCompleted,
     "riderAddress": riderAddress?.toJson(),
-    "ridersReviewModels":
-        ridersReviewModels == null
-            ? []
-            : List<dynamic>.from(ridersReviewModels!.map((x) => x.toJson())),
-    "deviceTokenModels":
-        deviceTokenModels == null
-            ? []
-            : List<dynamic>.from(deviceTokenModels!.map((x) => x.toJson())),
+    "ridersReviewModels": ridersReviewModels == null
+        ? []
+        : List<dynamic>.from(ridersReviewModels!.map((x) => x.toJson())),
+    "deviceTokenModels": deviceTokenModels == null
+        ? []
+        : List<dynamic>.from(deviceTokenModels!.map((x) => x.toJson())),
     "createdAt": createdAt?.toIso8601String(),
   };
 }
@@ -326,10 +319,9 @@ class RidersReviewModel {
         ridersModelDataId: json["ridersModelDataId"] ?? "",
         ratingNum: json["ratingNum"] ?? 0.0,
         orderId: json["orderId"] ?? "",
-        createdAt:
-            json["createdAt"] == null
-                ? null
-                : DateTime.parse(json["createdAt"]),
+        createdAt: json["createdAt"] == null
+            ? null
+            : DateTime.parse(json["createdAt"]),
       );
 
   Map<String, dynamic> toJson() => {

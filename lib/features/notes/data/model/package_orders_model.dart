@@ -51,14 +51,11 @@ class PackageOrderPaginatedModel {
 
   factory PackageOrderPaginatedModel.fromJson(Map<String, dynamic> json) =>
       PackageOrderPaginatedModel(
-        data:
-            json["data"] == null
-                ? []
-                : List<PackageOrderResponseModel>.from(
-                  json["data"]!.map(
-                    (x) => PackageOrderResponseModel.fromJson(x),
-                  ),
-                ),
+        data: json["data"] == null
+            ? []
+            : List<PackageOrderResponseModel>.from(
+                json["data"]!.map((x) => PackageOrderResponseModel.fromJson(x)),
+              ),
         totalCount: json["totalCount"],
         page: json["page"],
         pageSize: json["pageSize"],
@@ -68,8 +65,9 @@ class PackageOrderPaginatedModel {
       );
 
   Map<String, dynamic> toJson() => {
-    "data":
-        data == null ? [] : List<dynamic>.from(data!.map((x) => x.toJson())),
+    "data": data == null
+        ? []
+        : List<dynamic>.from(data!.map((x) => x.toJson())),
     "totalCount": totalCount,
     "page": page,
     "pageSize": pageSize,
@@ -196,78 +194,77 @@ class PackageOrderResponseModel {
     this.orderDeliveryFlows,
   });
 
-  factory PackageOrderResponseModel.fromJson(
-    Map<String, dynamic> json,
-  ) => PackageOrderResponseModel(
-    id: json["id"] ?? "",
-    trackingNum: json["trackingNum"] ?? "",
-    itemName: json["itemName"] ?? "",
-    itemDescription: json["itemDescription"] ?? "",
-    itemModelNumber: json["itemModelNumber"] ?? "",
-    itemCost: json["itemCost"] ?? 0,
-    itemQuantity: json["itemQuantity"] ?? 0,
-    packageType: json["packageType"] ?? "",
-    expectedDeliveryTime: json["expectedDeliveryTime"] ?? "",
-    orderStatus: _parseOrderClassState(json["orderStatus"] ?? "Open"),
-    userId: json["userId"] ?? "",
-    senderName: json["senderName"] ?? "",
-    senderPhoneNo: json["senderPhoneNo"] ?? "",
-    senderEmail: json["senderEmail"] ?? "",
-    senderAddress: json["senderAddress"] ?? "",
-    senderState: json["senderState"] ?? "",
-    senderLocality: json["senderLocality"] ?? "",
-    senderPostalCode: json["senderPostalCode"] ?? "",
-    senderLatitude: json["senderLatitude"] ?? 0,
-    senderLongitude: json["senderLongitude"] ?? 0,
-    recieverName: json["recieverName"] ?? "",
-    recieverPhoneNo: json["recieverPhoneNo"] ?? "",
-    recieverEmail: json["recieverEmail"] ?? "",
-    recieverAddress: json["recieverAddress"] ?? "",
-    recieverState: json["recieverState"] ?? "",
-    recieverLocality: json["recieverLocality"] ?? "",
-    recieverPostalCode: json["recieverPostalCode"] ?? "",
-    recieverLatitude: json["recieverLatitude"] ?? 0,
-    recieverLongitude: json["recieverLongitude"] ?? 0,
-    companyId: json["companyId"] ?? "",
-    riderId: json["riderId"] ?? "",
-    riderName: json["riderName"] ?? "",
-    companyName: json["companyName"] ?? "",
-    companyPhoneNo: json["companyPhoneNo"] ?? "",
-    companyEmail: json["companyEmail"] ?? "",
-    companyAddress: json["companyAddress"] ?? "",
-    currentLatitude: json["currentLatitude"] ?? 0,
-    currentLongitude: json["currentLongitude"] ?? 0,
-    currentLocation: json["currentLocation"] ?? "",
-    confirmationImage: json["confirmationImage"] ?? "",
-    shippingCost: json["shippingCost"] ?? 0,
-    trnxReference: json["trnxReference"] ?? "",
-    paymentChannel: json["paymentChannel"] ?? "",
-    paymentStatus: json["paymentStatus"] ?? false,
-    qrCode: json["qrCode"] ?? "",
-    comment: json["comment"] ?? "",
-    createdAt:
-        json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
-    updatedAt:
-        json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
-    packageImageLists:
-        json["packageImageLists"] == null
+  factory PackageOrderResponseModel.fromJson(Map<String, dynamic> json) =>
+      PackageOrderResponseModel(
+        id: json["id"] ?? "",
+        trackingNum: json["trackingNum"] ?? "",
+        itemName: json["itemName"] ?? "",
+        itemDescription: json["itemDescription"] ?? "",
+        itemModelNumber: json["itemModelNumber"] ?? "",
+        itemCost: json["itemCost"] ?? 0,
+        itemQuantity: json["itemQuantity"] ?? 0,
+        packageType: json["packageType"] ?? "",
+        expectedDeliveryTime: json["expectedDeliveryTime"] ?? "",
+        orderStatus: _parseOrderClassState(json["orderStatus"] ?? "Open"),
+        userId: json["userId"] ?? "",
+        senderName: json["senderName"] ?? "",
+        senderPhoneNo: json["senderPhoneNo"] ?? "",
+        senderEmail: json["senderEmail"] ?? "",
+        senderAddress: json["senderAddress"] ?? "",
+        senderState: json["senderState"] ?? "",
+        senderLocality: json["senderLocality"] ?? "",
+        senderPostalCode: json["senderPostalCode"] ?? "",
+        senderLatitude: json["senderLatitude"] ?? 0,
+        senderLongitude: json["senderLongitude"] ?? 0,
+        recieverName: json["recieverName"] ?? "",
+        recieverPhoneNo: json["recieverPhoneNo"] ?? "",
+        recieverEmail: json["recieverEmail"] ?? "",
+        recieverAddress: json["recieverAddress"] ?? "",
+        recieverState: json["recieverState"] ?? "",
+        recieverLocality: json["recieverLocality"] ?? "",
+        recieverPostalCode: json["recieverPostalCode"] ?? "",
+        recieverLatitude: json["recieverLatitude"] ?? 0,
+        recieverLongitude: json["recieverLongitude"] ?? 0,
+        companyId: json["companyId"] ?? "",
+        riderId: json["riderId"] ?? "",
+        riderName: json["riderName"] ?? "",
+        companyName: json["companyName"] ?? "",
+        companyPhoneNo: json["companyPhoneNo"] ?? "",
+        companyEmail: json["companyEmail"] ?? "",
+        companyAddress: json["companyAddress"] ?? "",
+        currentLatitude: json["currentLatitude"] ?? 0,
+        currentLongitude: json["currentLongitude"] ?? 0,
+        currentLocation: json["currentLocation"] ?? "",
+        confirmationImage: json["confirmationImage"] ?? "",
+        shippingCost: json["shippingCost"] ?? 0,
+        trnxReference: json["trnxReference"] ?? "",
+        paymentChannel: json["paymentChannel"] ?? "",
+        paymentStatus: json["paymentStatus"] ?? false,
+        qrCode: json["qrCode"] ?? "",
+        comment: json["comment"] ?? "",
+        createdAt: json["createdAt"] == null
+            ? null
+            : DateTime.parse(json["createdAt"]),
+        updatedAt: json["updatedAt"] == null
+            ? null
+            : DateTime.parse(json["updatedAt"]),
+        packageImageLists: json["packageImageLists"] == null
             ? []
             : List<String>.from(json["packageImageLists"]!.map((x) => x)),
-    riderType: json["riderType"] ?? "",
-    shippingType: json["shippingType"] ?? "",
-    itemWeight: json["itemWeight"] ?? 0,
-    senderCountry: json["senderCountry"] ?? "",
-    recieverCountry: json["recieverCountry"] ?? "",
-    vatCost: json["vatCost"] ?? 0,
-    orderDeliveryFlows:
-        json["orderDeliveryFlows"] == null
+        riderType: json["riderType"] ?? "",
+        shippingType: json["shippingType"] ?? "",
+        itemWeight: json["itemWeight"] ?? 0,
+        senderCountry: json["senderCountry"] ?? "",
+        recieverCountry: json["recieverCountry"] ?? "",
+        vatCost: json["vatCost"] ?? 0,
+        orderDeliveryFlows: json["orderDeliveryFlows"] == null
             ? []
             : List<OrderDeliveryFlow>.from(
-              json["orderDeliveryFlows"]!.map(
-                (x) => OrderDeliveryFlow.fromJson(x),
+                json["orderDeliveryFlows"]!.map(
+                  (x) => OrderDeliveryFlow.fromJson(x),
+                ),
               ),
-            ),
-  );
+      );
 
   Map<String, dynamic> toJson() => {
     "id": id,
@@ -318,20 +315,18 @@ class PackageOrderResponseModel {
     "comment": comment,
     "createdAt": createdAt?.toIso8601String(),
     "updatedAt": updatedAt?.toIso8601String(),
-    "packageImageLists":
-        packageImageLists == null
-            ? []
-            : List<dynamic>.from(packageImageLists!.map((x) => x)),
+    "packageImageLists": packageImageLists == null
+        ? []
+        : List<dynamic>.from(packageImageLists!.map((x) => x)),
     "riderType": riderType,
     "shippingType": shippingType,
     "itemWeight": itemWeight,
     "senderCountry": senderCountry,
     "recieverCountry": recieverCountry,
     "vatCost": vatCost,
-    "orderDeliveryFlows":
-        orderDeliveryFlows == null
-            ? []
-            : List<dynamic>.from(orderDeliveryFlows!.map((x) => x.toJson())),
+    "orderDeliveryFlows": orderDeliveryFlows == null
+        ? []
+        : List<dynamic>.from(orderDeliveryFlows!.map((x) => x.toJson())),
   };
   static OrderClassState _parseOrderClassState(String state) {
     switch (state) {
@@ -382,10 +377,9 @@ class OrderDeliveryFlow {
         currentLongitude: json["currentLongitude"] ?? 0,
         currentLocation: json["currentLocation"] ?? "",
         orderModelDataId: json["orderModelDataId"] ?? "",
-        updatedAt:
-            json["updatedAt"] == null
-                ? null
-                : DateTime.parse(json["updatedAt"]),
+        updatedAt: json["updatedAt"] == null
+            ? null
+            : DateTime.parse(json["updatedAt"]),
       );
 
   Map<String, dynamic> toJson() => {

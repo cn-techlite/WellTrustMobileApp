@@ -9,7 +9,6 @@ class RootRoutes {
   static const profile = "profile/profile";
   static const updatePassword = "profile/updatePassword";
   static const tab = "home/tab";
-  static const String createAccount = '/createAccount';
   static const String signIn = '/signIn';
   static const String getStarted = '/getStarted';
   static const String kycVerification = '/kycVerification';

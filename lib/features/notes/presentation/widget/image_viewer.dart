@@ -14,7 +14,7 @@ class ZoomableImageViewer extends StatelessWidget {
     return Scaffold(
       appBar: buildFlexibleAppBar(
         context: context,
-        title: const AppText(
+        title: AppText(
           text: "",
           textAlign: TextAlign.start,
           color: AppColors.black,

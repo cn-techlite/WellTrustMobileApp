@@ -1,8 +1,7 @@
 import 'package:well_trust_mobile_app/core/routes/route.dart';
 import 'package:flutter/material.dart';
 import 'package:well_trust_mobile_app/features/auth/presentation/screen/logins.dart';
-import 'package:well_trust_mobile_app/features/auth/presentation/screen/onboarding_.dart';
-import 'package:well_trust_mobile_app/features/auth/presentation/screen/user_register.dart';
+import 'package:well_trust_mobile_app/features/auth/presentation/screen/get_started.dart';
 
 import '../../features/home_screen.dart';
 import '../helpers/globals.dart';
@@ -10,11 +9,9 @@ import '../helpers/globals.dart';
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
     case RootRoutes.onboard:
-      return MaterialPageRoute(builder: (context) => const OnboardingScreen());
+      return MaterialPageRoute(builder: (context) => const GetStartedScreen());
     case RootRoutes.login:
       return MaterialPageRoute(builder: (context) => const LoginScreens());
-    case RootRoutes.createAccount:
-      return MaterialPageRoute(builder: (context) => const RegisterScreen());
     case RootRoutes.tab:
       return MaterialPageRoute(
         builder: (context) => const HomeScreenPage(imdex: 0),
@@ -40,16 +37,15 @@ Route<dynamic> _errorRoute() {
 
 Future<String> initialRoute() async {
   final hasViewedOnboarding = globals.isViewed == 0;
-  final isLoggedIn = globals.userId.isNotEmpty;
+  final hasValidSession =
+      globals.userId.trim().isNotEmpty && globals.token.trim().isNotEmpty;
 
   if (!hasViewedOnboarding) {
-    // return RootRoutes.onboard;
-    return RootRoutes.tab;
+    return RootRoutes.onboard;
   }
 
-  if (!isLoggedIn) {
-    //  return RootRoutes.login;
-    return RootRoutes.tab;
+  if (!hasValidSession) {
+    return RootRoutes.login;
   }
 
   return RootRoutes.tab;

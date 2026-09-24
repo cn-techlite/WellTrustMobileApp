@@ -76,7 +76,7 @@
 //               crossAxisAlignment: CrossAxisAlignment.start,
 //               children: [
 //                 const AppText(
-//                     
+//
 //                     text: "Start Date",
 //                     textAlign: TextAlign.center,
 //                     fontSize: 18,
@@ -108,7 +108,7 @@
 //                   ),
 //                   decoration: InputDecoration(
 //                     filled: true,
-//                     fillColor: AppColors.white,
+//                     fillColor: AppColors.surface,
 //                     focusedBorder: const OutlineInputBorder(
 //                       borderRadius: BorderRadius.all(Radius.circular(2)),
 //                       borderSide: BorderSide(width: 1, color: AppColors.black),
@@ -120,7 +120,7 @@
 //                     enabledBorder: OutlineInputBorder(
 //                       borderRadius: BorderRadius.circular(2),
 //                       borderSide: const BorderSide(
-//                         color: Colors.grey,
+//                         color: AppColors.muted,
 //                         width: 1.0,
 //                       ),
 //                     ),
@@ -150,7 +150,7 @@
 //               crossAxisAlignment: CrossAxisAlignment.start,
 //               children: [
 //                 const AppText(
-//                     
+//
 //                     text: "End Date",
 //                     textAlign: TextAlign.center,
 //                     fontSize: 18,
@@ -183,7 +183,7 @@
 //                   ),
 //                   decoration: InputDecoration(
 //                     filled: true,
-//                     fillColor: AppColors.white,
+//                     fillColor: AppColors.surface,
 //                     focusedBorder: const OutlineInputBorder(
 //                       borderRadius: BorderRadius.all(Radius.circular(2)),
 //                       borderSide: BorderSide(width: 1, color: AppColors.black),
@@ -195,7 +195,7 @@
 //                     enabledBorder: OutlineInputBorder(
 //                       borderRadius: BorderRadius.circular(2),
 //                       borderSide: const BorderSide(
-//                         color: Colors.grey,
+//                         color: AppColors.muted,
 //                         width: 1.0,
 //                       ),
 //                     ),

@@ -1,6 +1,5 @@
 import 'package:well_trust_mobile_app/features/account/data/model/user_response_model.dart';
 import 'package:well_trust_mobile_app/features/home/data/model/service_user_response_model.dart';
-import 'package:well_trust_mobile_app/features/meds/data/model/med_response_model.dart';
 import 'package:well_trust_mobile_app/features/notes/data/model/notes_response_model.dart';
 import 'package:well_trust_mobile_app/features/visits/data/model/visit_response_model.dart';
 import 'package:well_trust_mobile_app/shared/model/cqc_color_model.dart';
@@ -33,10 +32,10 @@ VisitType visitTypeLabel(String t) =>
     visitTypes[t] ?? const VisitType('Visit', '📍');
 
 const cqcColours = <String, CqcColour>{
-  'safe': CqcColour('Safe', 0xFFFBEAE8, 0xFFB85048),
-  'effective': CqcColour('Effective', 0xFFEAF0EA, 0xFF5D7A58),
+  'safe': CqcColour('Safe', 0xFFFBEAE8, 0xFFb42318),
+  'effective': CqcColour('Effective', 0xFFEAF0EA, 0xFF17683A),
   'caring': CqcColour('Caring', 0xFFF6EFE0, 0xFF8C6A25),
-  'responsive': CqcColour('Responsive', 0xFFEAEFF6, 0xFF1E3A6F),
+  'responsive': CqcColour('Responsive', 0xFFEAEFF6, 0xFF14264A),
   'wellled': CqcColour('Well-led', 0xFFF0EBE0, 0xFF44483F),
 };
 
@@ -683,165 +682,6 @@ List<VisitResponseModel> seedVisits() => [
     travelMin: 18,
     status: VisitStatus.scheduled,
     tasks: ['Bedtime meds', 'Brush teeth', 'Help to bed', 'Continence pad'],
-  ),
-];
-
-List<MarRecord> seedMar() => [
-  MarRecord(
-    suId: 'su-patel',
-    resident: 'Anita Patel',
-    initials: 'AP',
-    meds: [
-      Med(
-        time: '08:00',
-        name: 'Donepezil 10mg',
-        dose: '1 tablet · oral',
-        status: 'done',
-      ),
-      Med(
-        time: '08:00',
-        name: 'Memantine 10mg',
-        dose: '1 tablet · oral',
-        status: 'done',
-      ),
-      Med(
-        time: '12:30',
-        name: 'Paracetamol 500mg',
-        dose: '2 tablets · oral · PRN',
-        status: 'due',
-      ),
-      Med(
-        time: '19:30',
-        name: 'Memantine 10mg',
-        dose: '1 tablet · oral · bedtime',
-        status: 'due',
-      ),
-    ],
-  ),
-  MarRecord(
-    suId: 'su-davies',
-    resident: 'George Davies',
-    initials: 'GD',
-    meds: [
-      Med(
-        time: '08:30',
-        name: 'Ramipril 5mg',
-        dose: '1 tablet · oral · morning',
-        status: 'done',
-      ),
-      Med(
-        time: '08:30',
-        name: 'Furosemide 40mg',
-        dose: '1 tablet · oral · morning',
-        status: 'done',
-      ),
-      Med(
-        time: '16:00',
-        name: 'Bisoprolol 2.5mg',
-        dose: '1 tablet · oral · afternoon',
-        status: 'due',
-      ),
-    ],
-  ),
-  MarRecord(
-    suId: 'su-henderson',
-    resident: 'Edna Henderson',
-    initials: 'EH',
-    meds: [
-      Med(
-        time: '09:30',
-        name: 'Rivastigmine patch 9.5mg',
-        dose: '1 patch · transdermal · daily',
-        status: 'done',
-      ),
-      Med(
-        time: '09:30',
-        name: 'Risperidone 0.5mg',
-        dose: '1 tablet · oral · with food',
-        status: 'done',
-      ),
-      Med(
-        time: '14:30',
-        name: 'Paracetamol 1g',
-        dose: 'oral · PRN for arthritis pain',
-        status: 'due',
-      ),
-      Med(
-        time: '20:30',
-        name: 'Trazodone 50mg',
-        dose: '1 tablet · oral · bedtime for sleep',
-        status: 'due',
-      ),
-    ],
-  ),
-  MarRecord(
-    suId: 'su-akinola',
-    resident: 'Oluwaseun Akinola',
-    initials: 'OA',
-    meds: [
-      Med(
-        time: '10:30',
-        name: 'Metformin 500mg',
-        dose: '1 tablet · oral · with food',
-        status: 'due',
-      ),
-      Med(
-        time: '17:00',
-        name: 'Metformin 500mg',
-        dose: '1 tablet · oral · with food',
-        status: 'due',
-      ),
-      Med(
-        time: '17:00',
-        name: 'Atorvastatin 20mg',
-        dose: '1 tablet · oral',
-        status: 'due',
-      ),
-    ],
-  ),
-  MarRecord(
-    suId: 'su-oconnor',
-    resident: "Maeve O'Connor",
-    initials: 'MO',
-    meds: [
-      Med(
-        time: '12:00',
-        name: 'Naproxen 500mg',
-        dose: '1 tablet · oral · with food',
-        status: 'due',
-      ),
-      Med(
-        time: '12:00',
-        name: 'Omeprazole 20mg',
-        dose: '1 capsule · oral · before food',
-        status: 'due',
-      ),
-      Med(
-        time: '18:00',
-        name: 'Naproxen 500mg',
-        dose: '1 tablet · oral · with food',
-        status: 'due',
-      ),
-    ],
-  ),
-  MarRecord(
-    suId: 'su-kowalski',
-    resident: 'Tadeusz Kowalski',
-    initials: 'TK',
-    meds: [
-      Med(
-        time: '13:30',
-        name: 'Apixaban 2.5mg',
-        dose: '1 tablet · oral',
-        status: 'due',
-      ),
-      Med(
-        time: '13:30',
-        name: 'Paracetamol 1g',
-        dose: 'PRN for hip pain',
-        status: 'due',
-      ),
-    ],
   ),
 ];
 

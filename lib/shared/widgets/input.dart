@@ -51,21 +51,21 @@ class _SearchWidgetState extends State<SearchWidget> {
 
   @override
   Widget build(BuildContext context) {
-    const borderColor = Color(0xffE2D8C7);
-    const hintColor = Color(0xff8E8A82);
+    final borderColor = AppColors.line;
+    final hintColor = AppColors.muted;
 
     return Container(
       height: 6.heightAdjusted,
       // margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: borderColor, width: 1.4),
       ),
       child: Row(
         children: [
-          const Icon(Icons.search, color: hintColor, size: 24),
+          Icon(Icons.search, color: hintColor, size: 24),
 
           const SizedBox(width: 10),
 
@@ -74,14 +74,14 @@ class _SearchWidgetState extends State<SearchWidget> {
               controller: controller,
               onChanged: widget.onChanged,
               cursorColor: AppColors.black,
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppColors.black,
                 fontSize: 16,
                 fontWeight: FontWeight.w400,
               ),
               decoration: InputDecoration(
                 hintText: widget.hintText,
-                hintStyle: const TextStyle(
+                hintStyle: TextStyle(
                   color: hintColor,
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
@@ -102,7 +102,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                 widget.onChanged('');
                 FocusScope.of(context).unfocus();
               },
-              child: const Icon(Icons.close, color: hintColor, size: 24),
+              child: Icon(Icons.close, color: hintColor, size: 24),
             ),
         ],
       ),
@@ -214,8 +214,8 @@ class _GlobalTextFieldState extends State<GlobalTextField> {
         floatingLabelBehavior: FloatingLabelBehavior.never,
         labelText: widget.fieldName,
         isDense: true,
-        // filled: true,
-        // fillColor: Color.fromRGBO(239, 239, 239, 1),
+        filled: true,
+        fillColor: AppColors.surface,
         contentPadding: EdgeInsets.symmetric(
           vertical: 2.heightAdjusted,
           horizontal: 2.widthAdjusted,
@@ -238,20 +238,20 @@ class _GlobalTextFieldState extends State<GlobalTextField> {
             : widget.suffix,
         prefix: widget.prefix,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(widget.borderRadius ?? 5),
-          borderSide: BorderSide(color: AppColors.grey2, width: 0.5),
+          borderRadius: BorderRadius.circular(widget.borderRadius ?? 10),
+          borderSide: BorderSide(color: AppColors.line2, width: 1.5),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(widget.borderRadius ?? 5),
-          borderSide: BorderSide(color: AppColors.grey2, width: 0.5),
+          borderRadius: BorderRadius.circular(widget.borderRadius ?? 10),
+          borderSide: BorderSide(color: AppColors.line2, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(widget.borderRadius ?? 5),
-          borderSide: const BorderSide(color: Colors.red, width: 0.5),
+          borderRadius: BorderRadius.circular(widget.borderRadius ?? 10),
+          borderSide: BorderSide(color: AppColors.rose, width: 1.5),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(widget.borderRadius ?? 5),
-          borderSide: BorderSide(color: AppColors.grey2, width: 0.5),
+          borderRadius: BorderRadius.circular(widget.borderRadius ?? 10),
+          borderSide: BorderSide(color: AppColors.line2, width: 1.5),
         ),
         errorStyle: TextStyle(fontSize: 4.textSize, height: 1.1),
       ),
@@ -362,8 +362,6 @@ class _GlobalPhoneTextFieldState extends State<GlobalPhoneTextField> {
       onChanged: widget.onChanged,
 
       // enabled: true,
-
-      // fillColor: Color.fromRGBO(239, 239, 239, 1),
       disableLengthCounter: true,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       textAlign: TextAlign.start,
@@ -375,8 +373,8 @@ class _GlobalPhoneTextFieldState extends State<GlobalPhoneTextField> {
       ),
       inputFormatters: [LengthLimitingTextInputFormatter(widget.maxLength)],
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(widget.borderRadius ?? 5),
-        borderSide: BorderSide(color: AppColors.grey2, width: 0.5),
+        borderRadius: BorderRadius.circular(widget.borderRadius ?? 10),
+        borderSide: BorderSide(color: AppColors.line2, width: 1.5),
         gapPadding: 40,
       ),
 
@@ -399,21 +397,21 @@ class _GlobalPhoneTextFieldState extends State<GlobalPhoneTextField> {
 
         // suffixIcon: Icon(Icons.contacts, color: AppColors.black, size: 15),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(widget.borderRadius ?? 5),
-          borderSide: BorderSide(color: AppColors.grey2, width: 0.5),
+          borderRadius: BorderRadius.circular(widget.borderRadius ?? 10),
+          borderSide: BorderSide(color: AppColors.line2, width: 1.5),
           gapPadding: 40,
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(widget.borderRadius ?? 5),
-          borderSide: BorderSide(color: AppColors.grey2, width: 0.5),
+          borderRadius: BorderRadius.circular(widget.borderRadius ?? 10),
+          borderSide: BorderSide(color: AppColors.line2, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(widget.borderRadius ?? 5),
-          borderSide: const BorderSide(color: Colors.red, width: 0.5),
+          borderRadius: BorderRadius.circular(widget.borderRadius ?? 10),
+          borderSide: BorderSide(color: AppColors.rose, width: 1.5),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(widget.borderRadius ?? 5),
-          borderSide: BorderSide(color: AppColors.grey2, width: 0.5),
+          borderRadius: BorderRadius.circular(widget.borderRadius ?? 10),
+          borderSide: BorderSide(color: AppColors.line2, width: 1.5),
         ),
         errorStyle: TextStyle(fontSize: 4.textSize, height: 1.1),
       ),
@@ -480,10 +478,10 @@ class _CustomDropdownBottomSheetState extends State<CustomDropdownBottomSheet> {
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
         child: Container(
-          // color: AppColors.white,
+          // color: AppColors.surface,
           height: 50.heightAdjusted,
           decoration: BoxDecoration(
-            color: AppColors.white,
+            color: AppColors.surface,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           ),
           child: Column(
@@ -504,7 +502,7 @@ class _CustomDropdownBottomSheetState extends State<CustomDropdownBottomSheet> {
                           fontSize: 12.textSize,
                           color: AppColors.black,
                           fontWeight: FontWeight.w700,
-                          fontFamily: "Manrope",
+                          fontFamily: 'Source Sans 3',
                         ),
                       ),
                     ),
@@ -549,7 +547,7 @@ class _CustomDropdownBottomSheetState extends State<CustomDropdownBottomSheet> {
                           fontSize: 12.textSize,
                           color: AppColors.black,
                           fontWeight: FontWeight.w400,
-                          fontFamily: "Manrope",
+                          fontFamily: 'Source Sans 3',
                         ),
                       ),
                       onTap: () => Navigator.pop(context, item),
@@ -628,7 +626,7 @@ class _CustomMultipleDropdownBottomSheetState
       child: Container(
         height: 80.heightAdjusted,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.surface,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         ),
         child: Column(
@@ -657,7 +655,7 @@ class _CustomMultipleDropdownBottomSheetState
                     isLoading: false,
                   ),
                   IconButton(
-                    icon: const Icon(Icons.close, color: Colors.grey),
+                    icon: Icon(Icons.close, color: AppColors.muted),
                     onPressed: () => Navigator.pop(context),
                   ),
                 ],

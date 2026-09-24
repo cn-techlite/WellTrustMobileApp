@@ -77,13 +77,13 @@ class _DeleteAccountPageState extends ConsumerState<DeleteAccountPage> {
       context: context,
       builder: (context) {
         return CupertinoAlertDialog(
-          title: const AppText(
+          title: AppText(
             text: "Delete Account",
             textAlign: TextAlign.center,
             color: AppColors.black,
             fontWeight: FontWeight.bold,
           ),
-          content: const AppText(
+          content: AppText(
             text:
                 "Are you sure you want to delete your account? This action is irreversible.",
             textAlign: TextAlign.center,
@@ -117,10 +117,10 @@ class _DeleteAccountPageState extends ConsumerState<DeleteAccountPage> {
     final canSubmit = reason.text.trim().isNotEmpty;
 
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.bg,
       appBar: buildFlexibleAppBar(
         context: context,
-        backgroundColor: AppColors.white,
+        backgroundColor: AppColors.surface,
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -130,7 +130,7 @@ class _DeleteAccountPageState extends ConsumerState<DeleteAccountPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Center(
+                Center(
                   child: AppText(
                     text: "Delete Account",
                     color: AppColors.red,
@@ -143,7 +143,7 @@ class _DeleteAccountPageState extends ConsumerState<DeleteAccountPage> {
                 Center(
                   child: CircleAvatar(
                     radius: 60,
-                    backgroundColor: Colors.grey,
+                    backgroundColor: AppColors.muted,
                     child: CircleAvatar(
                       radius: 57,
                       backgroundColor: Colors.white,
@@ -165,17 +165,17 @@ class _DeleteAccountPageState extends ConsumerState<DeleteAccountPage> {
                   ),
                 ),
 
-                /// Email
+                /// Username
                 Center(
                   child: AppText(
-                    text: globals.userEmail,
+                    text: globals.username,
                     color: AppColors.black,
                   ),
                 ),
 
                 addVerticalSpacing(20),
 
-                const AppText(
+                AppText(
                   text:
                       "Please provide a reason for deleting your account. We will be sad to see you go.",
                   color: AppColors.black,

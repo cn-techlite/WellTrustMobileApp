@@ -4,16 +4,12 @@ import 'package:well_trust_mobile_app/features/auth/data/service/auth_local_stor
 import 'package:well_trust_mobile_app/features/auth/domain/usercases/auth_repository.dart';
 import 'package:well_trust_mobile_app/shared/state/connectivity_state.dart';
 import 'package:well_trust_mobile_app/shared/state/theme_state.dart';
-import 'package:well_trust_mobile_app/core/utils/constants.dart';
+import 'package:well_trust_mobile_app/core/utils/colors.dart';
 import 'package:well_trust_mobile_app/core/utils/size_config.dart';
-import 'package:geolocator/geolocator.dart';
-
 import 'core/helpers/globals.dart';
 import 'core/routes/routers.dart';
 import 'core/utils/package_export.dart';
 import 'core/routes/routers.dart' as router;
-
-import 'package:geolocator/geolocator.dart' as positions;
 
 //Store this globally
 // Global RouteObserver instance
@@ -64,7 +60,7 @@ Future<void> _refreshSessionOnAppOpen() async {
   if (!hasAnySavedSession) return;
 
   final canRefresh =
-      globals.userEmail.trim().isNotEmpty &&
+      globals.username.trim().isNotEmpty &&
       globals.refreshToken.trim().isNotEmpty;
 
   final localStorageService = getIt<AuthLocalStorageService>();
@@ -98,6 +94,94 @@ Future<void> _refreshSessionOnAppOpen() async {
   await globals.init();
 }
 
+/// Source Sans 3 for body text, Playfair Display for headings.
+TextTheme _designTextTheme(TextTheme t) {
+  final body = t.apply(
+    fontFamily: 'Source Sans 3',
+    bodyColor: AppColors.ink,
+    displayColor: AppColors.ink,
+  );
+  TextStyle? serif(TextStyle? s) =>
+      s?.copyWith(fontFamily: 'Playfair Display', fontWeight: FontWeight.w700);
+  return body.copyWith(
+    displayLarge: serif(body.displayLarge),
+    displayMedium: serif(body.displayMedium),
+    displaySmall: serif(body.displaySmall),
+    headlineLarge: serif(body.headlineLarge),
+    headlineMedium: serif(body.headlineMedium),
+    headlineSmall: serif(body.headlineSmall),
+    titleLarge: serif(body.titleLarge),
+    titleMedium: serif(body.titleMedium),
+  );
+}
+
+ThemeData _welltrustTheme(bool dark) {
+  final brightness = dark ? Brightness.dark : Brightness.light;
+  final base = ThemeData(brightness: brightness, useMaterial3: true);
+  return base.copyWith(
+    scaffoldBackgroundColor: AppColors.bg,
+    colorScheme:
+        ColorScheme.fromSeed(
+          seedColor: AppColors.navy,
+          brightness: brightness,
+        ).copyWith(
+          primary: AppColors.primary,
+          onPrimary: AppColors.onPrimary,
+          secondary: AppColors.gold,
+          onSecondary: AppColors.navy,
+          surface: AppColors.surface,
+          onSurface: AppColors.ink,
+          error: AppColors.rose,
+          outline: AppColors.line2,
+          outlineVariant: AppColors.line,
+        ),
+    textTheme: _designTextTheme(base.textTheme),
+    appBarTheme: AppBarTheme(
+      backgroundColor: AppColors.navy,
+      foregroundColor: Colors.white,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+    ),
+    dividerColor: AppColors.line,
+    cardTheme: CardThemeData(
+      color: AppColors.surface,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+        side: BorderSide(color: AppColors.line),
+      ),
+    ),
+    filledButtonTheme: FilledButtonThemeData(
+      style: FilledButton.styleFrom(
+        backgroundColor: AppColors.navy,
+        foregroundColor: Colors.white,
+        minimumSize: const Size.fromHeight(50),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+    ),
+    dialogTheme: DialogThemeData(
+      backgroundColor: AppColors.surface,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    ),
+    bottomSheetTheme: BottomSheetThemeData(
+      backgroundColor: AppColors.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+      ),
+    ),
+    textSelectionTheme: TextSelectionThemeData(cursorColor: AppColors.navy),
+  );
+}
+
+void _rebuildAll() {
+  void visit(Element e) {
+    e.markNeedsBuild();
+    e.visitChildren(visit);
+  }
+
+  WidgetsBinding.instance.rootElement?.visitChildren(visit);
+}
+
 class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key, this.route, required this.navigatorKey});
   final String? route;
@@ -107,112 +191,56 @@ class MyApp extends ConsumerStatefulWidget {
   ConsumerState<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends ConsumerState<MyApp> {
+class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
   String? route;
-  positions.Position? _currentPosition;
-  String? _currentAddress;
-  String? _city;
-  String? _state;
+
+  @override
+  void didChangePlatformBrightness() {
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
-    _getCurrentPosition();
-    setState(() {
-      route = widget.route;
-    });
+    route = widget.route;
+    WidgetsBinding.instance.addObserver(this);
     // Load theme on app startup
     Future.delayed(Duration.zero, () {
       ref.read(themeNotifierProvider.notifier).loadTheme();
+      ref.read(textSizeProvider.notifier).load();
     });
-  }
-
-  Future<bool> _handleLocationPermission() async {
-    bool serviceEnabled;
-    positions.LocationPermission permission;
-
-    serviceEnabled = await positions.Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Location services are disabled. Please enable the services',
-          ),
-        ),
-      );
-      return false;
-    }
-    permission = await positions.Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Location permissions are denied')),
-        );
-        return false;
-      }
-    }
-    if (permission == LocationPermission.deniedForever) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Location permissions are permanently denied, we cannot request permissions.',
-          ),
-        ),
-      );
-      return false;
-    }
-    return true;
-  }
-
-  Future<void> _getCurrentPosition() async {
-    final hasPermission = await _handleLocationPermission();
-
-    if (!hasPermission) return;
-    // ignore: deprecated_member_use
-    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
-        .then((positions.Position position) {
-          setState(() => _currentPosition = position);
-          _getAddressFromLatLng(_currentPosition!);
-        })
-        .catchError((e) {
-          debugPrint(e);
-        });
-  }
-
-  Future<void> _getAddressFromLatLng(positions.Position position) async {
-    await placemarkFromCoordinates(
-          _currentPosition!.latitude,
-          _currentPosition!.longitude,
-        )
-        .then((List<Placemark> placemarks) async {
-          Placemark place = placemarks[0];
-          setState(() {
-            _currentAddress =
-                '${place.street}, ${place.subLocality}, ${place.subAdministrativeArea}, ${place.postalCode}';
-            _city = "${place.subAdministrativeArea}";
-            _state = "${place.administrativeArea}";
-          });
-          await globals.init();
-          printData("Location", _currentAddress!);
-          printData("Latitude", _currentPosition!.latitude);
-          printData("Longitude", _currentPosition!.longitude);
-          printData("City", _city);
-          printData("State", _state);
-        })
-        .catchError((e) {
-          debugPrint(e);
-        });
   }
 
   @override
   Widget build(BuildContext context) {
     final themeMode = ref.watch(themeNotifierProvider);
+    final textSize = ref.watch(textSizeProvider);
     ref.watch(connectivityStatusProviders);
+
+    // Resolve the brightness ourselves so AppColors matches the theme.
+    final dark =
+        themeMode == ThemeMode.dark ||
+        (themeMode == ThemeMode.system &&
+            WidgetsBinding.instance.platformDispatcher.platformBrightness ==
+                Brightness.dark);
+    final paletteChanged = AppColors.dark != dark;
+    AppColors.dark = dark;
+    if (paletteChanged) {
+      // Colours are read at build time, so rebuild every element (state and
+      // routes are kept).
+      WidgetsBinding.instance.addPostFrameCallback((_) => _rebuildAll());
+    }
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark.copyWith(
         statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark,
+        statusBarIconBrightness: dark ? Brightness.light : Brightness.dark,
       ),
       child: LayoutBuilder(
         builder: (context, constraints) {
@@ -222,9 +250,8 @@ class _MyAppState extends ConsumerState<MyApp> {
               return MaterialApp(
                 debugShowCheckedModeBanner: false,
                 title: 'WellTrust Staff',
-                themeMode: themeMode,
-                theme: ThemeData.light(), // Light theme
-                darkTheme: ThemeData.dark(), // Dark theme
+                themeMode: ThemeMode.light,
+                theme: _welltrustTheme(dark),
                 navigatorObservers: [
                   routeObserver,
                 ], // 👈 Enables route lifecycle listening
@@ -232,16 +259,21 @@ class _MyAppState extends ConsumerState<MyApp> {
                 initialRoute: route,
                 navigatorKey: widget.navigatorKey,
                 builder: (BuildContext context, Widget? child) {
-                  return Stack(
-                    children: [
-                      /// ✅ Wrap the content with UpgradeAlert
-                      UpgradeAlert(
-                        showReleaseNotes: false,
-                        dialogStyle: UpgradeDialogStyle.cupertino,
-                        upgrader: Upgrader(),
-                        child: child!,
-                      ),
-                    ],
+                  return MediaQuery(
+                    data: MediaQuery.of(
+                      context,
+                    ).copyWith(textScaler: TextScaler.linear(textSize.scale)),
+                    child: Stack(
+                      children: [
+                        /// ✅ Wrap the content with UpgradeAlert
+                        UpgradeAlert(
+                          showReleaseNotes: false,
+                          dialogStyle: UpgradeDialogStyle.cupertino,
+                          upgrader: Upgrader(),
+                          child: child!,
+                        ),
+                      ],
+                    ),
                   );
                 },
               );

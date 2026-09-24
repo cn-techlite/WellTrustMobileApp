@@ -26,6 +26,12 @@ class LoginResponseModel {
   final List<String>? permissions;
   final DateTime? refreshTokenExpiryTime;
 
+  // Kiosk device login
+  final String? username;
+  final String? deviceId;
+  final String? deviceName;
+  final String? deviceReferenceNumber;
+
   LoginResponseModel({
     this.token,
     this.refreshToken,
@@ -41,6 +47,10 @@ class LoginResponseModel {
     this.roles,
     this.permissions,
     this.refreshTokenExpiryTime,
+    this.username,
+    this.deviceId,
+    this.deviceName,
+    this.deviceReferenceNumber,
   });
 
   LoginResponseModel copyWith({
@@ -61,6 +71,10 @@ class LoginResponseModel {
     List<String>? permissions,
     DateTime? refreshTokenExpiryTime,
     String? videoSdkToken,
+    String? username,
+    String? deviceId,
+    String? deviceName,
+    String? deviceReferenceNumber,
   }) => LoginResponseModel(
     token: token ?? this.token,
     refreshToken: refreshToken ?? this.refreshToken,
@@ -77,6 +91,10 @@ class LoginResponseModel {
     permissions: permissions ?? this.permissions,
     refreshTokenExpiryTime:
         refreshTokenExpiryTime ?? this.refreshTokenExpiryTime,
+    username: username ?? this.username,
+    deviceId: deviceId ?? this.deviceId,
+    deviceName: deviceName ?? this.deviceName,
+    deviceReferenceNumber: deviceReferenceNumber ?? this.deviceReferenceNumber,
   );
 
   factory LoginResponseModel.fromJson(Map<String, dynamic> json) =>
@@ -84,26 +102,28 @@ class LoginResponseModel {
         token: json["token"],
         refreshToken: json["refreshToken"],
         email: json["email"],
-        userId: json["userId"],
+        // The kiosk login returns staffId / staffName.
+        userId: json["userId"] ?? json["staffId"],
         userType: json["userType"],
         emailVerified: json["emailVerified"],
         phoneVerified: json["phoneVerified"],
-        fullName: json["fullName"],
+        fullName: json["fullName"] ?? json["staffName"],
         profileImage: json["profileImage"],
         idAuthPassword: json["idAuthPassword"],
         walletActivation: json["walletActivation"],
-        roles:
-            json["roles"] == null
-                ? []
-                : List<String>.from(json["roles"]!.map((x) => x)),
-        permissions:
-            json["permissions"] == null
-                ? []
-                : List<String>.from(json["permissions"]!.map((x) => x)),
-        refreshTokenExpiryTime:
-            json["refreshTokenExpiryTime"] == null
-                ? null
-                : DateTime.parse(json["refreshTokenExpiryTime"]),
+        roles: json["roles"] == null
+            ? []
+            : List<String>.from(json["roles"]!.map((x) => x)),
+        permissions: json["permissions"] == null
+            ? []
+            : List<String>.from(json["permissions"]!.map((x) => x)),
+        refreshTokenExpiryTime: json["refreshTokenExpiryTime"] == null
+            ? null
+            : DateTime.parse(json["refreshTokenExpiryTime"]),
+        username: json["username"],
+        deviceId: json["deviceId"],
+        deviceName: json["deviceName"],
+        deviceReferenceNumber: json["deviceReferenceNumber"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -119,10 +139,13 @@ class LoginResponseModel {
     "idAuthPassword": idAuthPassword,
     "walletActivation": walletActivation,
     "roles": roles == null ? [] : List<dynamic>.from(roles!.map((x) => x)),
-    "permissions":
-        permissions == null
-            ? []
-            : List<dynamic>.from(permissions!.map((x) => x)),
+    "permissions": permissions == null
+        ? []
+        : List<dynamic>.from(permissions!.map((x) => x)),
     "refreshTokenExpiryTime": refreshTokenExpiryTime?.toIso8601String(),
+    "username": username,
+    "deviceId": deviceId,
+    "deviceName": deviceName,
+    "deviceReferenceNumber": deviceReferenceNumber,
   };
 }

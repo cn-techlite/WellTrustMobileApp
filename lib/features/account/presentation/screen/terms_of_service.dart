@@ -41,11 +41,11 @@ class _LoginPageState extends State<TermsOfServiceScreen> {
         ),
       ),
       key: key,
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.bg,
       body: ListView(
         physics: const ScrollPhysics(),
         children: [
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(left: 10.0, right: 10),
             child: AppText(
               text: "Terms of Services",
@@ -57,7 +57,7 @@ class _LoginPageState extends State<TermsOfServiceScreen> {
             ),
           ),
           addVerticalSpacing(5),
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(left: 10.0, right: 10),
             child: AppText(
               text: "Acceptance of Terms",
@@ -68,7 +68,7 @@ class _LoginPageState extends State<TermsOfServiceScreen> {
               fontWeight: FontWeight.w800,
             ),
           ),
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(left: 10.0, right: 10),
             child: AppText(
               text:
@@ -81,7 +81,7 @@ class _LoginPageState extends State<TermsOfServiceScreen> {
             ),
           ),
           addVerticalSpacing(5),
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(left: 10.0, right: 10),
             child: AppText(
               text: "Services Provided",
@@ -92,7 +92,7 @@ class _LoginPageState extends State<TermsOfServiceScreen> {
               fontWeight: FontWeight.w800,
             ),
           ),
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(left: 10.0, right: 10),
             child: AppText(
               text:
@@ -105,7 +105,7 @@ class _LoginPageState extends State<TermsOfServiceScreen> {
             ),
           ),
           addVerticalSpacing(5),
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(left: 10.0, right: 10),
             child: AppText(
               text: "User Responsibilities",
@@ -116,7 +116,7 @@ class _LoginPageState extends State<TermsOfServiceScreen> {
               fontWeight: FontWeight.w800,
             ),
           ),
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(left: 10.0, right: 10),
             child: AppText(
               text:
@@ -128,7 +128,7 @@ class _LoginPageState extends State<TermsOfServiceScreen> {
             ),
           ),
           addVerticalSpacing(5),
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(left: 10.0, right: 10),
             child: AppText(
               text: "User Responsibilities",
@@ -139,7 +139,7 @@ class _LoginPageState extends State<TermsOfServiceScreen> {
               fontWeight: FontWeight.w800,
             ),
           ),
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(left: 10.0, right: 10),
             child: AppText(
               text:
@@ -152,7 +152,7 @@ class _LoginPageState extends State<TermsOfServiceScreen> {
             ),
           ),
           addVerticalSpacing(5),
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(left: 10.0, right: 10),
             child: AppText(
               text: "Prohibited Activities ",
@@ -163,7 +163,7 @@ class _LoginPageState extends State<TermsOfServiceScreen> {
               fontWeight: FontWeight.w800,
             ),
           ),
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(left: 10.0, right: 10),
             child: AppText(
               text:
@@ -175,7 +175,7 @@ class _LoginPageState extends State<TermsOfServiceScreen> {
               fontWeight: FontWeight.w400,
             ),
           ),
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(left: 10.0, right: 10),
             child: AppText(
               text:
@@ -188,7 +188,7 @@ class _LoginPageState extends State<TermsOfServiceScreen> {
             ),
           ),
           addVerticalSpacing(5),
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(left: 10.0, right: 10),
             child: AppText(
               text: "Intellectual Property",
@@ -199,7 +199,7 @@ class _LoginPageState extends State<TermsOfServiceScreen> {
               fontWeight: FontWeight.w800,
             ),
           ),
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(left: 10.0, right: 10),
             child: AppText(
               text:
@@ -212,7 +212,7 @@ class _LoginPageState extends State<TermsOfServiceScreen> {
             ),
           ),
           addVerticalSpacing(5),
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(left: 10.0, right: 10),
             child: AppText(
               text: "Privacy Policy",
@@ -223,7 +223,7 @@ class _LoginPageState extends State<TermsOfServiceScreen> {
               fontWeight: FontWeight.w800,
             ),
           ),
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(left: 10.0, right: 10),
             child: AppText(
               text:
@@ -236,7 +236,7 @@ class _LoginPageState extends State<TermsOfServiceScreen> {
             ),
           ),
           addVerticalSpacing(5),
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(left: 10.0, right: 10),
             child: AppText(
               text: "Limitation of Liability",
@@ -247,7 +247,7 @@ class _LoginPageState extends State<TermsOfServiceScreen> {
               fontWeight: FontWeight.w800,
             ),
           ),
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(left: 10.0, right: 10),
             child: AppText(
               text:
@@ -260,7 +260,7 @@ class _LoginPageState extends State<TermsOfServiceScreen> {
             ),
           ),
           addVerticalSpacing(5),
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(left: 10.0, right: 10),
             child: AppText(
               text: "Termination",
@@ -271,7 +271,7 @@ class _LoginPageState extends State<TermsOfServiceScreen> {
               fontWeight: FontWeight.w800,
             ),
           ),
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(left: 10.0, right: 10),
             child: AppText(
               text:
@@ -284,7 +284,7 @@ class _LoginPageState extends State<TermsOfServiceScreen> {
             ),
           ),
           addVerticalSpacing(5),
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(left: 10.0, right: 10),
             child: AppText(
               text: "Changes to Terms of Services ",
@@ -295,7 +295,7 @@ class _LoginPageState extends State<TermsOfServiceScreen> {
               fontWeight: FontWeight.w800,
             ),
           ),
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(left: 10.0, right: 10),
             child: AppText(
               text:
@@ -308,7 +308,7 @@ class _LoginPageState extends State<TermsOfServiceScreen> {
             ),
           ),
           addVerticalSpacing(5),
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(left: 10.0, right: 10),
             child: AppText(
               text: "Contact Information",
@@ -319,7 +319,7 @@ class _LoginPageState extends State<TermsOfServiceScreen> {
               fontWeight: FontWeight.w800,
             ),
           ),
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(left: 10.0, right: 10),
             child: AppText(
               text:

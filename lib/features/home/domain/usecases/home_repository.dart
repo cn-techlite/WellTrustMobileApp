@@ -5,11 +5,6 @@ import 'package:well_trust_mobile_app/features/home/data/model/riders_response_m
 import 'package:well_trust_mobile_app/shared/model/response_result_model.dart';
 
 abstract class HomeRepository {
-  //! PLACES DETAILS
-  Future<GeneralResultModel> getPlaceDetails(String placeId);
-
-  Future<GeneralResultModel> getFullAddressFromLatLng(double lat, double lng);
-
   //! LOGISTIC COMPANY DATA
   Future<LogisticPaginatedModel> getAllLogisticData({
     required int page,

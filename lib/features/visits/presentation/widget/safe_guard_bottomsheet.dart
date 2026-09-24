@@ -45,9 +45,9 @@ class _SafeguardingBottomSheetState extends State<SafeguardingBottomSheet> {
       backgroundColor: Colors.transparent,
       builder: (_) => Container(
         height: MediaQuery.of(context).size.height * .55,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
         ),
         child: CustomDropdownBottomSheet(
           title: "Concern Type",
@@ -70,9 +70,9 @@ class _SafeguardingBottomSheetState extends State<SafeguardingBottomSheet> {
       backgroundColor: Colors.transparent,
       builder: (_) => Container(
         height: MediaQuery.of(context).size.height * .55,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
         ),
         child: CustomDropdownBottomSheet(
           title: "Client",
@@ -92,8 +92,8 @@ class _SafeguardingBottomSheetState extends State<SafeguardingBottomSheet> {
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height * .92,
-      decoration: const BoxDecoration(
-        color: Colors.white,
+      decoration: BoxDecoration(
+        color: AppColors.surface,
         borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
       ),
       child: Column(
@@ -104,8 +104,8 @@ class _SafeguardingBottomSheetState extends State<SafeguardingBottomSheet> {
             width: 65,
             height: 6,
             decoration: BoxDecoration(
-              color: const Color(0xffd8cfbb),
-              borderRadius: BorderRadius.circular(30),
+              color: AppColors.line,
+              borderRadius: BorderRadius.circular(14),
             ),
           ),
 
@@ -118,14 +118,14 @@ class _SafeguardingBottomSheetState extends State<SafeguardingBottomSheet> {
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: const Color(0xfffff8f8),
+                      color: AppColors.roseBg,
                       borderRadius: BorderRadius.circular(18),
-                      border: Border.all(color: const Color(0xffefc2c0)),
+                      border: Border.all(color: AppColors.roseBg),
                     ),
-                    child: const AppText(
+                    child: AppText(
                       text:
                           "⚠️ For immediate danger: call 999. This form alerts your manager within minutes; it is not a replacement for emergency services.",
-                      color: Color(0xffbf4b45),
+                      color: AppColors.rose,
                       type: AppTextType.bodyMedium,
                       fontWeight: FontWeight.w600,
                     ),
@@ -133,7 +133,7 @@ class _SafeguardingBottomSheetState extends State<SafeguardingBottomSheet> {
 
                   addVerticalSpacing(3),
 
-                  const AppText(
+                  AppText(
                     text: "CONCERN TYPE *",
                     color: AppColors.black,
                     type: AppTextType.bodySmall,
@@ -153,7 +153,7 @@ class _SafeguardingBottomSheetState extends State<SafeguardingBottomSheet> {
 
                   addVerticalSpacing(3),
 
-                  const AppText(
+                  AppText(
                     text: "CLIENT INVOLVED",
                     color: AppColors.black,
                     type: AppTextType.bodySmall,
@@ -173,7 +173,7 @@ class _SafeguardingBottomSheetState extends State<SafeguardingBottomSheet> {
 
                   addVerticalSpacing(3),
 
-                  const AppText(
+                  AppText(
                     text: "WHAT DID YOU OBSERVE? *",
                     color: AppColors.black,
                     type: AppTextType.bodySmall,
@@ -195,11 +195,11 @@ class _SafeguardingBottomSheetState extends State<SafeguardingBottomSheet> {
                   Container(
                     padding: const EdgeInsets.all(18),
                     decoration: BoxDecoration(
-                      color: const Color(0xfff8fafc),
+                      color: AppColors.bg,
                       borderRadius: BorderRadius.circular(18),
-                      border: Border.all(color: const Color(0xffd8e0eb)),
+                      border: Border.all(color: AppColors.line),
                     ),
-                    child: const AppText(
+                    child: AppText(
                       text:
                           "📌 Confidentiality: Whistleblowing reports are protected. Your name will not be shared with the person concerned.",
                       color: AppColors.black,
@@ -218,7 +218,7 @@ class _SafeguardingBottomSheetState extends State<SafeguardingBottomSheet> {
                           onPressed: () => Navigator.pop(context),
                           btnColor: Colors.white,
                           textColor: AppColors.black,
-                          borderColor: const Color(0xffded6c7),
+                          borderColor: AppColors.line,
                         ),
                       ),
 
@@ -229,7 +229,7 @@ class _SafeguardingBottomSheetState extends State<SafeguardingBottomSheet> {
                         child: AppButton(
                           text: "🚨 Send alert to manager",
                           onPressed: () {},
-                          btnColor: const Color(0xffbf5449),
+                          btnColor: AppColors.rose,
                           textColor: Colors.white,
                         ),
                       ),

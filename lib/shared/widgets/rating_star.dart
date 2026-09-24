@@ -1,17 +1,18 @@
+import 'package:well_trust_mobile_app/core/utils/colors.dart';
 import 'package:well_trust_mobile_app/core/utils/package_export.dart';
 
 class StarRating extends StatelessWidget {
   final double rating; // Rating value (e.g., 4.5)
   final double starSize; // Size of stars
   final Color filledColor; // Color for filled stars
-  final Color emptyColor; // Color for empty stars
+  final Color? emptyColor; // Color for empty stars
 
   const StarRating({
     super.key,
     required this.rating,
     this.starSize = 24.0,
     this.filledColor = Colors.amber,
-    this.emptyColor = Colors.grey,
+    this.emptyColor,
   });
 
   @override
@@ -33,7 +34,9 @@ class StarRating extends StatelessWidget {
         return Icon(
           icon,
           size: starSize,
-          color: rating >= starValue ? filledColor : emptyColor,
+          color: rating >= starValue
+              ? filledColor
+              : (emptyColor ?? AppColors.muted),
         );
       }),
     );
