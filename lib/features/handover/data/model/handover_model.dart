@@ -29,10 +29,14 @@ class HandoverEntry {
   final HandoverKind kind;
   final HandoverPriority priority;
   final String text;
+  final Map<String, String> details;
   final bool needsFollowUp;
   final String followUpFor;
+  final DateTime? followUpDue;
   final bool resolved;
   final String? resolvedBy;
+  final DateTime? resolvedAt;
+  final String resolutionNote;
 
   const HandoverEntry({
     required this.id,
@@ -42,11 +46,46 @@ class HandoverEntry {
     required this.kind,
     required this.priority,
     required this.text,
+    this.details = const {},
     this.needsFollowUp = false,
     this.followUpFor = 'Next carer',
+    this.followUpDue,
     this.resolved = false,
     this.resolvedBy,
+    this.resolvedAt,
+    this.resolutionNote = '',
   });
+
+  factory HandoverEntry.fromJson(Map<String, dynamic> json) => HandoverEntry(
+    id: (json['id'] ?? '').toString(),
+    clientId: (json['clientId'] ?? '').toString(),
+    at:
+        DateTime.tryParse((json['createdAt'] ?? '').toString())?.toLocal() ??
+        DateTime.now(),
+    by: (json['staffName'] ?? '').toString(),
+    kind: _handoverKind((json['kind'] ?? '').toString()),
+    priority: _handoverPriority((json['priority'] ?? '').toString()),
+    text: (json['text'] ?? '').toString(),
+    details: {
+      for (final entry
+          in (json['details'] is Map
+                  ? Map<String, dynamic>.from(json['details'] as Map)
+                  : const <String, dynamic>{})
+              .entries)
+        entry.key: (entry.value ?? '').toString(),
+    },
+    needsFollowUp: json['needsFollowUp'] == true,
+    followUpFor: (json['followUpFor'] ?? 'Next carer').toString(),
+    followUpDue: DateTime.tryParse(
+      (json['followUpDue'] ?? '').toString(),
+    )?.toLocal(),
+    resolved: json['resolved'] == true,
+    resolvedBy: json['resolvedBy']?.toString(),
+    resolvedAt: DateTime.tryParse(
+      (json['resolvedAt'] ?? '').toString(),
+    )?.toLocal(),
+    resolutionNote: (json['resolutionNote'] ?? '').toString(),
+  );
 
   bool get isOpen =>
       !resolved &&
@@ -55,7 +94,11 @@ class HandoverEntry {
           kind == HandoverKind.todo ||
           priority == HandoverPriority.urgent);
 
-  HandoverEntry markDone(String who) => HandoverEntry(
+  HandoverEntry markDone(
+    String who, {
+    DateTime? completedAt,
+    String note = '',
+  }) => HandoverEntry(
     id: id,
     clientId: clientId,
     at: at,
@@ -63,173 +106,28 @@ class HandoverEntry {
     kind: kind,
     priority: priority,
     text: text,
+    details: details,
     needsFollowUp: needsFollowUp,
     followUpFor: followUpFor,
+    followUpDue: followUpDue,
     resolved: true,
     resolvedBy: who,
+    resolvedAt: completedAt ?? DateTime.now(),
+    resolutionNote: note,
   );
 }
 
-class HandoverClient {
-  final String id;
-  final String name;
-  final String preferred;
-  final String nextVisit;
-  final bool visitToday;
+HandoverKind _handoverKind(String value) => switch (value.toLowerCase()) {
+  'concern' => HandoverKind.concern,
+  'change' => HandoverKind.change,
+  'todo' || 'to do' => HandoverKind.todo,
+  'visitsummary' || 'visit summary' => HandoverKind.visitSummary,
+  _ => HandoverKind.info,
+};
 
-  const HandoverClient({
-    required this.id,
-    required this.name,
-    required this.preferred,
-    required this.nextVisit,
-    this.visitToday = false,
-  });
-}
-
-const handoverClients = <HandoverClient>[
-  HandoverClient(
-    id: 'U1',
-    name: 'Mr Harold Fisher',
-    preferred: 'Harold',
-    nextVisit: 'Today 09:00',
-    visitToday: true,
-  ),
-  HandoverClient(
-    id: 'U2',
-    name: 'Mrs Margaret Hensley',
-    preferred: 'Margaret',
-    nextVisit: 'Today 10:00',
-    visitToday: true,
-  ),
-  HandoverClient(
-    id: 'U3',
-    name: 'Mrs Dorothy Bell',
-    preferred: 'Dorothy',
-    nextVisit: 'Today 13:00',
-    visitToday: true,
-  ),
-  HandoverClient(
-    id: 'U4',
-    name: 'Mr Suresh Patel',
-    preferred: 'Suresh',
-    nextVisit: 'Tomorrow 17:30',
-  ),
-  HandoverClient(
-    id: 'U5',
-    name: 'Mrs Joan Whitmore',
-    preferred: 'Joan',
-    nextVisit: 'Today',
-    visitToday: true,
-  ),
-  HandoverClient(
-    id: 'U6',
-    name: 'Mr George Adeyemi',
-    preferred: 'George',
-    nextVisit: 'Thu 20:30',
-  ),
-];
-
-List<HandoverEntry> sampleHandover() {
-  final now = DateTime.now();
-  DateTime ago(int h) => now.subtract(Duration(hours: h));
-  return [
-    HandoverEntry(
-      id: 'H1',
-      clientId: 'U1',
-      at: ago(5),
-      by: 'Sarah Williams',
-      kind: HandoverKind.concern,
-      priority: HandoverPriority.urgent,
-      text:
-          'Harold was more tired than usual and ate very little at lunch. Check his sugar readings and tell the office if they are low.',
-      needsFollowUp: true,
-    ),
-    HandoverEntry(
-      id: 'H2',
-      clientId: 'U1',
-      at: ago(30),
-      by: 'Office',
-      kind: HandoverKind.todo,
-      priority: HandoverPriority.important,
-      text:
-          'The GP is visiting on Tuesday at 11:00. Please make sure Harold is dressed and ready.',
-      needsFollowUp: true,
-      followUpFor: 'Anyone',
-    ),
-    HandoverEntry(
-      id: 'H3',
-      clientId: 'U1',
-      at: ago(48),
-      by: 'John Jones',
-      kind: HandoverKind.info,
-      priority: HandoverPriority.routine,
-      text:
-          'The new pressure-relieving cushion has arrived. Please keep it on his chair.',
-    ),
-    HandoverEntry(
-      id: 'H4',
-      clientId: 'U2',
-      at: ago(20),
-      by: 'Office',
-      kind: HandoverKind.change,
-      priority: HandoverPriority.important,
-      text:
-          "Margaret's hoist sling has changed to the blue one. Check the label before every transfer.",
-    ),
-    HandoverEntry(
-      id: 'H5',
-      clientId: 'U2',
-      at: ago(26),
-      by: 'Sarah Williams',
-      kind: HandoverKind.visitSummary,
-      priority: HandoverPriority.routine,
-      text:
-          'Good visit. Skin is intact. She likes the bedroom window open in the mornings.',
-    ),
-    HandoverEntry(
-      id: 'H6',
-      clientId: 'U3',
-      at: ago(8),
-      by: 'John Jones',
-      kind: HandoverKind.concern,
-      priority: HandoverPriority.important,
-      text:
-          'Dorothy refused her lunchtime tablets twice this week. This has been reported to the office. Do not force her. Record it each time.',
-      needsFollowUp: true,
-      followUpFor: 'Office',
-    ),
-    HandoverEntry(
-      id: 'H7',
-      clientId: 'U4',
-      at: ago(40),
-      by: 'David Eze',
-      kind: HandoverKind.visitSummary,
-      priority: HandoverPriority.routine,
-      text:
-          'His speech is improving. Give him time to answer and do not finish his sentences.',
-    ),
-    HandoverEntry(
-      id: 'H8',
-      clientId: 'U5',
-      at: ago(12),
-      by: 'Office',
-      kind: HandoverKind.change,
-      priority: HandoverPriority.important,
-      text:
-          'Joan has a new pendant alarm. Test it at every visit and tell the office if it does not connect.',
-      needsFollowUp: true,
-    ),
-    HandoverEntry(
-      id: 'H9',
-      clientId: 'U6',
-      at: ago(48),
-      by: 'Office',
-      kind: HandoverKind.todo,
-      priority: HandoverPriority.routine,
-      text:
-          'The oxygen supplier visits on Thursday morning. No candles or naked flames in the house.',
-      needsFollowUp: true,
-      followUpFor: 'Anyone',
-    ),
-  ];
-}
+HandoverPriority _handoverPriority(String value) =>
+    switch (value.toLowerCase()) {
+      'important' => HandoverPriority.important,
+      'urgent' => HandoverPriority.urgent,
+      _ => HandoverPriority.routine,
+    };

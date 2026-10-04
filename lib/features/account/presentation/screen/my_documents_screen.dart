@@ -1,8 +1,9 @@
+import 'package:well_trust_mobile_app/core/utils/app_buttons.dart';
 import 'package:well_trust_mobile_app/core/utils/colors.dart';
 import 'package:well_trust_mobile_app/core/utils/package_export.dart';
 import 'package:well_trust_mobile_app/features/account/data/dto/staff_requests.dart';
 import 'package:well_trust_mobile_app/features/account/data/model/user_response_model.dart';
-import 'package:well_trust_mobile_app/features/account/presentation/state/provider/account_provider.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/state/providers/account_provider.dart';
 import 'package:well_trust_mobile_app/features/account/presentation/state/state_model/account_state_model.dart';
 import 'package:well_trust_mobile_app/features/account/presentation/widget/staff_form.dart';
 import 'package:well_trust_mobile_app/features/account/presentation/widget/staff_record_sheets.dart';
@@ -97,22 +98,29 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
       context: context,
       builder: (c) => AlertDialog(
         backgroundColor: AppColors.surface,
-        title: Text(
-          'Delete ${kind.label.toLowerCase()}?',
-          style: TextStyle(color: AppColors.ink),
+        title: AppText(
+          text: 'Delete ${kind.label.toLowerCase()}?',
+          type: AppTextType.bodySmall,
+          color: AppColors.ink,
         ),
-        content: Text(
-          '"$name" will be removed from your record.',
-          style: TextStyle(color: AppColors.muted),
+        content: AppText(
+          text: '"$name" will be removed from your record.',
+          type: AppTextType.bodySmall,
+          color: AppColors.muted,
         ),
         actions: [
-          TextButton(
+          AppButton(
+            text: 'Cancel',
+            expand: false,
+            btnColor: Colors.transparent,
+            textColor: AppColors.muted,
             onPressed: () => Navigator.pop(c, false),
-            child: Text('Cancel', style: TextStyle(color: AppColors.muted)),
           ),
-          TextButton(
+          AppButton(
+            text: 'Delete',
+            expand: false,
+            btnColor: AppColors.rose,
             onPressed: () => Navigator.pop(c, true),
-            child: Text('Delete', style: TextStyle(color: AppColors.rose)),
           ),
         ],
       ),
@@ -139,22 +147,29 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
       context: context,
       builder: (c) => AlertDialog(
         backgroundColor: AppColors.surface,
-        title: Text(
-          'Ask for the reference?',
-          style: TextStyle(color: AppColors.ink),
+        title: AppText(
+          text: 'Ask for the reference?',
+          type: AppTextType.bodySmall,
+          color: AppColors.ink,
         ),
-        content: Text(
-          'We will email ${r.refereeName ?? 'them'} at ${r.email} with a link to give your reference.',
-          style: TextStyle(color: AppColors.muted),
+        content: AppText(
+          text:
+              'We will email ${r.refereeName ?? 'them'} at ${r.email} with a link to give your reference.',
+          type: AppTextType.bodySmall,
+          color: AppColors.muted,
         ),
         actions: [
-          TextButton(
+          AppButton(
+            text: 'Cancel',
+            expand: false,
+            btnColor: Colors.transparent,
+            textColor: AppColors.muted,
             onPressed: () => Navigator.pop(c, false),
-            child: Text('Cancel', style: TextStyle(color: AppColors.muted)),
           ),
-          TextButton(
+          AppButton(
+            text: 'Send',
+            expand: false,
             onPressed: () => Navigator.pop(c, true),
-            child: Text('Send', style: TextStyle(color: AppColors.ink)),
           ),
         ],
       ),
@@ -368,14 +383,14 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
             icon: Icons.add,
             onPressed: () => openStaffSheet(context, _sheetFor(_tab)),
           ),
-          const SizedBox(height: 14),
+          addVerticalSpacing(1.66),
           if (cards.isEmpty)
             EmptyBox(
               'No ${_tab == StaffRecordKind.competencies ? 'competencies' : '${noun}s'} yet',
               body: 'Anything you add appears here and the office can see it.',
             )
           else
-            for (final c in cards) ...[c, const SizedBox(height: 12)],
+            for (final c in cards) ...[c, addVerticalSpacing(1.42)],
         ],
       );
     } else if (!async.hasError) {
@@ -390,7 +405,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
         padding: const EdgeInsets.all(16),
         children: [
           EmptyBox('Could not load your records', body: async.error.toString()),
-          const SizedBox(height: 14),
+          addVerticalSpacing(1.66),
           DesignButton(
             'Try again',
             onPressed: () =>
@@ -421,7 +436,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
                         _reveal();
                       },
                     ),
-                    const SizedBox(width: 8),
+                    addHorizontalSpacing(2.05),
                   ],
                 ],
               ),
@@ -475,12 +490,11 @@ class _KindChip extends StatelessWidget {
               width: 1.5,
             ),
           ),
-          child: Text(
-            label,
-            style: TextStyle(
-              fontWeight: FontWeight.w700,
-              color: selected ? AppColors.goldDeep : AppColors.ink,
-            ),
+          child: AppText(
+            text: label,
+            type: AppTextType.bodySmall,
+            fontWeight: FontWeight.w700,
+            color: selected ? AppColors.goldDeep : AppColors.ink,
           ),
         ),
       ),
@@ -513,23 +527,27 @@ class _RecordCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontFamily: 'Playfair Display',
-              fontWeight: FontWeight.w700,
-              fontSize: 17,
-              color: AppColors.ink,
-            ),
+          AppText(
+            text: title,
+            type: AppTextType.bodySmall,
+            fontFamily: 'Playfair Display',
+            fontWeight: FontWeight.w700,
+            fontSize: 17,
+            color: AppColors.ink,
           ),
           if (pills.isNotEmpty) ...[
-            const SizedBox(height: 6),
+            addVerticalSpacing(0.71),
             Wrap(spacing: 6, runSpacing: 4, children: pills),
           ],
-          if (lines.isNotEmpty) const SizedBox(height: 6),
+          if (lines.isNotEmpty) addVerticalSpacing(0.71),
           for (final l in lines)
-            Text(l, style: TextStyle(color: AppColors.muted, fontSize: 14.5)),
-          const SizedBox(height: 12),
+            AppText(
+              text: l,
+              type: AppTextType.bodySmall,
+              color: AppColors.muted,
+              fontSize: 14.5,
+            ),
+          addVerticalSpacing(1.42),
           Wrap(
             spacing: 8,
             runSpacing: 8,

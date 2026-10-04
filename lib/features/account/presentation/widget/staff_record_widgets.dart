@@ -152,9 +152,11 @@ class InfoRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  label,
-                  style: TextStyle(color: AppColors.muted, fontSize: 13),
+                AppText(
+                  text: label,
+                  type: AppTextType.bodySmall,
+                  color: AppColors.muted,
+                  fontSize: 13,
                 ),
                 if (valueWidget != null)
                   Padding(
@@ -162,13 +164,12 @@ class InfoRow extends StatelessWidget {
                     child: valueWidget!,
                   )
                 else
-                  Text(
-                    has ? value! : empty,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: has ? FontWeight.w600 : FontWeight.w400,
-                      color: has ? AppColors.ink : AppColors.muted,
-                    ),
+                  AppText(
+                    text: has ? value! : empty,
+                    type: AppTextType.bodySmall,
+                    fontSize: 16,
+                    fontWeight: has ? FontWeight.w600 : FontWeight.w400,
+                    color: has ? AppColors.ink : AppColors.muted,
                   ),
               ],
             ),
@@ -204,14 +205,13 @@ class SectionCard extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    fontFamily: 'Playfair Display',
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18,
-                    color: AppColors.ink,
-                  ),
+                child: AppText(
+                  text: title,
+                  type: AppTextType.bodySmall,
+                  fontFamily: 'Playfair Display',
+                  fontWeight: FontWeight.w700,
+                  fontSize: 18,
+                  color: AppColors.ink,
                 ),
               ),
               if (actionLabel != null)
@@ -248,16 +248,19 @@ class EmptyBox extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text(
-            title,
-            style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.ink),
+          AppText(
+            text: title,
+            type: AppTextType.bodySmall,
+            fontWeight: FontWeight.w700,
+            color: AppColors.ink,
           ),
           if (body != null) ...[
-            const SizedBox(height: 4),
-            Text(
-              body!,
+            addVerticalSpacing(0.47),
+            AppText(
+              text: body!,
+              type: AppTextType.bodySmall,
               textAlign: TextAlign.center,
-              style: TextStyle(color: AppColors.muted),
+              color: AppColors.muted,
             ),
           ],
         ],

@@ -2,10 +2,16 @@ import 'package:flutter/material.dart';
 
 /// Model class for Size Configurations
 class SizeConfig {
-  static late MediaQueryData _mediaQueryData;
-  static late double screenWidth;
-  static late double screenHeight;
-  static late TextScaler _textScaler;
+  static const Size _designSize = Size(390, 844);
+
+  // Keep shared sizing helpers usable when a page is rendered on its own,
+  // before the app-level builder has had a chance to call [init].
+  static MediaQueryData _mediaQueryData = const MediaQueryData(
+    size: _designSize,
+  );
+  static double screenWidth = _designSize.width;
+  static double screenHeight = _designSize.height;
+  static TextScaler _textScaler = TextScaler.noScaling;
 
   static void init(BuildContext context) {
     _mediaQueryData = MediaQuery.of(context);

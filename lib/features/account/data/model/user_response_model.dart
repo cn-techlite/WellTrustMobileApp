@@ -1236,32 +1236,3 @@ class StaffDeclaration {
     "updatedAt": updatedAt?.toIso8601String(),
   };
 }
-
-/// The person-centred profile — the differentiator described in the source.
-class SuProfile {
-  final String preferredName;
-  final String aboutMe;
-  final String important;
-  final List<String> likes;
-  final List<String> dislikes;
-  final String communication;
-  final String family;
-  final String spiritual;
-  final String food;
-  final String lastReviewedBy;
-  final String lastReviewedNote;
-
-  const SuProfile({
-    required this.preferredName,
-    required this.aboutMe,
-    required this.important,
-    required this.likes,
-    required this.dislikes,
-    required this.communication,
-    required this.family,
-    required this.spiritual,
-    required this.food,
-    required this.lastReviewedBy,
-    required this.lastReviewedNote,
-  });
-}

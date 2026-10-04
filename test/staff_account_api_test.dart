@@ -7,7 +7,7 @@ import 'package:http/testing.dart';
 import 'package:well_trust_mobile_app/core/helpers/globals.dart';
 import 'package:well_trust_mobile_app/features/account/data/dto/staff_requests.dart';
 import 'package:well_trust_mobile_app/features/account/data/repository/account_repository_impl.dart';
-import 'package:well_trust_mobile_app/features/account/data/services/account_remote_services.dart';
+import 'package:well_trust_mobile_app/features/account/data/service/account_remote_service.dart';
 import 'package:well_trust_mobile_app/shared/model/response_result_model.dart';
 
 /// Runs [body] with every http call answered by [handler], and returns the

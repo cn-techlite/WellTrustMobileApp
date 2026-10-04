@@ -1,3 +1,4 @@
+import 'package:well_trust_mobile_app/core/utils/app_buttons.dart';
 import 'package:well_trust_mobile_app/core/utils/colors.dart';
 import 'package:well_trust_mobile_app/core/utils/package_export.dart';
 import 'package:well_trust_mobile_app/features/account/data/model/user_response_model.dart';
@@ -27,13 +28,27 @@ class ComplianceCard extends StatelessWidget {
     final has = applicable(url) != null;
     return Builder(
       builder: (context) => has
-          ? TextButton.icon(
+          ? AppButton(
+              text: 'View',
+              expand: false,
+              btnColor: Colors.transparent,
+              textColor: AppColors.ink,
               onPressed: () => launchUrl(
                 Uri.parse(url!),
                 mode: LaunchMode.externalApplication,
               ),
-              icon: Icon(Icons.open_in_new, size: 18, color: AppColors.ink),
-              label: Text('View', style: TextStyle(color: AppColors.ink)),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.open_in_new, size: 18, color: AppColors.ink),
+                  addHorizontalSpacing(1),
+                  AppText(
+                    text: 'View',
+                    type: AppTextType.bodySmall,
+                    color: AppColors.ink,
+                  ),
+                ],
+              ),
             )
           : const SizedBox.shrink(),
     );
@@ -41,19 +56,23 @@ class ComplianceCard extends StatelessWidget {
 
   Widget _group(String title) => Padding(
     padding: const EdgeInsets.only(top: 18),
-    child: Text(
-      title.toUpperCase(),
-      style: TextStyle(
-        fontSize: 12.5,
-        fontWeight: FontWeight.w800,
-        letterSpacing: 0.8,
-        color: AppColors.goldDeep,
-      ),
+    child: AppText(
+      text: title.toUpperCase(),
+      type: AppTextType.bodySmall,
+      fontSize: 12.5,
+      fontWeight: FontWeight.w800,
+      letterSpacing: 0.8,
+      color: AppColors.goldDeep,
     ),
   );
 
   Widget _status(String? v) => applicable(v) == null
-      ? Text('Not set', style: TextStyle(color: AppColors.muted, fontSize: 16))
+      ? AppText(
+          text: 'Not set',
+          type: AppTextType.bodySmall,
+          color: AppColors.muted,
+          fontSize: 16,
+        )
       : Align(alignment: Alignment.centerLeft, child: statusPill(v));
 
   /// A date row. [expires] adds a pill when the date has passed or is close.
@@ -79,8 +98,8 @@ class ComplianceCard extends StatelessWidget {
         title: 'Right to work and checks',
         actionLabel: 'Add',
         onAction: () => openStaffSheet(context, const ComplianceSheet()),
-        children: const [
-          SizedBox(height: 10),
+        children: [
+          addVerticalSpacing(1.18),
           EmptyBox(
             'Nothing recorded yet',
             body:
@@ -148,10 +167,12 @@ class ComplianceCard extends StatelessWidget {
         _date('Registration expires', c.registrationExpiryDate, expires: true),
 
         if (c.createdAt != null) ...[
-          const SizedBox(height: 14),
-          Text(
-            'Recorded ${fmtDate(c.createdAt)}',
-            style: TextStyle(color: AppColors.muted, fontSize: 13),
+          addVerticalSpacing(1.66),
+          AppText(
+            text: 'Recorded ${fmtDate(c.createdAt)}',
+            type: AppTextType.bodySmall,
+            color: AppColors.muted,
+            fontSize: 13,
           ),
         ],
       ],

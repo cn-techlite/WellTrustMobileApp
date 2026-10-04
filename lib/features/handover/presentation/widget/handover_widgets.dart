@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:well_trust_mobile_app/core/utils/app_buttons.dart';
 import 'package:well_trust_mobile_app/core/utils/colors.dart';
+import 'package:well_trust_mobile_app/core/utils/size_config.dart';
 import 'package:well_trust_mobile_app/features/handover/data/model/handover_model.dart';
+import 'package:well_trust_mobile_app/shared/widgets/app_text.dart';
 
 /// Small rounded status pill (design `.pill`).
 class Pill extends StatelessWidget {
@@ -32,14 +35,13 @@ class Pill extends StatelessWidget {
         color: bg,
         borderRadius: BorderRadius.circular(999),
       ),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: fg,
-          fontSize: 12,
-          fontWeight: FontWeight.w700,
-          height: 1.6,
-        ),
+      child: AppText(
+        text: text,
+        type: AppTextType.bodySmall,
+        color: fg,
+        fontSize: 12,
+        fontWeight: FontWeight.w700,
+        height: 1.6,
       ),
     );
   }
@@ -115,46 +117,37 @@ class DesignButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final fg = secondary ? AppColors.ink : AppColors.onPrimary;
-    return SizedBox(
-      width: small ? null : double.infinity,
-      height: small ? 44 : 50,
-      child: TextButton(
-        onPressed: onPressed,
-        style: TextButton.styleFrom(
-          backgroundColor: secondary ? Colors.transparent : AppColors.primary,
-          foregroundColor: fg,
-          disabledBackgroundColor: AppColors.line,
-          padding: EdgeInsets.symmetric(horizontal: small ? 14 : 20),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-            side: BorderSide(
-              color: secondary ? AppColors.line2 : AppColors.primary,
-              width: 1.5,
+    return AppButton(
+      text: label,
+      onPressed: onPressed,
+      expand: !small,
+      heightPercent: 5.9,
+      compactHeight: 44,
+      compactPadding: const EdgeInsets.symmetric(horizontal: 14),
+      btnColor: secondary ? Colors.transparent : AppColors.primary,
+      textColor: fg,
+      borderColor: secondary ? AppColors.line2 : AppColors.primary,
+      borderRadius: 12,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (icon != null) ...[
+            Icon(icon, size: 20),
+            addHorizontalSpacing(2.05),
+          ],
+          Flexible(
+            child: AppText(
+              text: label,
+              type: AppTextType.bodySmall,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              fontWeight: FontWeight.w700,
+              fontSize: small ? 14 : 15,
+              color: fg,
             ),
           ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (icon != null) ...[
-              Icon(icon, size: 20),
-              const SizedBox(width: 8),
-            ],
-            Flexible(
-              child: Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: small ? 14 : 15,
-                  color: fg,
-                ),
-              ),
-            ),
-          ],
-        ),
+        ],
       ),
     );
   }
@@ -196,13 +189,12 @@ class SegmentTabs extends StatelessWidget {
                         : Colors.transparent,
                     borderRadius: BorderRadius.circular(9),
                   ),
-                  child: Text(
-                    o.$2,
-                    style: TextStyle(
-                      fontSize: 13.5,
-                      fontWeight: FontWeight.w700,
-                      color: o.$1 == active ? AppColors.ink : AppColors.muted,
-                    ),
+                  child: AppText(
+                    text: o.$2,
+                    type: AppTextType.bodySmall,
+                    fontSize: 13.5,
+                    fontWeight: FontWeight.w700,
+                    color: o.$1 == active ? AppColors.ink : AppColors.muted,
                   ),
                 ),
               ),
@@ -266,15 +258,14 @@ class NoticeBox extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(icon, color: fg, size: 22),
-          const SizedBox(width: 10),
+          addHorizontalSpacing(2.56),
           Expanded(
-            child: Text(
-              text,
-              style: TextStyle(
-                color: fg,
-                fontWeight: FontWeight.w600,
-                fontSize: 14,
-              ),
+            child: AppText(
+              text: text,
+              type: AppTextType.bodySmall,
+              color: fg,
+              fontWeight: FontWeight.w600,
+              fontSize: 14,
             ),
           ),
         ],

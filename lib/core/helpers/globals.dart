@@ -116,6 +116,13 @@ class AppGlobals {
 
 AppGlobals globals = getIt.get<AppGlobals>();
 
+/// Safe for isolated widget tests that do not bootstrap the service locator.
+bool get hasActiveSession =>
+    getIt.isRegistered<AppGlobals>() && getIt<AppGlobals>().token.isNotEmpty;
+
+String get activeAccessToken =>
+    getIt.isRegistered<AppGlobals>() ? getIt<AppGlobals>().token : '';
+
 Future<void> setupLocator() async {
   if (!getIt.isRegistered<AppGlobals>()) {
     getIt.registerLazySingleton<AppGlobals>(() => AppGlobals.instance);

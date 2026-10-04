@@ -9,9 +9,6 @@ List<NotificationResponseModel> notificationResponseModelFromJson(String str) =>
       json.decode(str).map((x) => NotificationResponseModel.fromJson(x)),
     );
 
-String notificationResponseModelToJson(List<NotificationResponseModel> data) =>
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
-
 class NotificationResponseModel {
   final String? id;
   final String? userId;

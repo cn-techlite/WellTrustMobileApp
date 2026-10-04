@@ -1,177 +1,53 @@
 import 'package:well_trust_mobile_app/core/utils/colors.dart';
 import 'package:well_trust_mobile_app/core/utils/helper_functions.dart';
 import 'package:well_trust_mobile_app/core/utils/package_export.dart';
-import 'package:well_trust_mobile_app/core/utils/size_config.dart';
-import 'package:well_trust_mobile_app/features/notes/presentation/screen/notes_details_screen.dart';
-import 'package:well_trust_mobile_app/shared/widgets/app_text.dart';
+import 'package:well_trust_mobile_app/features/handover/presentation/widget/handover_widgets.dart';
+import 'package:well_trust_mobile_app/features/notes/data/model/care_note_entry.dart';
+import 'package:well_trust_mobile_app/features/notes/presentation/screen/new_care_note_page.dart';
+import 'package:well_trust_mobile_app/features/notes/presentation/state/providers/care_note_provider.dart';
 import 'package:well_trust_mobile_app/shared/widgets/welltrust_app_bar.dart';
-import 'package:well_trust_mobile_app/shared/widgets/input.dart';
 
-class NotesScreen extends ConsumerStatefulWidget {
+class NotesScreen extends ConsumerWidget {
   const NotesScreen({super.key});
 
   @override
-  ConsumerState<NotesScreen> createState() => _NotesScreenState();
-}
-
-class _NotesScreenState extends ConsumerState<NotesScreen>
-    with TickerProviderStateMixin {
-  final ScrollController scrollController = ScrollController();
-  String searchText = '';
-
-  @override
-  void initState() {
-    super.initState();
-
-    Future.microtask(() async {});
-
-    scrollController.addListener(_onScroll);
-  }
-
-  void _onScroll() {
-    if (!scrollController.hasClients) return;
-
-    final position = scrollController.position;
-
-    if (position.pixels >= position.maxScrollExtent - 250) {}
-  }
-
-  @override
-  void dispose() {
-    scrollController
-      ..removeListener(_onScroll)
-      ..dispose();
-
-    super.dispose();
-  }
-
-  void _filterItems(String query) {
-    setState(() {
-      searchText = query;
-    });
-
-    // ref.read(logisticsControllerProvider.notifier).onSearchChanged(query);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    //  final asyncState = ref.watch(packageOrderControllerProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final notes = ref.watch(careNotesProvider).notes;
 
     return Scaffold(
       backgroundColor: AppColors.bg,
-
       body: Column(
         children: [
           const WellTrustAppBar(title: 'Notes'),
           Expanded(
             child: SafeArea(
               top: false,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    addVerticalSpacing(3),
-                    SearchWidget(
-                      text: searchText,
-                      onChanged: _filterItems,
-                      hintText: "Search Clients",
-                    ),
-                    addVerticalSpacing(4),
-                    RichText(
-                      text: TextSpan(
-                        style: AppTextType.bodyMedium.style(
-                          context,
-                          color: AppColors.muted,
-                          fontSize: 13,
-                          height: 1.35,
-                        ),
-                        children: [
-                          TextSpan(
-                            text: "Showing 6 clients on your rota. ",
-                            style: AppTextType.bodyMedium.style(
-                              context,
-                              color: AppColors.ink,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: 1.2,
-                            ),
-                          ),
-                          TextSpan(
-                            text: "Tap a name to open their profile and notes.",
-                          ),
-                        ],
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 36),
+                children: [
+                  AppText(
+                    text:
+                        'Care notes you have written. Notes from a visit are added when you finish it.',
+                    type: AppTextType.bodySmall,
+                    color: AppColors.muted,
+                  ),
+                  addVerticalSpacing(2.13),
+                  DesignButton(
+                    'Add a care note',
+                    onPressed: () =>
+                        navigateToRoute(context, const NewCareNotePage()),
+                  ),
+                  addVerticalSpacing(2.13),
+                  if (notes.isEmpty)
+                    const _EmptyNotes()
+                  else
+                    ...notes.map(
+                      (note) => Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: _CareNoteRecord(note: note),
                       ),
                     ),
-                    Expanded(
-                      child: Container(
-                        color: AppColors.surface,
-                        child: ListView(
-                          children: [
-                            ClientNoteListTile(
-                              initials: "AP",
-                              name: "Anita Patel",
-                              info:
-                                  "📍 14 Linden Avenue · 84 yrs · 14h/week · 4 calls/day",
-                              note:
-                                  "Vascular dementia, lives alone. Daughter visits weekends...",
-                              tags: ["FALLS RISK", "ALLERGY: PENICILLIN"],
-                              onTap: () {
-                                navigateToRoute(
-                                  context,
-                                  ResidentProfileScreen(),
-                                );
-                              },
-                            ),
-                            ClientNoteListTile(
-                              initials: "GD",
-                              name: "George Davies",
-                              info:
-                                  "📍 52 Beech Drive · 78 yrs · 7h/week · 3 calls/day",
-                              note:
-                                  "Heart failure, stable. Lives with wife (84) who does most...",
-                              tags: [],
-                              onTap: () {
-                                navigateToRoute(
-                                  context,
-                                  ResidentProfileScreen(),
-                                );
-                              },
-                            ),
-                            ClientNoteListTile(
-                              initials: "EH",
-                              name: "Edna Henderson",
-                              info:
-                                  "📍 8 Mill Cottages · 91 yrs · 21h/week · 4 calls/day incl. bath visit",
-                              note:
-                                  "Alzheimer's, advanced. Needs full personal care. DNAR in...",
-                              tags: ["DEMENTIA", "FALLS RISK", "DNAR"],
-                              onTap: () {
-                                navigateToRoute(
-                                  context,
-                                  ResidentProfileScreen(),
-                                );
-                              },
-                            ),
-                            ClientNoteListTile(
-                              initials: "OA",
-                              name: "Oluwaseun Akinola",
-                              info:
-                                  "📍 Flat 4 · 72 yrs · 3.5h/week · 2 short calls/day",
-                              note: "",
-                              tags: [],
-                              onTap: () {
-                                navigateToRoute(
-                                  context,
-                                  ResidentProfileScreen(),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                ],
               ),
             ),
           ),
@@ -181,141 +57,181 @@ class _NotesScreenState extends ConsumerState<NotesScreen>
   }
 }
 
-class ClientNoteListTile extends StatelessWidget {
-  final String initials;
-  final String name;
-  final String info;
-  final String note;
-  final List<String> tags;
-  final VoidCallback? onTap;
-
-  const ClientNoteListTile({
-    super.key,
-    required this.initials,
-    required this.name,
-    required this.info,
-    required this.note,
-    required this.tags,
-    required this.onTap,
-  });
+class _EmptyNotes extends StatelessWidget {
+  const _EmptyNotes();
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 34),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.line),
+      ),
+      child: Column(
+        children: [
+          AppText(
+            text: 'No care notes yet',
+            type: AppTextType.bodySmall,
+            fontWeight: FontWeight.w700,
+            color: AppColors.ink,
+            textAlign: TextAlign.center,
+          ),
+          addVerticalSpacing(0.59),
+          AppText(
+            text: 'Finish a visit or add a note and it appears here.',
+            type: AppTextType.bodySmall,
+            color: AppColors.muted,
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CareNoteRecord extends StatelessWidget {
+  final CareNoteEntry note;
+
+  const _CareNoteRecord({required this.note});
+
+  Widget _statusPill(CareNoteEntry note) {
+    if (note.flagged) return Pill.bad('Flagged');
+    if (note.outcome != null) {
+      return note.outcome == 'concern'
+          ? Pill.bad('Concern raised')
+          : Pill.ok('No concerns');
+    }
+    if (note.mood.isNotEmpty) {
+      return note.mood == 'Settled'
+          ? Pill.ok(note.mood)
+          : Pill.warn(note.mood);
+    }
+    return const SizedBox.shrink();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final preferred = note.clientName.isNotEmpty
+        ? note.clientName
+        : 'Person supported';
+
+    return Material(
+      color: AppColors.surface,
+      borderRadius: BorderRadius.circular(14),
+      clipBehavior: Clip.antiAlias,
       child: Container(
-        padding: const EdgeInsets.fromLTRB(8, 20, 8, 16),
         decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: AppColors.line, width: 1.4)),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: AppColors.line),
         ),
-        child: Row(
-          children: [
-            CircleAvatar(
-              radius: 22,
-              backgroundColor: AppColors.gold,
-              child: AppText(
-                text: initials,
-                textAlign: TextAlign.center,
-                color: Colors.white,
-                type: AppTextType.labelSmall,
-                fontWeight: FontWeight.w800,
-              ),
+        child: Theme(
+          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+          child: ExpansionTile(
+            tilePadding: const EdgeInsets.symmetric(
+              horizontal: 14,
+              vertical: 4,
             ),
-
-            addHorizontalSpacing(3),
-
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AppText(
-                    text: name,
-                    textAlign: TextAlign.start,
-                    color: AppColors.black,
-                    type: AppTextType.bodyLarge,
-                    fontWeight: FontWeight.w800,
+            childrenPadding: const EdgeInsets.fromLTRB(14, 0, 14, 16),
+            iconColor: AppColors.muted,
+            collapsedIconColor: AppColors.muted,
+            title: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AppText(
+                        text: preferred,
+                        type: AppTextType.bodySmall,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.ink,
+                      ),
+                      addVerticalSpacing(0.24),
+                      AppText(
+                        text: DateFormat('d MMM, HH:mm').format(note.at),
+                        type: AppTextType.labelLarge,
+                        color: AppColors.muted,
+                      ),
+                    ],
                   ),
-                  addVerticalSpacing(1),
-                  AppText(
-                    text: info,
-                    textAlign: TextAlign.start,
-                    color: AppColors.muted,
-                    type: AppTextType.bodySmall,
-                    fontWeight: FontWeight.w400,
-                  ),
-                  if (note.isNotEmpty) ...[
-                    addVerticalSpacing(1),
-                    AppText(
-                      text: note,
-                      textAlign: TextAlign.start,
-                      color: AppColors.ink,
-                      type: AppTextType.bodySmall,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ],
-                  if (tags.isNotEmpty) ...[
-                    addVerticalSpacing(1),
-                    const SizedBox(height: 10),
-                    Wrap(
-                      spacing: 4,
-                      runSpacing: 4,
-                      children: tags
-                          .map((tag) => ClientNoteFlagChip(tag))
-                          .toList(),
-                    ),
-                  ],
-                ],
-              ),
+                ),
+                addHorizontalSpacing(2.05),
+                _statusPill(note),
+              ],
             ),
-
-            addHorizontalSpacing(1),
-
-            Icon(Icons.chevron_right, color: AppColors.muted, size: 34),
-          ],
+            children: [
+              Divider(height: 1, color: AppColors.line),
+              addVerticalSpacing(1.66),
+              if (note.visitDate != null) ...[
+                _NoteValue(
+                  label: 'Visit date',
+                  value: DateFormat('d MMM yyyy').format(note.visitDate!),
+                ),
+                addVerticalSpacing(1.42),
+              ],
+              if (note.startTime != null || note.endTime != null) ...[
+                _NoteValue(
+                  label: 'Visit time',
+                  value: '${note.startTime ?? '-'} – ${note.endTime ?? '-'}',
+                ),
+                addVerticalSpacing(1.42),
+              ],
+              if (note.supportType != null) ...[
+                _NoteValue(label: 'Support type', value: note.supportType!),
+                addVerticalSpacing(1.42),
+              ],
+              if (note.mood.isNotEmpty) ...[
+                _NoteValue(label: 'How they were', value: note.mood),
+                addVerticalSpacing(1.42),
+              ],
+              if (note.intake.isNotEmpty) ...[
+                _NoteValue(label: 'Food and drink', value: note.intake),
+                addVerticalSpacing(1.42),
+              ],
+              if (note.skin.isNotEmpty) ...[
+                _NoteValue(label: 'Skin and comfort', value: note.skin),
+                addVerticalSpacing(1.42),
+              ],
+              _NoteValue(label: 'Note', value: note.text),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class ClientNoteFlagChip extends StatelessWidget {
+class _NoteValue extends StatelessWidget {
   final String label;
+  final String value;
 
-  const ClientNoteFlagChip(this.label, {super.key});
+  const _NoteValue({required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {
-    Color bg = AppColors.roseBg;
-    Color fg = AppColors.amber;
-
-    if (label == "DEMENTIA") {
-      bg = AppColors.bg;
-      fg = AppColors.black;
-    }
-
-    if (label == "DNAR") {
-      bg = AppColors.roseBg;
-      fg = AppColors.rose;
-    }
-
-    if (label.contains("ALLERGY")) {
-      bg = AppColors.bg;
-      fg = AppColors.goldDeep;
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: AppText(
-        text: label,
-        textAlign: TextAlign.center,
-        color: fg,
-        type: AppTextType.labelSmall,
-        fontWeight: FontWeight.w800,
-      ),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 126,
+          child: AppText(
+            text: label,
+            type: AppTextType.labelLarge,
+            color: AppColors.muted,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        Expanded(
+          child: AppText(
+            text: value,
+            type: AppTextType.bodySmall,
+            color: AppColors.ink,
+          ),
+        ),
+      ],
     );
   }
 }

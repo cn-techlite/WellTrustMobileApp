@@ -6,7 +6,7 @@ import 'package:well_trust_mobile_app/core/utils/package_export.dart';
 import 'package:well_trust_mobile_app/features/account/data/dto/staff_requests.dart';
 import 'package:well_trust_mobile_app/features/account/data/model/user_response_model.dart';
 import 'package:well_trust_mobile_app/features/account/presentation/screen/office_records_screen.dart';
-import 'package:well_trust_mobile_app/features/account/presentation/state/provider/account_provider.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/state/providers/account_provider.dart';
 import 'package:well_trust_mobile_app/features/account/presentation/widget/compliance_card.dart';
 import 'package:well_trust_mobile_app/features/account/presentation/widget/staff_detail_sheets.dart';
 import 'package:well_trust_mobile_app/features/account/presentation/widget/staff_form.dart';
@@ -139,13 +139,12 @@ class _AccountDetailsPageState extends ConsumerState<AccountDetailsPage> {
                           strokeWidth: 2,
                           color: AppColors.navy,
                         )
-                      : Text(
-                          _initials(user),
-                          style: TextStyle(
-                            color: AppColors.navy,
-                            fontWeight: FontWeight.w800,
-                            fontSize: 24,
-                          ),
+                      : AppText(
+                          text: _initials(user),
+                          type: AppTextType.bodySmall,
+                          color: AppColors.navy,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 24,
                         ),
                 ),
                 Positioned(
@@ -168,26 +167,26 @@ class _AccountDetailsPageState extends ConsumerState<AccountDetailsPage> {
               ],
             ),
           ),
-          const SizedBox(width: 14),
+          addHorizontalSpacing(3.59),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  name.isEmpty ? 'Staff member' : name,
-                  style: TextStyle(
-                    fontFamily: 'Playfair Display',
-                    fontWeight: FontWeight.w700,
-                    fontSize: 22,
-                    color: AppColors.ink,
-                  ),
+                AppText(
+                  text: name.isEmpty ? 'Staff member' : name,
+                  type: AppTextType.bodySmall,
+                  fontFamily: 'Playfair Display',
+                  fontWeight: FontWeight.w700,
+                  fontSize: 22,
+                  color: AppColors.ink,
                 ),
                 if (applicable(user.staffCode) != null)
-                  Text(
-                    'Staff code ${user.staffCode}',
-                    style: TextStyle(color: AppColors.muted),
+                  AppText(
+                    text: 'Staff code ${user.staffCode}',
+                    type: AppTextType.bodySmall,
+                    color: AppColors.muted,
                   ),
-                const SizedBox(height: 6),
+                addVerticalSpacing(0.71),
                 Wrap(
                   spacing: 6,
                   runSpacing: 4,
@@ -258,7 +257,7 @@ class _AccountDetailsPageState extends ConsumerState<AccountDetailsPage> {
         ),
         children: profile == null
             ? [
-                const SizedBox(height: 10),
+                addVerticalSpacing(1.18),
                 const EmptyBox(
                   'Nothing added yet',
                   body: 'Add your job title and home address.',
@@ -301,7 +300,7 @@ class _AccountDetailsPageState extends ConsumerState<AccountDetailsPage> {
             openStaffSheet(context, EmergencyContactSheet(contact: contact)),
         children: contact == null
             ? [
-                const SizedBox(height: 10),
+                addVerticalSpacing(1.18),
                 const EmptyBox(
                   'Nothing added yet',
                   body: 'Add someone the office can call if they need to.',
@@ -316,19 +315,20 @@ class _AccountDetailsPageState extends ConsumerState<AccountDetailsPage> {
       ),
       Padding(
         padding: const EdgeInsets.only(top: 12),
-        child: Text(
-          'Kept by the office',
-          style: TextStyle(
-            fontFamily: 'Playfair Display',
-            fontWeight: FontWeight.w700,
-            fontSize: 20,
-            color: AppColors.ink,
-          ),
+        child: AppText(
+          text: 'Kept by the office',
+          type: AppTextType.bodySmall,
+          fontFamily: 'Playfair Display',
+          fontWeight: FontWeight.w700,
+          fontSize: 20,
+          color: AppColors.ink,
         ),
       ),
-      Text(
-        'You can see these. Only the office can change them, except your right to work record, which you can add once if none is on file. Your supervisions, probation and declarations are under From the office.',
-        style: TextStyle(color: AppColors.muted),
+      AppText(
+        text:
+            'You can see these. Only the office can change them, except your right to work record, which you can add once if none is on file. Your supervisions, probation and declarations are under From the office.',
+        type: AppTextType.bodySmall,
+        color: AppColors.muted,
       ),
       DesignButton(
         'From the office',
@@ -340,10 +340,7 @@ class _AccountDetailsPageState extends ConsumerState<AccountDetailsPage> {
       SectionCard(
         title: 'Employment and pay',
         children: pay == null
-            ? [
-                const SizedBox(height: 10),
-                const EmptyBox('Nothing recorded yet'),
-              ]
+            ? [addVerticalSpacing(1.18), const EmptyBox('Nothing recorded yet')]
             : [
                 InfoRow('Started', fmtDate(pay.employmentStartDate)),
                 InfoRow(
@@ -364,21 +361,17 @@ class _AccountDetailsPageState extends ConsumerState<AccountDetailsPage> {
       SectionCard(
         title: 'Appointment letter',
         children: letter == null
-            ? [
-                const SizedBox(height: 10),
-                const EmptyBox('Nothing recorded yet'),
-              ]
+            ? [addVerticalSpacing(1.18), const EmptyBox('Nothing recorded yet')]
             : [
                 InfoRow(
                   'Status',
                   null,
                   valueWidget: applicable(letter.status) == null
-                      ? Text(
-                          'Not set',
-                          style: TextStyle(
-                            color: AppColors.muted,
-                            fontSize: 16,
-                          ),
+                      ? AppText(
+                          text: 'Not set',
+                          type: AppTextType.bodySmall,
+                          color: AppColors.muted,
+                          fontSize: 16,
                         )
                       : Align(
                           alignment: Alignment.centerLeft,
@@ -406,26 +399,30 @@ class _AccountDetailsPageState extends ConsumerState<AccountDetailsPage> {
       SectionCard(
         title: 'Access and roles',
         children: [
-          const SizedBox(height: 10),
+          addVerticalSpacing(1.18),
           if (user.roles.isEmpty && user.permissions.isEmpty)
             const EmptyBox('Nothing recorded yet')
           else ...[
-            Text(
-              'Roles',
-              style: TextStyle(color: AppColors.muted, fontSize: 13),
+            AppText(
+              text: 'Roles',
+              type: AppTextType.bodySmall,
+              color: AppColors.muted,
+              fontSize: 13,
             ),
-            const SizedBox(height: 4),
+            addVerticalSpacing(0.47),
             Wrap(
               spacing: 6,
               runSpacing: 6,
               children: [for (final r in user.roles) Pill.neutral(humanize(r))],
             ),
-            const SizedBox(height: 12),
-            Text(
-              'What you are allowed to do',
-              style: TextStyle(color: AppColors.muted, fontSize: 13),
+            addVerticalSpacing(1.42),
+            AppText(
+              text: 'What you are allowed to do',
+              type: AppTextType.bodySmall,
+              color: AppColors.muted,
+              fontSize: 13,
             ),
-            const SizedBox(height: 4),
+            addVerticalSpacing(0.47),
             Wrap(
               spacing: 6,
               runSpacing: 6,
@@ -451,7 +448,7 @@ class _AccountDetailsPageState extends ConsumerState<AccountDetailsPage> {
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 40),
         itemCount: items.length,
-        separatorBuilder: (_, _) => const SizedBox(height: 14),
+        separatorBuilder: (_, _) => addVerticalSpacing(1.66),
         itemBuilder: (_, i) => items[i],
       );
     } else if (!async.hasError) {
@@ -467,7 +464,7 @@ class _AccountDetailsPageState extends ConsumerState<AccountDetailsPage> {
         padding: const EdgeInsets.all(16),
         children: [
           EmptyBox('Could not load your details', body: async.error.toString()),
-          const SizedBox(height: 14),
+          addVerticalSpacing(1.66),
           DesignButton(
             'Try again',
             onPressed: () =>

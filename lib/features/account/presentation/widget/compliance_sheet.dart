@@ -1,8 +1,9 @@
 import 'package:well_trust_mobile_app/core/services/upload_service.dart';
+import 'package:well_trust_mobile_app/core/utils/app_buttons.dart';
 import 'package:well_trust_mobile_app/core/utils/colors.dart';
 import 'package:well_trust_mobile_app/core/utils/package_export.dart';
 import 'package:well_trust_mobile_app/features/account/data/dto/staff_requests.dart';
-import 'package:well_trust_mobile_app/features/account/presentation/state/provider/account_provider.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/state/providers/account_provider.dart';
 import 'package:well_trust_mobile_app/features/account/presentation/widget/staff_form.dart';
 import 'package:well_trust_mobile_app/features/account/presentation/widget/staff_record_widgets.dart';
 
@@ -81,22 +82,29 @@ class _ComplianceSheetState extends ConsumerState<ComplianceSheet>
       context: context,
       builder: (c) => AlertDialog(
         backgroundColor: AppColors.surface,
-        title: Text(
-          'Save your right to work record?',
-          style: TextStyle(color: AppColors.ink),
+        title: AppText(
+          text: 'Save your right to work record?',
+          type: AppTextType.bodySmall,
+          color: AppColors.ink,
         ),
-        content: Text(
-          'You cannot change it after you save. Only the office can. Check that everything is right first.',
-          style: TextStyle(color: AppColors.muted),
+        content: AppText(
+          text:
+              'You cannot change it after you save. Only the office can. Check that everything is right first.',
+          type: AppTextType.bodySmall,
+          color: AppColors.muted,
         ),
         actions: [
-          TextButton(
+          AppButton(
+            text: 'Go back',
+            expand: false,
+            btnColor: Colors.transparent,
+            textColor: AppColors.muted,
             onPressed: () => Navigator.pop(c, false),
-            child: Text('Go back', style: TextStyle(color: AppColors.muted)),
           ),
-          TextButton(
+          AppButton(
+            text: 'Save',
+            expand: false,
             onPressed: () => Navigator.pop(c, true),
-            child: Text('Save', style: TextStyle(color: AppColors.ink)),
           ),
         ],
       ),
@@ -139,18 +147,17 @@ class _ComplianceSheetState extends ConsumerState<ComplianceSheet>
 
   Widget _heading(String text) => Padding(
     padding: const EdgeInsets.only(top: 6),
-    child: Text(
-      text.toUpperCase(),
-      style: TextStyle(
-        fontSize: 12.5,
-        fontWeight: FontWeight.w800,
-        letterSpacing: 0.8,
-        color: AppColors.goldDeep,
-      ),
+    child: AppText(
+      text: text.toUpperCase(),
+      type: AppTextType.bodySmall,
+      fontSize: 12.5,
+      fontWeight: FontWeight.w800,
+      letterSpacing: 0.8,
+      color: AppColors.goldDeep,
     ),
   );
 
-  Widget _gap() => const SizedBox(height: 14);
+  Widget _gap() => addVerticalSpacing(1.66);
 
   StaffDateField _date(
     String label,

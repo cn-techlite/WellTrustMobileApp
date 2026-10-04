@@ -1,7 +1,7 @@
 import 'package:well_trust_mobile_app/core/utils/colors.dart';
 import 'package:well_trust_mobile_app/core/utils/package_export.dart';
 import 'package:well_trust_mobile_app/features/account/data/model/user_response_model.dart';
-import 'package:well_trust_mobile_app/features/account/presentation/state/provider/account_provider.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/state/providers/account_provider.dart';
 import 'package:well_trust_mobile_app/features/account/presentation/state/state_model/account_state_model.dart';
 import 'package:well_trust_mobile_app/features/account/presentation/widget/staff_record_widgets.dart';
 import 'package:well_trust_mobile_app/features/handover/presentation/widget/handover_widgets.dart';
@@ -138,21 +138,23 @@ class _OfficeRecordsScreenState extends ConsumerState<OfficeRecordsScreen> {
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(16, 4, 16, 40),
         children: [
-          Text(
-            'Written by the office about you. You can read these but not change them.',
-            style: TextStyle(color: AppColors.muted),
+          AppText(
+            text:
+                'Written by the office about you. You can read these but not change them.',
+            type: AppTextType.bodySmall,
+            color: AppColors.muted,
           ),
-          const SizedBox(height: 14),
+          addVerticalSpacing(1.66),
           if (_error != null) ...[
             NoticeBox.warn(
               'Some of this could not be loaded. Pull down to try again.',
             ),
-            const SizedBox(height: 14),
+            addVerticalSpacing(1.66),
           ],
           if (cards.isEmpty)
             EmptyBox('Nothing here yet', body: _empty[_area])
           else
-            for (final c in cards) ...[c, const SizedBox(height: 12)],
+            for (final c in cards) ...[c, addVerticalSpacing(1.42)],
         ],
       );
     }
@@ -174,7 +176,7 @@ class _OfficeRecordsScreenState extends ConsumerState<OfficeRecordsScreen> {
                       selected: _area == a,
                       onTap: () => setState(() => _area = a),
                     ),
-                    const SizedBox(width: 8),
+                    addHorizontalSpacing(2.05),
                   ],
                 ],
               ),
@@ -220,12 +222,11 @@ class _AreaChip extends StatelessWidget {
               width: 1.5,
             ),
           ),
-          child: Text(
-            label,
-            style: TextStyle(
-              fontWeight: FontWeight.w700,
-              color: selected ? AppColors.goldDeep : AppColors.ink,
-            ),
+          child: AppText(
+            text: label,
+            type: AppTextType.bodySmall,
+            fontWeight: FontWeight.w700,
+            color: selected ? AppColors.goldDeep : AppColors.ink,
           ),
         ),
       ),
@@ -258,33 +259,41 @@ class _ReadCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontFamily: 'Playfair Display',
-              fontWeight: FontWeight.w700,
-              fontSize: 17,
-              color: AppColors.ink,
-            ),
+          AppText(
+            text: title,
+            type: AppTextType.bodySmall,
+            fontFamily: 'Playfair Display',
+            fontWeight: FontWeight.w700,
+            fontSize: 17,
+            color: AppColors.ink,
           ),
           if (pills.isNotEmpty) ...[
-            const SizedBox(height: 6),
+            addVerticalSpacing(0.71),
             Wrap(spacing: 6, runSpacing: 4, children: pills),
           ],
-          if (lines.isNotEmpty) const SizedBox(height: 6),
+          if (lines.isNotEmpty) addVerticalSpacing(0.71),
           for (final l in lines)
-            Text(l, style: TextStyle(color: AppColors.muted, fontSize: 14.5)),
-          for (final n in filled) ...[
-            const SizedBox(height: 10),
-            Text(
-              n.$1,
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: 13.5,
-                color: AppColors.ink,
-              ),
+            AppText(
+              text: l,
+              type: AppTextType.bodySmall,
+              color: AppColors.muted,
+              fontSize: 14.5,
             ),
-            Text(n.$2, style: TextStyle(color: AppColors.ink, height: 1.35)),
+          for (final n in filled) ...[
+            addVerticalSpacing(1.18),
+            AppText(
+              text: n.$1,
+              type: AppTextType.bodySmall,
+              fontWeight: FontWeight.w700,
+              fontSize: 13.5,
+              color: AppColors.ink,
+            ),
+            AppText(
+              text: n.$2,
+              type: AppTextType.bodySmall,
+              color: AppColors.ink,
+              height: 1.35,
+            ),
           ],
         ],
       ),

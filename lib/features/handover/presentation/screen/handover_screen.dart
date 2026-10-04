@@ -2,9 +2,13 @@ import 'package:well_trust_mobile_app/core/utils/colors.dart';
 import 'package:well_trust_mobile_app/core/utils/helper_functions.dart';
 import 'package:well_trust_mobile_app/core/utils/package_export.dart';
 import 'package:well_trust_mobile_app/features/handover/data/model/handover_model.dart';
+import 'package:well_trust_mobile_app/features/clients/data/model/assigned_client.dart';
+import 'package:well_trust_mobile_app/features/clients/presentation/state/providers/client_provider.dart';
 import 'package:well_trust_mobile_app/features/visits/data/model/today_visit.dart';
+import 'package:well_trust_mobile_app/features/visits/presentation/state/providers/visit_provider.dart';
 import 'package:well_trust_mobile_app/features/handover/presentation/screen/handover_client_screen.dart';
-import 'package:well_trust_mobile_app/features/handover/presentation/state/provider/handover_provider.dart';
+import 'package:well_trust_mobile_app/features/handover/presentation/state/providers/handover_provider.dart';
+import 'package:well_trust_mobile_app/features/handover/presentation/state/state_model/handover_state.dart';
 import 'package:well_trust_mobile_app/features/handover/presentation/widget/add_handover_sheet.dart';
 import 'package:well_trust_mobile_app/features/handover/presentation/widget/handover_widgets.dart';
 import 'package:well_trust_mobile_app/shared/widgets/welltrust_app_bar.dart';
@@ -22,16 +26,32 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(handoverProvider);
-    final today = handoverClients.where((c) => c.visitToday).toList();
-    final flagged = handoverClients
-        .where(
-          (c) => state.openFor(c.id).isNotEmpty || state.unreadFor(c.id) > 0,
-        )
-        .toList();
+    final clients =
+        ref.watch(assignedClientsProvider).value?.assignedClients ??
+        const <AssignedClient>[];
+    final visits =
+        ref.watch(visitControllerProvider).value?.visits ??
+        const <TodayVisit>[];
+    final todayIds = visits
+        .where((visit) => DateUtils.isSameDay(visit.start, DateTime.now()))
+        .map((visit) => visit.clientId)
+        .toSet();
+    final today = clients.where((c) => todayIds.contains(c.id)).toList()
+      ..sort((a, b) => _visitOrder(a.id).compareTo(_visitOrder(b.id)));
+    final all = [...clients]
+      ..sort((a, b) => a.preferred.compareTo(b.preferred));
+    final flagged =
+        clients
+            .where(
+              (c) =>
+                  state.openFor(c.id).isNotEmpty || state.unreadFor(c.id) > 0,
+            )
+            .toList()
+          ..sort((a, b) => a.preferred.compareTo(b.preferred));
     final list = switch (tab) {
       'today' => today,
       'flagged' => flagged,
-      _ => handoverClients,
+      _ => all,
     };
 
     return Scaffold(
@@ -43,32 +63,32 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
             child: ListView(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
               children: [
-                Text(
-                  'What has happened and what to know for each person you support. Read it before your visit, and add your own for the next carer.',
-                  style: TextStyle(
-                    color: AppColors.muted,
-                    fontSize: 14,
-                    height: 1.4,
-                  ),
+                AppText(
+                  text:
+                      'What has happened and what to know for each person you support. Read it before your visit, and add your own for the next carer. Handover is kept in its own document. You only see people on your rota.',
+                  type: AppTextType.bodySmall,
+                  color: AppColors.muted,
+                  fontSize: 14,
+                  height: 1.4,
                 ),
-                const SizedBox(height: 14),
+                addVerticalSpacing(1.66),
                 DesignButton(
                   'Add handover',
                   icon: Icons.edit_outlined,
                   onPressed: () =>
-                      displayBottomSheet(context, const AddHandoverSheet()),
+                      navigateToRoute(context, const AddHandoverPage()),
                 ),
-                const SizedBox(height: 14),
+                addVerticalSpacing(1.66),
                 SegmentTabs(
                   active: tab,
                   onChanged: (v) => setState(() => tab = v),
                   options: [
                     ('today', 'Today (${today.length})'),
-                    ('all', 'All (${handoverClients.length})'),
+                    ('all', 'All (${clients.length})'),
                     ('flagged', 'Flagged (${flagged.length})'),
                   ],
                 ),
-                const SizedBox(height: 14),
+                addVerticalSpacing(1.66),
                 if (list.isEmpty)
                   Container(
                     padding: const EdgeInsets.symmetric(
@@ -81,27 +101,33 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
                     ),
                     child: Column(
                       children: [
-                        Text(
-                          tab == 'flagged'
+                        AppText(
+                          text: tab == 'flagged'
                               ? 'Nothing needs your attention'
                               : 'No visits today',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.ink,
-                          ),
+                          type: AppTextType.bodySmall,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.ink,
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'People on your rota appear here.',
-                          style: TextStyle(color: AppColors.muted),
+                        addVerticalSpacing(0.47),
+                        AppText(
+                          text: 'People on your rota appear here.',
+                          type: AppTextType.bodySmall,
+                          color: AppColors.muted,
                         ),
                       ],
                     ),
                   )
                 else
                   for (final c in list) ...[
-                    _ClientRow(client: c, state: state),
-                    const SizedBox(height: 12),
+                    _ClientRow(
+                      client: c,
+                      state: state,
+                      nextVisit: visits
+                          .where((visit) => visit.clientId == c.id)
+                          .firstOrNull,
+                    ),
+                    addVerticalSpacing(1.42),
                   ],
               ],
             ),
@@ -110,13 +136,27 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
       ),
     );
   }
+
+  DateTime _visitOrder(String clientId) {
+    for (final visit
+        in ref.read(visitControllerProvider).value?.visits ??
+            const <TodayVisit>[]) {
+      if (visit.clientId == clientId) return visit.start;
+    }
+    return DateTime(9999);
+  }
 }
 
 class _ClientRow extends StatelessWidget {
-  final HandoverClient client;
+  final AssignedClient client;
   final HandoverState state;
+  final TodayVisit? nextVisit;
 
-  const _ClientRow({required this.client, required this.state});
+  const _ClientRow({
+    required this.client,
+    required this.state,
+    required this.nextVisit,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -138,38 +178,43 @@ class _ClientRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  client.preferred,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 16,
-                    color: AppColors.ink,
-                  ),
+                AppText(
+                  text: client.preferred,
+                  type: AppTextType.bodySmall,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16,
+                  color: AppColors.ink,
                 ),
-                Text(
-                  '${client.name}. Next visit: ${nextVisitLabel(client)}',
-                  style: TextStyle(color: AppColors.muted, fontSize: 13),
+                AppText(
+                  text: nextVisit == null
+                      ? client.name
+                      : '${client.name}. Next visit: ${DateFormat('EEE d MMM, HH:mm').format(nextVisit!.start)}',
+                  type: AppTextType.bodySmall,
+                  color: AppColors.muted,
+                  fontSize: 13,
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  all.isEmpty ? 'No handover yet' : all.first.text,
+                addVerticalSpacing(0.47),
+                AppText(
+                  text: all.isEmpty ? 'No handover yet' : all.first.text,
+                  type: AppTextType.bodySmall,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: AppColors.muted, fontSize: 13),
+                  color: AppColors.muted,
+                  fontSize: 13,
                 ),
               ],
             ),
           ),
-          const SizedBox(width: 8),
+          addHorizontalSpacing(2.05),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               if (unread > 0) Pill.gold('$unread new'),
               if (concern) ...[
-                const SizedBox(height: 4),
+                addVerticalSpacing(0.47),
                 Pill.bad('Concern'),
               ] else if (open.isNotEmpty) ...[
-                const SizedBox(height: 4),
+                addVerticalSpacing(0.47),
                 Pill.warn('To do'),
               ],
             ],

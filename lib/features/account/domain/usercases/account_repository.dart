@@ -27,6 +27,13 @@ abstract class AccountRepository {
   Future<List<StaffProbation>> getProbation(String staffId);
   Future<List<StaffDeclaration>> getDeclarations(String staffId);
 
+  Future<List<Map<String, dynamic>>> getAssessments();
+  Future<Map<String, dynamic>> createAssessment(Map<String, dynamic> fields);
+  Future<List<Map<String, dynamic>>> getIncidents();
+  Future<Map<String, dynamic>> createIncident(Map<String, dynamic> fields);
+  Future<List<Map<String, dynamic>>> getComplaints();
+  Future<Map<String, dynamic>> createComplaint(Map<String, dynamic> fields);
+
   Future<GeneralResultModel> sendFeedBack({
     required String feedback,
     required String phoneNo,

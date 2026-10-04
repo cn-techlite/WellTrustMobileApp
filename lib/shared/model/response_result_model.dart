@@ -58,30 +58,6 @@ class Competency {
   });
 }
 
-class Policy {
-  final String id;
-  final String title;
-  final String icon;
-  final String version;
-  String status; // pending | acknowledged
-  String? publishedAt;
-  String? acknowledgedAt;
-  final String summary;
-  final List<String> keyPoints;
-
-  Policy({
-    required this.id,
-    required this.title,
-    required this.icon,
-    required this.version,
-    required this.status,
-    this.publishedAt,
-    this.acknowledgedAt,
-    required this.summary,
-    this.keyPoints = const [],
-  });
-}
-
 class Declaration {
   final String id;
   final String title;
@@ -101,37 +77,5 @@ class Declaration {
     this.completedAt,
     required this.description,
     this.questions = const [],
-  });
-}
-
-class StaffMessage {
-  final String from;
-  final String initials;
-  final bool mine;
-  final String text;
-  final String time;
-  const StaffMessage({
-    required this.from,
-    required this.initials,
-    required this.mine,
-    required this.text,
-    required this.time,
-  });
-}
-
-class Meeting {
-  final String id;
-  final String time;
-  final String title;
-  final String who;
-  final String duration;
-  final String status;
-  const Meeting({
-    required this.id,
-    required this.time,
-    required this.title,
-    required this.who,
-    required this.duration,
-    required this.status,
   });
 }

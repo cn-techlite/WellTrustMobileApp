@@ -30,7 +30,6 @@ class ApiService {
     UploadFolder folder = UploadFolder.images,
   }) async {
     final url = Uri.parse("${Endpoints.baseUrl}${Endpoints.uploadUrl}");
-    printData('Upload Url', url.toString());
 
     try {
       // No Content-Type here: the request adds its own with the boundary.
@@ -43,10 +42,11 @@ class ApiService {
         ..files.add(await http.MultipartFile.fromPath('Image', file));
 
       final response = await http.Response.fromStream(await request.send());
+      printData('Upload Response', response.body);
+      printData('Upload Status Code', response.statusCode);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final data = jsonDecode(response.body);
-        printData('Upload Response', data);
         final imageUrl = data is Map ? data['imageUrl']?.toString() : null;
         if (imageUrl == null || imageUrl.isEmpty) {
           throw const UploadException('The server did not return the file.');
@@ -54,7 +54,6 @@ class ApiService {
         return imageUrl;
       }
 
-      printData('Upload Error', '${response.statusCode} ${response.body}');
       if (response.statusCode == 401) {
         throw const UploadException(
           'Your sign in has expired. Please sign in again.',
@@ -66,7 +65,6 @@ class ApiService {
     } on UploadException {
       rethrow;
     } catch (e) {
-      printData('Upload Catch Error', e.toString());
       throw UploadException(handleHttpError(e));
     }
   }

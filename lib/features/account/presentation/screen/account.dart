@@ -2,6 +2,7 @@
 // ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
 
 import 'package:well_trust_mobile_app/core/helpers/globals.dart';
+import 'package:well_trust_mobile_app/core/utils/app_buttons.dart';
 import 'package:well_trust_mobile_app/shared/widgets/welltrust_app_bar.dart';
 import 'package:well_trust_mobile_app/core/utils/helper_functions.dart';
 import 'package:well_trust_mobile_app/features/auth/presentation/screen/logins.dart';
@@ -10,13 +11,11 @@ import 'package:well_trust_mobile_app/shared/widgets/custom_snackbar.dart';
 import 'package:well_trust_mobile_app/features/account/presentation/screen/help_support.dart';
 import 'package:well_trust_mobile_app/features/account/presentation/screen/more_screens.dart';
 import 'package:well_trust_mobile_app/features/account/presentation/screen/my_documents_screen.dart';
-import 'package:well_trust_mobile_app/features/account/presentation/state/provider/account_provider.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/state/providers/account_provider.dart';
 import 'package:well_trust_mobile_app/features/account/presentation/widget/staff_record_widgets.dart';
 import 'package:well_trust_mobile_app/features/account/presentation/widget/settings_sheet.dart';
 import 'package:well_trust_mobile_app/features/handover/presentation/widget/handover_widgets.dart';
 import 'package:well_trust_mobile_app/features/account/presentation/screen/personal_detail.dart';
-import 'package:well_trust_mobile_app/features/visits/presentation/widget/raise_cocerns_bottomshet.dart';
-import 'package:well_trust_mobile_app/features/visits/presentation/widget/report_incident_bottomsheet.dart';
 
 import '../../../../core/utils/colors.dart';
 import '../../../../core/utils/package_export.dart';
@@ -53,16 +52,23 @@ class _LoginPageState extends ConsumerState<AccountPage> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Sign out?'),
-        content: const Text('You will need to sign in again to continue.'),
+        title: const AppText(text: 'Sign out?', type: AppTextType.bodySmall),
+        content: const AppText(
+          text: 'You will need to sign in again to continue.',
+          type: AppTextType.bodySmall,
+        ),
         actions: [
-          TextButton(
+          AppButton(
+            text: 'Cancel',
+            expand: false,
+            btnColor: Colors.transparent,
+            textColor: AppColors.muted,
             onPressed: () => Navigator.pop(dialogContext, false),
-            child: const Text('Cancel'),
           ),
-          TextButton(
+          AppButton(
+            text: 'Sign out',
+            expand: false,
             onPressed: () => Navigator.pop(dialogContext, true),
-            child: const Text('Sign out'),
           ),
         ],
       ),
@@ -106,154 +112,157 @@ class _LoginPageState extends ConsumerState<AccountPage> {
             child: ListView(
               padding: EdgeInsets.zero,
               children: [
-                Container(
-                  color: AppColors.navy,
-                  padding: const EdgeInsets.fromLTRB(20, 4, 20, 64),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 56,
-                        height: 56,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: AppColors.gold,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Text(
-                          _initials(name),
-                          style: TextStyle(
-                            color: AppColors.navy,
-                            fontWeight: FontWeight.w800,
-                            fontSize: 20,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 14),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              name,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontFamily: 'Playfair Display',
-                                color: Colors.white,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 24,
-                              ),
+                Stack(
+                  children: [
+                    Container(
+                      color: AppColors.navy,
+                      padding: const EdgeInsets.fromLTRB(20, 4, 20, 64),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 56,
+                            height: 56,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: AppColors.gold,
+                              shape: BoxShape.circle,
                             ),
-                            const SizedBox(height: 2),
-                            Text(
-                              globals.kioskDeviceName.trim().isEmpty
-                                  ? 'Staff carer'
-                                  : 'Staff carer, ${globals.kioskDeviceName.trim()}'
-                                        '${globals.kioskDeviceReference.trim().isEmpty ? '' : ' (${globals.kioskDeviceReference.trim()})'}',
-                              style: TextStyle(color: AppColors.brandMuted),
+                            child: AppText(
+                              text: _initials(name),
+                              type: AppTextType.bodySmall,
+                              color: AppColors.navy,
+                              fontWeight: FontWeight.w800,
+                              fontSize: 20,
                             ),
-                          ],
-                        ),
+                          ),
+                          addHorizontalSpacing(3.59),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                AppText(
+                                  text: name,
+                                  type: AppTextType.headlineMedium,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  fontFamily: 'Playfair Display',
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 24,
+                                ),
+                                addVerticalSpacing(0.24),
+                                AppText(
+                                  text: globals.kioskDeviceName.trim().isEmpty
+                                      ? 'Staff carer'
+                                      : 'Staff carer, ${globals.kioskDeviceName.trim()}'
+                                            '${globals.kioskDeviceReference.trim().isEmpty ? '' : ' (${globals.kioskDeviceReference.trim()})'}',
+                                  type: AppTextType.bodySmall,
+                                  color: AppColors.brandMuted,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
-                Transform.translate(
-                  offset: const Offset(0, -44),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Column(
-                      children: [
-                        _MenuTile(
-                          icon: Icons.add_circle_outline,
-                          title: 'Open shifts',
-                          subtitle: '3 shifts you can ask for',
-                          onTap: () => navigateToRoute(
-                            context,
-                            const OpenShiftsScreen(),
-                          ),
-                        ),
-                        _MenuTile(
-                          icon: Icons.access_time,
-                          title: 'My hours',
-                          subtitle: 'Care time and travel from your clock-ins',
-                          onTap: () =>
-                              navigateToRoute(context, const MyHoursScreen()),
-                        ),
-                        _MenuTile(
-                          icon: Icons.assignment_turned_in_outlined,
-                          title: 'Assessments',
-                          subtitle: '2 to complete',
-                          onTap: () => navigateToRoute(
-                            context,
-                            const AssessmentsScreen(),
-                          ),
-                        ),
-                        _MenuTile(
-                          icon: Icons.warning_amber_rounded,
-                          title: 'Incident report',
-                          subtitle: 'Report something that happened',
-                          onTap: () => displayBottomSheet(
-                            context,
-                            ReportIncidentBottomSheet(),
-                          ),
-                        ),
-                        _MenuTile(
-                          icon: Icons.description_outlined,
-                          title: 'Complaints',
-                          subtitle: 'Record a complaint or concern',
-                          onTap: () => displayBottomSheet(
-                            context,
-                            RaiseConcernBottomSheet(),
-                          ),
-                        ),
-                        _MenuTile(
-                          icon: Icons.folder_open_outlined,
-                          title: 'My documents',
-                          subtitle: attention > 0
-                              ? '$attention need attention'
-                              : 'Documents, certificates and qualifications',
-                          badge: attention > 0 ? attention : null,
-                          onTap: () =>
-                              navigateToRoute(context, const DocumentsScreen()),
-                        ),
-                        _MenuTile(
-                          icon: Icons.person_outline,
-                          title: 'My details',
-                          subtitle: 'Your details, job and emergency contact',
-                          onTap: () => navigateToRoute(
-                            context,
-                            const AccountDetailsPage(),
-                          ),
-                        ),
-                        _MenuTile(
-                          icon: Icons.settings_outlined,
-                          title: 'Settings',
-                          subtitle: 'Text size and appearance',
-                          onTap: () => displayBottomSheet(
-                            context,
-                            const SettingsSheet(),
-                          ),
-                        ),
-                        _MenuTile(
-                          icon: Icons.help_outline,
-                          title: 'Help & support',
-                          subtitle: 'Get help with the app',
-                          onTap: () => navigateToRoute(
-                            context,
-                            const HelpAndSupportPage(),
-                          ),
-                        ),
-                        _MenuTile(
-                          icon: Icons.logout,
-                          title: 'Sign out',
-                          subtitle: 'Return to login',
-                          danger: true,
-                          onTap: isSigningOut ? null : _signOut,
-                        ),
-                      ],
                     ),
-                  ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 80, 16, 0),
+                      child: Column(
+                        children: [
+                          _MenuTile(
+                            icon: Icons.add_circle_outline,
+                            title: 'Open shifts',
+                            subtitle: '3 shifts you can ask for',
+                            onTap: () => navigateToRoute(
+                              context,
+                              const OpenShiftsScreen(),
+                            ),
+                          ),
+                          _MenuTile(
+                            icon: Icons.access_time,
+                            title: 'My hours',
+                            subtitle:
+                                'Care time and travel from your clock-ins',
+                            onTap: () =>
+                                navigateToRoute(context, const MyHoursScreen()),
+                          ),
+                          _MenuTile(
+                            icon: Icons.assignment_turned_in_outlined,
+                            title: 'Assessments',
+                            subtitle: '2 to complete',
+                            onTap: () => navigateToRoute(
+                              context,
+                              const AssessmentsScreen(),
+                            ),
+                          ),
+                          _MenuTile(
+                            icon: Icons.warning_amber_rounded,
+                            title: 'Incident report',
+                            subtitle: 'Report something that happened',
+                            onTap: () => navigateToRoute(
+                              context,
+                              const IncidentReportScreen(),
+                            ),
+                          ),
+                          _MenuTile(
+                            icon: Icons.description_outlined,
+                            title: 'Complaints',
+                            subtitle: 'Record a complaint or concern',
+                            onTap: () => navigateToRoute(
+                              context,
+                              const ComplaintsScreen(),
+                            ),
+                          ),
+                          _MenuTile(
+                            icon: Icons.folder_open_outlined,
+                            title: 'My documents',
+                            subtitle: attention > 0
+                                ? '$attention need attention'
+                                : 'Documents, certificates and qualifications',
+                            badge: attention > 0 ? attention : null,
+                            onTap: () => navigateToRoute(
+                              context,
+                              const DocumentsScreen(),
+                            ),
+                          ),
+                          _MenuTile(
+                            icon: Icons.person_outline,
+                            title: 'My details',
+                            subtitle: 'Your details, job and emergency contact',
+                            onTap: () => navigateToRoute(
+                              context,
+                              const AccountDetailsPage(),
+                            ),
+                          ),
+                          _MenuTile(
+                            icon: Icons.settings_outlined,
+                            title: 'Settings',
+                            subtitle: 'Text size and appearance',
+                            onTap: () => displayBottomSheet(
+                              context,
+                              const SettingsSheet(),
+                            ),
+                          ),
+                          _MenuTile(
+                            icon: Icons.help_outline,
+                            title: 'Help & support',
+                            subtitle: 'Get help with the app',
+                            onTap: () => navigateToRoute(
+                              context,
+                              const HelpAndSupportPage(),
+                            ),
+                          ),
+                          _MenuTile(
+                            icon: Icons.logout,
+                            title: 'Sign out',
+                            subtitle: 'Return to login',
+                            danger: true,
+                            onTap: isSigningOut ? null : _signOut,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -321,29 +330,30 @@ class _MenuTile extends StatelessWidget {
                     color: danger ? AppColors.rose : AppColors.goldDeep,
                   ),
                 ),
-                const SizedBox(width: 14),
+                addHorizontalSpacing(3.59),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        title,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 15.5,
-                          color: danger ? AppColors.rose : AppColors.ink,
-                        ),
+                      AppText(
+                        text: title,
+                        type: AppTextType.bodySmall,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 15.5,
+                        color: danger ? AppColors.rose : AppColors.ink,
                       ),
-                      Text(
-                        subtitle,
-                        style: TextStyle(color: AppColors.muted, fontSize: 13),
+                      AppText(
+                        text: subtitle,
+                        type: AppTextType.bodySmall,
+                        color: AppColors.muted,
+                        fontSize: 13,
                       ),
                     ],
                   ),
                 ),
                 if (badge != null) ...[
                   Pill.warn('$badge'),
-                  const SizedBox(width: 4),
+                  addHorizontalSpacing(1.03),
                 ],
                 Icon(Icons.chevron_right, color: AppColors.muted),
               ],

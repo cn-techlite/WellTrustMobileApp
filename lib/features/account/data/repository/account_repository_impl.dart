@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:well_trust_mobile_app/core/extension/error_handling.dart';
 import 'package:well_trust_mobile_app/features/account/data/dto/staff_requests.dart';
+import 'package:well_trust_mobile_app/features/account/data/dto/mobile_record_request.dart';
+import 'package:well_trust_mobile_app/core/helpers/endpoints.dart';
 import 'package:well_trust_mobile_app/features/account/data/model/user_response_model.dart';
-import 'package:well_trust_mobile_app/features/account/data/services/account_remote_services.dart';
+import 'package:well_trust_mobile_app/features/account/data/service/account_remote_service.dart';
 import 'package:well_trust_mobile_app/features/account/domain/usercases/account_repository.dart';
 import 'package:well_trust_mobile_app/shared/model/response_result_model.dart';
 
@@ -173,4 +175,37 @@ class AccountRepositoryImpl implements AccountRepository {
     }
     return GeneralResultModel.failure(errorMessage);
   }
+
+  @override
+  Future<List<Map<String, dynamic>>> getAssessments() =>
+      remoteService.getMobileRecords(Endpoints.assessmentsUrl);
+
+  @override
+  Future<Map<String, dynamic>> createAssessment(Map<String, dynamic> fields) =>
+      remoteService.createMobileRecord(
+        Endpoints.assessmentsUrl,
+        MobileRecordRequest(fields),
+      );
+
+  @override
+  Future<List<Map<String, dynamic>>> getIncidents() =>
+      remoteService.getMobileRecords(Endpoints.incidentsUrl);
+
+  @override
+  Future<Map<String, dynamic>> createIncident(Map<String, dynamic> fields) =>
+      remoteService.createMobileRecord(
+        Endpoints.incidentsUrl,
+        MobileRecordRequest(fields),
+      );
+
+  @override
+  Future<List<Map<String, dynamic>>> getComplaints() =>
+      remoteService.getMobileRecords(Endpoints.complaintsUrl);
+
+  @override
+  Future<Map<String, dynamic>> createComplaint(Map<String, dynamic> fields) =>
+      remoteService.createMobileRecord(
+        Endpoints.complaintsUrl,
+        MobileRecordRequest(fields),
+      );
 }

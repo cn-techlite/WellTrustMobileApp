@@ -1,30 +1,7 @@
-import 'package:well_trust_mobile_app/features/home/data/model/advert_response_model.dart';
-import 'package:well_trust_mobile_app/features/home/data/model/company_response_model.dart';
 import 'package:well_trust_mobile_app/features/home/data/model/notification_model.dart';
-import 'package:well_trust_mobile_app/features/home/data/model/riders_response_model.dart';
 import 'package:well_trust_mobile_app/shared/model/response_result_model.dart';
 
 abstract class HomeRepository {
-  //! LOGISTIC COMPANY DATA
-  Future<LogisticPaginatedModel> getAllLogisticData({
-    required int page,
-    required int pageSize,
-    String? anyItem,
-    String? state,
-    String? locality,
-    String? filterTypes,
-  });
-
-  Future<LogisticResponseModel> getLogisticData({required String id});
-
-  Future<GeneralResultModel> addLogisticsReview({
-    required String stationId,
-    required String orderId,
-    required String reviewMessage,
-    required double ratingNum,
-  });
-
-  //! NOTIFICATIONS
   Future<GeneralResultModel> sendNotification({
     required String title,
     required String body,
@@ -43,27 +20,4 @@ abstract class HomeRepository {
   Future<NotificationResponseModel> getNotificationData({required String id});
 
   Future<List<NotificationResponseModel>> getAllNotificationData();
-
-  //! RIDERS
-
-  Future<RidersPaginatedModel> getAllRidersData({
-    required int page,
-    required int pageSize,
-    String? anyItem,
-    String? state,
-    String? locality,
-    String? filterTypes,
-  });
-
-  Future<RidersResponseModel> getRidersData({required String id});
-
-  Future<GeneralResultModel> addRiderReview({
-    required String riderId,
-    required String orderId,
-    required String reviewMessage,
-    required double ratingNum,
-  });
-
-  //!Advert Placement
-  Future<List<AdvertResponseModel>> getAllAdvertisements();
 }

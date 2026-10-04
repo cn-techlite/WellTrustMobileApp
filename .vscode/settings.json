@@ -58,6 +58,7 @@
     "openheartapp",
     "optimisation",
     "ordinator",
+    "organisation",
     "Pierogi",
     "placemarks",
     "Playfair",
@@ -85,10 +86,12 @@
     "timesheets",
     "Trazodone",
     "trnx",
+    "usecases",
     "usercases",
     "wellled",
     "Whistleblowing",
     "Wilf",
     "Yardley's"
-  ]
+  ],
+  "cmake.ignoreCMakeListsMissing": true
 }

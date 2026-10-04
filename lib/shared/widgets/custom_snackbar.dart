@@ -1,6 +1,8 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
+import 'package:well_trust_mobile_app/core/utils/size_config.dart';
+import 'package:well_trust_mobile_app/shared/widgets/app_text.dart';
 
 void showCustomSnackbar2(
   BuildContext context, {
@@ -167,29 +169,27 @@ class _CustomSnackbarContentState extends State<CustomSnackbarContent>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Icon(icon, color: Colors.white),
-                          const SizedBox(width: 12),
+                          addHorizontalSpacing(3.08),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text(
-                                  widget.title,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
+                                AppText(
+                                  text: widget.title,
+                                  type: AppTextType.bodySmall,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
                                 ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  widget.content,
+                                addVerticalSpacing(0.47),
+                                AppText(
+                                  text: widget.content,
+                                  type: AppTextType.labelLarge,
                                   maxLines: 3,
                                   overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                  ),
+                                  color: Colors.white,
+                                  fontSize: 14,
                                 ),
                               ],
                             ),
@@ -215,29 +215,27 @@ class _CustomSnackbarContentState extends State<CustomSnackbarContent>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Icon(icon, color: Colors.white),
-                  const SizedBox(width: 12),
+                  addHorizontalSpacing(3.08),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
-                          widget.title,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
+                        AppText(
+                          text: widget.title,
+                          type: AppTextType.bodySmall,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          widget.content,
+                        addVerticalSpacing(0.47),
+                        AppText(
+                          text: widget.content,
+                          type: AppTextType.labelLarge,
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                          ),
+                          color: Colors.white,
+                          fontSize: 14,
                         ),
                       ],
                     ),
@@ -247,11 +245,6 @@ class _CustomSnackbarContentState extends State<CustomSnackbarContent>
             ),
           );
   }
-}
-
-/// Toast → SnackBar.
-void showToast(BuildContext context, String msg, {bool error = false}) {
-  showToastVia(ScaffoldMessenger.of(context), msg, error: error);
 }
 
 /// Variant that takes an already-resolved [ScaffoldMessengerState]. Capture the
@@ -266,7 +259,11 @@ void showToastVia(
   messenger.clearSnackBars();
   messenger.showSnackBar(
     SnackBar(
-      content: Text(msg, style: const TextStyle(color: Colors.white)),
+      content: AppText(
+        text: msg,
+        type: AppTextType.bodySmall,
+        color: Colors.white,
+      ),
       backgroundColor: error
           ? const Color(0xFFB42318)
           : const Color(0xFF14264A),

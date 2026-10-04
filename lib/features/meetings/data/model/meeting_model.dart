@@ -5,6 +5,9 @@ class TeamMeeting {
   final int minutes;
   final String host;
   final String location;
+  final List<String> agenda;
+  final MeetingMinutes? savedMinutes;
+  final bool cancelled;
 
   const TeamMeeting({
     required this.id,
@@ -13,7 +16,44 @@ class TeamMeeting {
     required this.minutes,
     required this.host,
     required this.location,
+    this.agenda = const [],
+    this.savedMinutes,
+    this.cancelled = false,
   });
+
+  factory TeamMeeting.fromJson(Map<String, dynamic> json) {
+    final summary = (json['summary'] ?? '').toString();
+    final decisions = [
+      for (final value in (json['decisions'] as List? ?? const []))
+        value.toString(),
+    ];
+    final actions = [
+      for (final value in (json['actions'] as List? ?? const []))
+        MeetingAction.fromDisplay(value.toString()),
+    ];
+    return TeamMeeting(
+      id: (json['id'] ?? '').toString(),
+      title: (json['title'] ?? '').toString(),
+      start:
+          DateTime.tryParse((json['start'] ?? '').toString())?.toLocal() ??
+          DateTime.now(),
+      minutes: (json['minutes'] as num?)?.toInt() ?? 0,
+      host: (json['host'] ?? '').toString(),
+      location: (json['location'] ?? '').toString(),
+      agenda: [
+        for (final value in (json['agenda'] as List? ?? const []))
+          value.toString(),
+      ],
+      savedMinutes: summary.isEmpty && decisions.isEmpty && actions.isEmpty
+          ? null
+          : MeetingMinutes(
+              summary: summary,
+              decisions: decisions,
+              actions: actions,
+            ),
+      cancelled: json['cancelled'] == true,
+    );
+  }
 
   DateTime get end => start.add(Duration(minutes: minutes));
 
@@ -21,38 +61,42 @@ class TeamMeeting {
     final now = DateTime.now();
     return !now.isBefore(start) && now.isBefore(end);
   }
+
+  bool get isSaved => savedMinutes != null;
 }
 
-/// Sample meetings until the office publishes them. The next one is today.
-final List<TeamMeeting> teamMeetings = _build(DateTime.now());
+class MeetingMinutes {
+  final String summary;
+  final List<String> decisions;
+  final List<MeetingAction> actions;
 
-List<TeamMeeting> _build(DateTime now) {
-  final soon = now.add(const Duration(minutes: 27));
-  final last = DateTime(now.year, now.month, now.day - 9, 10);
-  return [
-    TeamMeeting(
-      id: 'M1',
-      title: 'Monthly team meeting',
-      start: soon,
-      minutes: 60,
-      host: 'Maria Reyes',
-      location: 'WellTrust office, Kettering',
-    ),
-    TeamMeeting(
-      id: 'M2',
-      title: 'Monthly team meeting (last month)',
-      start: last,
-      minutes: 60,
-      host: 'Maria Reyes',
-      location: 'WellTrust office, Kettering',
-    ),
-  ];
+  const MeetingMinutes({
+    required this.summary,
+    this.decisions = const [],
+    this.actions = const [],
+  });
+}
+
+class MeetingAction {
+  final String action;
+  final String owner;
+  final DateTime? due;
+
+  const MeetingAction({required this.action, required this.owner, this.due});
+
+  factory MeetingAction.fromDisplay(String value) {
+    final parts = value.split(' — ');
+    return MeetingAction(
+      action: parts.isEmpty ? value : parts.first,
+      owner: parts.length > 1 ? parts[1].split(' (').first : '',
+    );
+  }
 }
 
 /// The next meeting still to come today, if there is one.
-TeamMeeting? meetingToday() {
+TeamMeeting? meetingToday(List<TeamMeeting> meetings) {
   final now = DateTime.now();
-  for (final m in teamMeetings) {
+  for (final m in meetings) {
     final sameDay =
         m.start.year == now.year &&
         m.start.month == now.month &&

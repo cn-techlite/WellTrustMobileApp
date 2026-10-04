@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:well_trust_mobile_app/core/utils/colors.dart';
 
-/// The full WellTrust Healthstaff logo. The wordmark is dark teal, so in dark
+/// The full WellTrust Healthstaff logo. The word mark is dark teal, so in dark
 /// mode it sits on a white card to stay readable.
 class WellTrustLogo extends StatelessWidget {
   final double height;

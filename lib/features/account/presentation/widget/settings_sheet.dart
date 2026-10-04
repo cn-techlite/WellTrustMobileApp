@@ -14,14 +14,13 @@ class SettingsSheet extends ConsumerWidget {
 
     Widget title(String t) => Padding(
       padding: const EdgeInsets.only(top: 20, bottom: 10),
-      child: Text(
-        t,
-        style: TextStyle(
-          fontFamily: 'Playfair Display',
-          fontWeight: FontWeight.w700,
-          fontSize: 19,
-          color: AppColors.ink,
-        ),
+      child: AppText(
+        text: t,
+        type: AppTextType.bodySmall,
+        fontFamily: 'Playfair Display',
+        fontWeight: FontWeight.w700,
+        fontSize: 19,
+        color: AppColors.ink,
       ),
     );
 
@@ -32,14 +31,13 @@ class SettingsSheet extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Settings',
-              style: TextStyle(
-                fontFamily: 'Playfair Display',
-                fontWeight: FontWeight.w700,
-                fontSize: 24,
-                color: AppColors.ink,
-              ),
+            AppText(
+              text: 'Settings',
+              type: AppTextType.bodySmall,
+              fontFamily: 'Playfair Display',
+              fontWeight: FontWeight.w700,
+              fontSize: 24,
+              color: AppColors.ink,
             ),
             title('Text size'),
             SegmentTabs(
@@ -63,7 +61,7 @@ class SettingsSheet extends ConsumerWidget {
                 ('dark', 'Dark'),
               ],
             ),
-            const SizedBox(height: 8),
+            addVerticalSpacing(0.95),
           ],
         ),
       ),

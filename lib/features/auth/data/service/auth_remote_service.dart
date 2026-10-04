@@ -22,7 +22,8 @@ class AuthRemoteService {
         body: jsonEncode(request.toJson()),
         headers: _headers,
       );
-      printData("Login Data", response.body);
+      printData("Login Response", response.body);
+      printData("Login Status Code", response.statusCode);
       return response;
     } catch (e) {
       return Future.error(handleHttpError(e));
@@ -32,7 +33,7 @@ class AuthRemoteService {
   Future<http.Response> updateDeviceToken() async {
     try {
       final url = Uri.parse(
-        "${Endpoints.baseUrl}${Endpoints.usersUrl}/update-device-token",
+        "${Endpoints.baseUrl}${Endpoints.updateDeviceToken}",
       );
 
       final response = await http.put(
@@ -41,6 +42,7 @@ class AuthRemoteService {
         headers: {..._headers, 'Authorization': 'Bearer ${globals.token}'},
       );
       printData("Update Device Token Response", response.body);
+      printData("Update Device Token Status Code", response.statusCode);
       return response;
     } catch (e) {
       return Future.error(handleHttpError(e));
@@ -58,6 +60,7 @@ class AuthRemoteService {
         headers: {..._headers, 'Authorization': 'Bearer ${globals.token}'},
       );
       printData("Delete User Response", response.body);
+      printData("Delete User Status Code", response.statusCode);
       return response;
     } catch (e) {
       return Future.error(handleHttpError(e));
@@ -73,6 +76,7 @@ class AuthRemoteService {
         headers: {..._headers, 'Authorization': 'Bearer ${globals.token}'},
       );
       printData("Log out Response", response.body);
+      printData("Log out Status Code", response.statusCode);
       return response;
     } catch (e) {
       return Future.error(handleHttpError(e));
@@ -97,6 +101,7 @@ class AuthRemoteService {
         headers: _headers,
       );
       printData("Refresh Tokens Response", response.body);
+      printData("Refresh Tokens Status Code", response.statusCode);
       return response;
     } catch (e) {
       return Future.error(handleHttpError(e));

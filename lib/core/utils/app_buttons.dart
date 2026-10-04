@@ -16,7 +16,10 @@ class AppButton extends StatelessWidget {
   final double fontSize;
   final double borderRadius;
   final bool safeArea;
-  final Widget? child; // ✅ NEW
+  final Widget? child;
+  final bool expand;
+  final double compactHeight;
+  final EdgeInsetsGeometry compactPadding;
   // Optional border settings
   final Color? borderColor;
   final double borderWidth;
@@ -33,7 +36,10 @@ class AppButton extends StatelessWidget {
     this.fontSize = 12,
     this.borderRadius = 12,
     this.safeArea = false,
-    this.child, // ✅ NEW
+    this.child,
+    this.expand = true,
+    this.compactHeight = 44,
+    this.compactPadding = const EdgeInsets.symmetric(horizontal: 16),
     this.borderColor,
     this.borderWidth = 1.5,
   });
@@ -47,27 +53,33 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final button = DecoratedBox(
+      decoration: BoxDecoration(
+        color: _bg,
+        borderRadius: BorderRadius.circular(borderRadius),
+        border: borderColor != null
+            ? Border.all(color: borderColor!, width: borderWidth)
+            : null,
+      ),
+      child: _buildButton(context),
+    );
+
+    if (!expand) {
+      return SizedBox(height: compactHeight, child: button);
+    }
+
     return BoxSizer(
       widthPercent: widthPercent,
       heightPercent: heightPercent,
       safeArea: safeArea,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: _bg,
-          borderRadius: BorderRadius.circular(borderRadius),
-          border: borderColor != null
-              ? Border.all(color: borderColor!, width: borderWidth)
-              : null,
-        ),
-        child: _buildButton(context),
-      ),
+      child: button,
     );
   }
 
   Widget _buildButton(BuildContext context) {
     return CupertinoButton(
       onPressed: isLoading ? null : onPressed,
-      padding: EdgeInsets.zero,
+      padding: expand ? EdgeInsets.zero : compactPadding,
       borderRadius: BorderRadius.circular(borderRadius),
       color: Colors.transparent,
       // disabledColor: isLoading ? btnColor : btnColor,
@@ -84,92 +96,6 @@ class AppButton extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                   type: AppTextType.labelMedium,
                 ),
-    );
-  }
-}
-
-class SmallButton extends StatelessWidget {
-  final String? text;
-  final IconData? icon;
-  final VoidCallback onPressed;
-  final Color? textColor;
-  final Color? iconColor;
-  final Color? backgroundColor;
-  final double fontSize;
-  final FontWeight fontWeight;
-  final double iconSize;
-  final EdgeInsets padding;
-  final bool iconOnRight;
-  final bool isCircular;
-
-  const SmallButton({
-    super.key,
-    this.text,
-    this.icon,
-    required this.onPressed,
-    this.textColor,
-    this.iconColor,
-    this.backgroundColor,
-    this.fontSize = 15,
-    this.fontWeight = FontWeight.w600,
-    this.iconSize = 18,
-    this.padding = const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-    this.iconOnRight = false,
-    this.isCircular = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final bg = backgroundColor ?? AppColors.primary;
-    final fg =
-        textColor ??
-        (bg.computeLuminance() > 0.5 ? const Color(0xFF0E1B33) : Colors.white);
-    final iconColor = this.iconColor ?? fg;
-    final hasText = text != null && text!.isNotEmpty;
-    final hasIcon = icon != null;
-
-    List<Widget> children = [];
-
-    if (hasIcon && !iconOnRight) {
-      children.add(Icon(icon, size: iconSize, color: iconColor));
-    }
-
-    if (hasText) {
-      children.add(
-        Padding(
-          padding: hasIcon
-              ? const EdgeInsets.symmetric(horizontal: 4.0)
-              : EdgeInsets.zero,
-          child: Text(
-            text!,
-            style: TextStyle(
-              color: fg,
-              fontSize: fontSize.textSize,
-              fontWeight: fontWeight,
-              fontFamily: 'Source Sans 3',
-            ),
-          ),
-        ),
-      );
-    }
-
-    if (hasIcon && iconOnRight) {
-      children.add(Icon(icon, size: iconSize, color: iconColor));
-    }
-
-    return TextButton(
-      onPressed: onPressed,
-      style: TextButton.styleFrom(
-        padding: padding,
-        minimumSize: Size.zero,
-        backgroundColor: bg,
-        iconSize: 20,
-        shape: isCircular
-            ? const CircleBorder()
-            : RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      ),
-      child: Row(mainAxisSize: MainAxisSize.min, children: children),
     );
   }
 }

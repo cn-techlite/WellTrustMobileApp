@@ -1,9 +1,11 @@
 import 'package:well_trust_mobile_app/core/services/location_service.dart';
+import 'package:well_trust_mobile_app/core/utils/app_buttons.dart';
 import 'package:well_trust_mobile_app/core/utils/colors.dart';
 import 'package:well_trust_mobile_app/core/utils/package_export.dart';
 import 'package:well_trust_mobile_app/features/handover/presentation/widget/handover_widgets.dart';
-import 'package:well_trust_mobile_app/features/visits/data/model/clock_in_details.dart';
+import 'package:well_trust_mobile_app/features/visits/data/dto/clock_in_details.dart';
 import 'package:well_trust_mobile_app/features/visits/data/model/today_visit.dart';
+import 'package:well_trust_mobile_app/shared/widgets/input.dart';
 
 /// Starting outside this on-time tolerance needs a reason for the office.
 const clockInGraceMins = 15;
@@ -255,14 +257,13 @@ class _ClockInSheetState extends State<ClockInSheet> {
     );
   }
 
-  Widget _title(String text) => Text(
-    text,
-    style: TextStyle(
-      fontFamily: 'Playfair Display',
-      fontWeight: FontWeight.w700,
-      fontSize: 26,
-      color: AppColors.ink,
-    ),
+  Widget _title(String text) => AppText(
+    text: text,
+    type: AppTextType.bodySmall,
+    fontFamily: 'Playfair Display',
+    fontWeight: FontWeight.w700,
+    fontSize: 26,
+    color: AppColors.ink,
   );
 
   Widget _startStage() {
@@ -272,7 +273,7 @@ class _ClockInSheetState extends State<ClockInSheet> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _title('Clock in to $name'),
-        const SizedBox(height: 14),
+        addVerticalSpacing(1.66),
         if (_needsTimingReason) ...[
           NoticeBox(
             'You are $_timingMinutes min ${_early ? 'early for' : 'after'} the '
@@ -282,16 +283,15 @@ class _ClockInSheetState extends State<ClockInSheet> {
             fg: AppColors.amber,
             icon: Icons.access_time,
           ),
-          const SizedBox(height: 18),
-          Text(
-            'Why are you starting ${_early ? 'early' : 'late'}?',
-            style: TextStyle(
-              color: AppColors.ink,
-              fontWeight: FontWeight.w700,
-              fontSize: 17,
-            ),
+          addVerticalSpacing(2.13),
+          AppText(
+            text: 'Why are you starting ${_early ? 'early' : 'late'}?',
+            type: AppTextType.bodySmall,
+            color: AppColors.ink,
+            fontWeight: FontWeight.w700,
+            fontSize: 17,
           ),
-          const SizedBox(height: 8),
+          addVerticalSpacing(0.95),
           _ReasonField(
             controller: _reason,
             hasError: _reasonError != null,
@@ -303,45 +303,50 @@ class _ClockInSheetState extends State<ClockInSheet> {
             },
           ),
           if (_reasonError != null) ...[
-            const SizedBox(height: 6),
-            Text(
-              _reasonError!,
-              style: TextStyle(color: AppColors.rose, fontSize: 14),
+            addVerticalSpacing(0.71),
+            AppText(
+              text: _reasonError!,
+              type: AppTextType.bodySmall,
+              color: AppColors.rose,
+              fontSize: 14,
             ),
           ],
-          const SizedBox(height: 18),
+          addVerticalSpacing(2.13),
         ],
-        Text(
-          'Where are you now?',
-          style: TextStyle(
-            color: AppColors.ink,
-            fontWeight: FontWeight.w600,
-            fontSize: 17,
-          ),
+        AppText(
+          text: 'Where are you now?',
+          type: AppTextType.bodySmall,
+          color: AppColors.ink,
+          fontWeight: FontWeight.w600,
+          fontSize: 17,
         ),
-        const SizedBox(height: 6),
-        Text(
-          'Your exact location is saved with your clock-in, and the '
-          'office can see it in the audit log.',
-          style: TextStyle(color: AppColors.muted, fontSize: 15, height: 1.4),
+        addVerticalSpacing(0.71),
+        AppText(
+          text:
+              'Your exact location is saved with your clock-in, and the '
+              'office can see it in the audit log.',
+          type: AppTextType.bodySmall,
+          color: AppColors.muted,
+          fontSize: 15,
+          height: 1.4,
         ),
         if (_problem != null) ...[
-          const SizedBox(height: 12),
+          addVerticalSpacing(1.42),
           NoticeBox.warn(_problem!.message),
         ],
-        const SizedBox(height: 14),
+        addVerticalSpacing(1.66),
         DesignButton(
           "I am at $name's home",
           onPressed: () => _selectWhere(atHome: true),
         ),
-        const SizedBox(height: 10),
+        addVerticalSpacing(1.18),
         DesignButton(
           'I am somewhere else',
           secondary: true,
           onPressed: () => _selectWhere(atHome: false),
         ),
         if (_problem != null) ...[
-          const SizedBox(height: 10),
+          addVerticalSpacing(1.18),
           if (_problem!.needsSettings) ...[
             DesignButton(
               'Open Settings',
@@ -349,7 +354,7 @@ class _ClockInSheetState extends State<ClockInSheet> {
               icon: Icons.settings_outlined,
               onPressed: () => widget.locationService.openSettings(_problem!),
             ),
-            const SizedBox(height: 10),
+            addVerticalSpacing(1.18),
           ],
           DesignButton(
             'Clock in without location',
@@ -357,18 +362,14 @@ class _ClockInSheetState extends State<ClockInSheet> {
             onPressed: _clockInWithoutLocation,
           ),
         ],
-        const SizedBox(height: 6),
+        addVerticalSpacing(0.71),
         Center(
-          child: TextButton(
+          child: AppButton(
+            text: 'Cancel',
+            expand: false,
+            btnColor: Colors.transparent,
+            textColor: AppColors.ink,
             onPressed: _cancel,
-            style: TextButton.styleFrom(
-              minimumSize: const Size(88, 48),
-              foregroundColor: AppColors.ink,
-            ),
-            child: const Text(
-              'Cancel',
-              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 17),
-            ),
           ),
         ),
       ],
@@ -381,25 +382,28 @@ class _ClockInSheetState extends State<ClockInSheet> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _title('Finding your exact location'),
-        const SizedBox(height: 12),
-        Text(
-          'Keep the app open. Stand by a window or outside for the best '
-          'result.',
-          style: TextStyle(color: AppColors.muted, fontSize: 16, height: 1.4),
+        addVerticalSpacing(1.42),
+        AppText(
+          text:
+              'Keep the app open. Stand by a window or outside for the best '
+              'result.',
+          type: AppTextType.bodySmall,
+          color: AppColors.muted,
+          fontSize: 16,
+          height: 1.4,
         ),
         if (_fix != null) ...[
-          const SizedBox(height: 18),
-          Text(
-            'Accurate to about ${_fix!.accuracy.round()} m',
-            style: TextStyle(
-              fontFamily: 'Playfair Display',
-              fontWeight: FontWeight.w700,
-              fontSize: 20,
-              color: AppColors.ink,
-            ),
+          addVerticalSpacing(2.13),
+          AppText(
+            text: 'Accurate to about ${_fix!.accuracy.round()} m',
+            type: AppTextType.bodySmall,
+            fontFamily: 'Playfair Display',
+            fontWeight: FontWeight.w700,
+            fontSize: 20,
+            color: AppColors.ink,
           ),
         ],
-        const SizedBox(height: 22),
+        addVerticalSpacing(2.61),
         DesignButton('Cancel', secondary: true, onPressed: _cancel),
       ],
     );
@@ -412,19 +416,19 @@ class _ClockInSheetState extends State<ClockInSheet> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _title('Clock in to $name'),
-        const SizedBox(height: 14),
+        addVerticalSpacing(1.66),
         NoticeBox.danger(
           'You look to be about ${formatDistance(_distanceMetres!)} from '
           "$name's address. Check you are at the right house. You can still "
           'clock in, and the office will see this.',
         ),
-        const SizedBox(height: 18),
+        addVerticalSpacing(2.13),
         DesignButton(
           'Clock in anyway',
           onPressed: () =>
               _finish(distanceMetres: _distanceMetres, flaggedTooFar: true),
         ),
-        const SizedBox(height: 10),
+        addVerticalSpacing(1.18),
         DesignButton(
           'Try again',
           secondary: true,
@@ -433,34 +437,26 @@ class _ClockInSheetState extends State<ClockInSheet> {
             _locate();
           },
         ),
-        const SizedBox(height: 6),
+        addVerticalSpacing(0.71),
         Center(
-          child: TextButton(
+          child: AppButton(
+            text: 'I am somewhere else',
+            expand: false,
+            btnColor: Colors.transparent,
+            textColor: AppColors.ink,
             onPressed: () {
               setState(() => _atHome = false);
               _finish(distanceMetres: _distanceMetres);
             },
-            style: TextButton.styleFrom(
-              minimumSize: const Size(88, 48),
-              foregroundColor: AppColors.ink,
-            ),
-            child: const Text(
-              'I am somewhere else',
-              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 17),
-            ),
           ),
         ),
         Center(
-          child: TextButton(
+          child: AppButton(
+            text: 'Cancel',
+            expand: false,
+            btnColor: Colors.transparent,
+            textColor: AppColors.ink,
             onPressed: _cancel,
-            style: TextButton.styleFrom(
-              minimumSize: const Size(88, 48),
-              foregroundColor: AppColors.ink,
-            ),
-            child: const Text(
-              'Cancel',
-              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 17),
-            ),
           ),
         ),
       ],
@@ -483,27 +479,18 @@ class _ReasonField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    OutlineInputBorder border(Color c) => OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12),
-      borderSide: BorderSide(color: c, width: 1.5),
-    );
-    return TextField(
-      controller: controller,
+    return GlobalTextField(
+      fieldName: hint,
+      keyBoardType: TextInputType.multiline,
+      textController: controller,
       onChanged: onChanged,
       minLines: 4,
       maxLines: 6,
       maxLength: 300,
+      removeSpace: false,
       textCapitalization: TextCapitalization.sentences,
-      keyboardType: TextInputType.multiline,
-      style: TextStyle(color: AppColors.ink, fontSize: 17),
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: TextStyle(color: AppColors.muted, fontSize: 17),
-        counterText: '',
-        contentPadding: const EdgeInsets.all(14),
-        enabledBorder: border(hasError ? AppColors.rose : AppColors.line2),
-        focusedBorder: border(hasError ? AppColors.rose : AppColors.primary),
-      ),
+      borderRadius: 12,
+      hasError: hasError,
     );
   }
 }

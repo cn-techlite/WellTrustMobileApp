@@ -32,3 +32,5 @@ export 'package:intl_mobile_field/intl_mobile_field.dart';
 export 'package:intl_mobile_field/mobile_number.dart';
 export 'package:flutter_secure_storage/flutter_secure_storage.dart';
 export 'package:shimmer/shimmer.dart';
+export 'package:well_trust_mobile_app/shared/widgets/app_text.dart';
+export 'package:well_trust_mobile_app/core/utils/size_config.dart';

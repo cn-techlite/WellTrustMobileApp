@@ -1,18 +1,12 @@
 import 'dart:async';
 
+import 'package:well_trust_mobile_app/core/utils/app_buttons.dart';
 import 'package:well_trust_mobile_app/core/utils/colors.dart';
-import 'package:well_trust_mobile_app/core/utils/helper_functions.dart';
 import 'package:well_trust_mobile_app/core/utils/package_export.dart';
 import 'package:well_trust_mobile_app/features/handover/presentation/widget/handover_widgets.dart';
-import 'package:well_trust_mobile_app/features/visits/data/model/clock_in_details.dart';
+import 'package:well_trust_mobile_app/features/visits/data/dto/clock_in_details.dart';
 import 'package:well_trust_mobile_app/features/visits/data/model/today_visit.dart';
-import 'package:well_trust_mobile_app/features/visits/presentation/widget/add_note_bottom_sheet.dart';
-import 'package:well_trust_mobile_app/features/visits/presentation/widget/body_map_bottomsheet.dart';
 import 'package:well_trust_mobile_app/features/visits/presentation/widget/clock_in_sheet.dart';
-import 'package:well_trust_mobile_app/features/visits/presentation/widget/med_visit_bottomsheet.dart';
-import 'package:well_trust_mobile_app/features/visits/presentation/widget/raise_cocerns_bottomshet.dart';
-import 'package:well_trust_mobile_app/features/visits/presentation/widget/report_incident_bottomsheet.dart';
-import 'package:well_trust_mobile_app/features/visits/presentation/widget/safe_guard_bottomsheet.dart';
 import 'package:well_trust_mobile_app/shared/widgets/welltrust_app_bar.dart';
 
 /// The visit page from the design: header card, where, getting in, things to
@@ -29,12 +23,14 @@ class VisitDesignPage extends StatefulWidget {
   final String accessNote;
   final List<String> thingsToKnow;
   final List<VisitTask> tasks;
+  final Widget? handoverCard;
   final Set<int> initialCompletedTasks;
   final bool clockInEnabled;
   final String? clockInHint;
 
   /// True once the carer has clocked in.
   final bool started;
+  final bool completed;
   final DateTime? startedAt;
   final String plannedLabel;
 
@@ -51,9 +47,13 @@ class VisitDesignPage extends StatefulWidget {
   /// Called with what the carer confirmed in the clock-in sheet, and when they
   /// tap finish.
   final FutureOr<bool> Function()? onBeforeClockIn;
-  final bool Function(ClockInDetails)? onClockIn;
-  final ValueChanged<Set<int>>? onTasksChanged;
-  final VoidCallback? onFinish;
+  final FutureOr<bool> Function(ClockInDetails)? onClockIn;
+  final FutureOr<void> Function(Set<int>)? onTasksChanged;
+  final FutureOr<void> Function(Set<int>)? onFinish;
+  final FutureOr<void> Function(String issueType, String details)?
+  onReportIssue;
+  final VoidCallback? onAddCareNote;
+  final VoidCallback? onReportIncident;
 
   const VisitDesignPage({
     super.key,
@@ -68,10 +68,12 @@ class VisitDesignPage extends StatefulWidget {
     required this.accessNote,
     required this.thingsToKnow,
     required this.tasks,
+    this.handoverCard,
     this.initialCompletedTasks = const {},
     this.clockInEnabled = true,
     this.clockInHint,
     this.started = false,
+    this.completed = false,
     this.startedAt,
     this.plannedLabel = '',
     this.preferredName,
@@ -82,6 +84,9 @@ class VisitDesignPage extends StatefulWidget {
     this.onClockIn,
     this.onTasksChanged,
     this.onFinish,
+    this.onReportIssue,
+    this.onAddCareNote,
+    this.onReportIncident,
   });
 
   @override
@@ -142,7 +147,16 @@ class _VisitDesignPageState extends State<VisitDesignPage> {
       clientLongitude: widget.clientLongitude,
     );
     if (details == null || !mounted) return;
-    final recorded = widget.onClockIn?.call(details) ?? true;
+    late final bool recorded;
+    try {
+      recorded = await widget.onClockIn?.call(details) ?? true;
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.maybeOf(
+        context,
+      )?.showSnackBar(SnackBar(content: Text(e.toString())));
+      return;
+    }
     if (!recorded) return;
     setState(() {
       started = true;
@@ -151,14 +165,64 @@ class _VisitDesignPageState extends State<VisitDesignPage> {
     });
   }
 
-  void _toggleTask(int i) {
+  Future<void> _toggleTask(int i) async {
     if (!started) return;
-    final t = widget.tasks[i];
-    if (t.medication && !done.contains(i)) {
-      displayBottomSheet(context, MedsForVisitBottomSheet());
-    }
     setState(() => done.contains(i) ? done.remove(i) : done.add(i));
-    widget.onTasksChanged?.call(Set.unmodifiable(done));
+    try {
+      await widget.onTasksChanged?.call(Set.unmodifiable(done));
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => done.contains(i) ? done.remove(i) : done.add(i));
+      ScaffoldMessenger.maybeOf(
+        context,
+      )?.showSnackBar(SnackBar(content: Text(e.toString())));
+    }
+  }
+
+  Future<void> _reportIssue(String issueType) async {
+    final controller = TextEditingController();
+    final details = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(issueType),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          maxLines: 3,
+          maxLength: 500,
+          decoration: const InputDecoration(
+            labelText: 'Tell the office what happened',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () {
+              final value = controller.text.trim();
+              if (value.isNotEmpty) Navigator.pop(dialogContext, value);
+            },
+            child: const Text('Send'),
+          ),
+        ],
+      ),
+    );
+    controller.dispose();
+    if (details == null || !mounted) return;
+    try {
+      await widget.onReportIssue?.call(issueType, details);
+      if (!mounted) return;
+      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+        const SnackBar(content: Text('The office has been notified.')),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.maybeOf(
+        context,
+      )?.showSnackBar(SnackBar(content: Text(e.toString())));
+    }
   }
 
   @override
@@ -168,7 +232,10 @@ class _VisitDesignPageState extends State<VisitDesignPage> {
       backgroundColor: AppColors.bg,
       body: Column(
         children: [
-          WellTrustAppBar(title: w.clientName.split(' ').first, showBack: true),
+          WellTrustAppBar(
+            title: w.preferredName ?? w.clientName,
+            showBack: true,
+          ),
           Expanded(child: _body(context)),
         ],
       ),
@@ -189,47 +256,54 @@ class _VisitDesignPageState extends State<VisitDesignPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _h2(w.clientName),
-                    const SizedBox(height: 4),
-                    Text(
-                      w.dateTime,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.ink,
-                      ),
+                    addVerticalSpacing(0.47),
+                    AppText(
+                      text: w.dateTime,
+                      type: AppTextType.bodySmall,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.ink,
                     ),
-                    Text(
-                      '${w.duration}${w.subtitle.isEmpty ? '' : ', ${w.subtitle}'}',
-                      style: TextStyle(color: AppColors.muted),
+                    AppText(
+                      text:
+                          '${w.duration}${w.subtitle.isEmpty ? '' : ', ${w.subtitle}'}',
+                      type: AppTextType.bodySmall,
+                      color: AppColors.muted,
                     ),
                   ],
                 ),
               ),
-              started ? Pill.info('In progress') : Pill.gold('Due soon'),
+              widget.completed
+                  ? Pill.ok('Completed')
+                  : started
+                  ? Pill.info('In progress')
+                  : Pill.gold('Due soon'),
             ],
           ),
         ),
-        if (started) ...[const SizedBox(height: 14), _timerCard()],
-        const SizedBox(height: 14),
+        if (started) ...[addVerticalSpacing(1.66), _timerCard()],
+        addVerticalSpacing(1.66),
         _card(
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _h2('Where'),
-              const SizedBox(height: 8),
+              addVerticalSpacing(0.95),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Icon(Icons.place_outlined, size: 20, color: AppColors.ink),
-                  const SizedBox(width: 6),
+                  addHorizontalSpacing(1.54),
                   Expanded(
-                    child: Text(
-                      w.address,
-                      style: TextStyle(color: AppColors.ink, fontSize: 15.5),
+                    child: AppText(
+                      text: w.address,
+                      type: AppTextType.bodySmall,
+                      color: AppColors.ink,
+                      fontSize: 15.5,
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              addVerticalSpacing(1.42),
               Row(
                 children: [
                   Expanded(
@@ -244,7 +318,7 @@ class _VisitDesignPageState extends State<VisitDesignPage> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  addHorizontalSpacing(2.56),
                   Expanded(
                     child: DesignButton(
                       'Call',
@@ -257,49 +331,55 @@ class _VisitDesignPageState extends State<VisitDesignPage> {
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
-              Text(
-                'Phone: ${w.phone}',
-                style: TextStyle(color: AppColors.muted, fontSize: 13),
+              addVerticalSpacing(0.95),
+              AppText(
+                text: 'Phone: ${w.phone}',
+                type: AppTextType.bodySmall,
+                color: AppColors.muted,
+                fontSize: 13,
               ),
             ],
           ),
         ),
-        const SizedBox(height: 14),
+        addVerticalSpacing(1.66),
         _card(
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _h2('Getting in'),
-              const SizedBox(height: 6),
-              Text(w.accessType, style: TextStyle(color: AppColors.muted)),
-              const SizedBox(height: 4),
+              addVerticalSpacing(0.71),
+              AppText(
+                text: w.accessType,
+                type: AppTextType.bodySmall,
+                color: AppColors.muted,
+              ),
+              addVerticalSpacing(0.47),
               GestureDetector(
                 onTap: () => setState(() => showCode = !showCode),
-                child: Text(
-                  showCode ? w.accessCode : 'Tap to show code',
-                  style: showCode
-                      ? TextStyle(
-                          fontFamily: 'Playfair Display',
-                          fontSize: 30,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 4.2,
-                          color: AppColors.ink,
-                        )
-                      : TextStyle(
-                          fontWeight: FontWeight.w700,
-                          decoration: TextDecoration.underline,
-                          color: AppColors.ink,
-                        ),
+                child: AppText(
+                  text: showCode ? w.accessCode : 'Tap to show code',
+                  type: showCode
+                      ? AppTextType.displayMedium
+                      : AppTextType.bodySmall,
+                  fontFamily: showCode ? 'Playfair Display' : null,
+                  fontSize: showCode ? 30 : null,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: showCode ? 4.2 : null,
+                  decoration: showCode ? null : TextDecoration.underline,
+                  color: AppColors.ink,
                 ),
               ),
-              const SizedBox(height: 6),
-              Text(w.accessNote, style: TextStyle(color: AppColors.ink)),
+              addVerticalSpacing(0.71),
+              AppText(
+                text: w.accessNote,
+                type: AppTextType.bodySmall,
+                color: AppColors.ink,
+              ),
             ],
           ),
         ),
         if (w.thingsToKnow.isNotEmpty) ...[
-          const SizedBox(height: 14),
+          addVerticalSpacing(1.66),
           Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
@@ -310,28 +390,26 @@ class _VisitDesignPageState extends State<VisitDesignPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Icon(Icons.warning_amber_rounded, color: AppColors.amber),
-                const SizedBox(width: 10),
+                addHorizontalSpacing(2.56),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Things to know',
-                        style: TextStyle(
-                          color: AppColors.amber,
-                          fontWeight: FontWeight.w700,
-                        ),
+                      AppText(
+                        text: 'Things to know',
+                        type: AppTextType.bodySmall,
+                        color: AppColors.amber,
+                        fontWeight: FontWeight.w700,
                       ),
-                      const SizedBox(height: 4),
+                      addVerticalSpacing(0.47),
                       for (final t in w.thingsToKnow)
                         Padding(
                           padding: const EdgeInsets.only(top: 3),
-                          child: Text(
-                            '• $t',
-                            style: TextStyle(
-                              color: AppColors.amber,
-                              fontWeight: FontWeight.w500,
-                            ),
+                          child: AppText(
+                            text: '• $t',
+                            type: AppTextType.bodySmall,
+                            color: AppColors.amber,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                     ],
@@ -341,29 +419,42 @@ class _VisitDesignPageState extends State<VisitDesignPage> {
             ),
           ),
         ],
-        const SizedBox(height: 26),
+        if (w.handoverCard != null) ...[
+          addVerticalSpacing(1.66),
+          w.handoverCard!,
+        ],
+        addVerticalSpacing(3.08),
         _h2('Care plan tasks', size: 19),
-        const SizedBox(height: 4),
-        Text(
-          started
+        addVerticalSpacing(0.47),
+        AppText(
+          text: started
               ? 'Tap each task when it is done.'
               : 'You can tick tasks once you clock in.',
-          style: TextStyle(color: AppColors.muted),
+          type: AppTextType.bodySmall,
+          color: AppColors.muted,
         ),
-        const SizedBox(height: 10),
+        addVerticalSpacing(1.18),
         for (var i = 0; i < w.tasks.length; i++) ...[
           _task(i),
-          const SizedBox(height: 12),
+          addVerticalSpacing(1.42),
         ],
-        const SizedBox(height: 8),
+        addVerticalSpacing(0.95),
         _quickActions(context),
-        const SizedBox(height: 22),
-        if (started)
+        addVerticalSpacing(2.61),
+        if (widget.completed)
+          NoticeBox.ok('This visit has been completed.')
+        else if (started)
           DesignButton(
             'Finish visit and write your note',
-            onPressed: () {
-              widget.onFinish?.call();
-              displayBottomSheet(context, AddCareNoteBottomSheet());
+            onPressed: () async {
+              try {
+                await widget.onFinish?.call(Set.unmodifiable(done));
+              } catch (e) {
+                if (!context.mounted) return;
+                ScaffoldMessenger.maybeOf(
+                  context,
+                )?.showSnackBar(SnackBar(content: Text(e.toString())));
+              }
             },
           )
         else ...[
@@ -373,13 +464,15 @@ class _VisitDesignPageState extends State<VisitDesignPage> {
             onPressed: w.clockInEnabled ? _clockIn : null,
           ),
           if (w.clockInHint != null) ...[
-            const SizedBox(height: 6),
-            Text(
-              w.clockInHint!,
-              style: TextStyle(color: AppColors.muted, fontSize: 14),
+            addVerticalSpacing(0.71),
+            AppText(
+              text: w.clockInHint!,
+              type: AppTextType.bodySmall,
+              color: AppColors.muted,
+              fontSize: 14,
             ),
           ],
-          const SizedBox(height: 10),
+          addVerticalSpacing(1.18),
           Row(
             children: [
               Expanded(
@@ -387,16 +480,16 @@ class _VisitDesignPageState extends State<VisitDesignPage> {
                   'Running late',
                   secondary: true,
                   icon: Icons.access_time,
-                  onPressed: () {},
+                  onPressed: () => _reportIssue('Running late'),
                 ),
               ),
-              const SizedBox(width: 10),
+              addHorizontalSpacing(2.56),
               Expanded(
                 child: DesignButton(
                   'Cannot get in',
                   secondary: true,
                   icon: Icons.lock_outline,
-                  onPressed: () {},
+                  onPressed: () => _reportIssue('Cannot get in'),
                 ),
               ),
             ],
@@ -417,19 +510,20 @@ class _VisitDesignPageState extends State<VisitDesignPage> {
       ),
       child: Column(
         children: [
-          Text(
-            elapsed,
-            style: TextStyle(
-              fontFamily: 'Playfair Display',
-              fontWeight: FontWeight.w700,
-              fontSize: 34,
-              color: AppColors.sage,
-              fontFeatures: const [FontFeature.tabularFigures()],
-            ),
+          AppText(
+            text: elapsed,
+            type: AppTextType.bodySmall,
+            fontFamily: 'Playfair Display',
+            fontWeight: FontWeight.w700,
+            fontSize: 34,
+            color: AppColors.sage,
+            fontFeatures: const [FontFeature.tabularFigures()],
           ),
-          Text(
-            'Clocked in at ${_hhmm(startedAt ?? DateTime.now())}${widget.plannedLabel.isEmpty ? '' : ', ${widget.plannedLabel}'}',
-            style: TextStyle(color: AppColors.muted),
+          AppText(
+            text:
+                'Clocked in at ${_hhmm(startedAt ?? DateTime.now())}${widget.plannedLabel.isEmpty ? '' : ', ${widget.plannedLabel}'}',
+            type: AppTextType.bodySmall,
+            color: AppColors.muted,
           ),
         ],
       ),
@@ -479,7 +573,7 @@ class _VisitDesignPageState extends State<VisitDesignPage> {
                       )
                     : null,
               ),
-              const SizedBox(width: 12),
+              addHorizontalSpacing(3.08),
               if (t.medication) ...[
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -487,21 +581,22 @@ class _VisitDesignPageState extends State<VisitDesignPage> {
                     color: AppColors.infoBg,
                     borderRadius: BorderRadius.circular(6),
                   ),
-                  child: Text(
-                    'Medication',
-                    style: TextStyle(
-                      color: AppColors.info,
-                      fontSize: 12.5,
-                      fontWeight: FontWeight.w700,
-                    ),
+                  child: AppText(
+                    text: 'Medication',
+                    type: AppTextType.bodySmall,
+                    color: AppColors.info,
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(width: 6),
+                addHorizontalSpacing(1.54),
               ],
               Expanded(
-                child: Text(
-                  t.label,
-                  style: TextStyle(color: AppColors.ink, fontSize: 15.5),
+                child: AppText(
+                  text: t.label,
+                  type: AppTextType.bodySmall,
+                  color: AppColors.ink,
+                  fontSize: 15.5,
                 ),
               ),
             ],
@@ -512,60 +607,50 @@ class _VisitDesignPageState extends State<VisitDesignPage> {
   }
 
   Widget _quickActions(BuildContext context) {
-    Widget b(String label, IconData icon, Widget sheet, {bool danger = false}) {
+    Widget b(
+      String label,
+      IconData icon,
+      VoidCallback? onPressed, {
+      bool danger = false,
+    }) {
       return SizedBox(
         height: 52,
-        child: TextButton.icon(
-          onPressed: () => displayBottomSheet(context, sheet),
-          icon: Icon(
-            icon,
-            size: 20,
-            color: danger ? AppColors.rose : AppColors.ink,
-          ),
-          label: Text(
-            label,
-            style: TextStyle(
-              fontWeight: FontWeight.w700,
-              color: danger ? AppColors.rose : AppColors.ink,
-            ),
-          ),
-          style: TextButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-              side: BorderSide(
-                color: danger ? AppColors.rose : AppColors.line2,
-                width: 1.5,
+        child: AppButton(
+          text: label,
+          onPressed: onPressed,
+          btnColor: Colors.transparent,
+          textColor: danger ? AppColors.rose : AppColors.ink,
+          borderColor: danger ? AppColors.rose : AppColors.line2,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 20,
+                color: danger ? AppColors.rose : AppColors.ink,
               ),
-            ),
+              addHorizontalSpacing(1),
+              Flexible(
+                child: AppText(
+                  text: label,
+                  type: AppTextType.bodySmall,
+                  fontWeight: FontWeight.w700,
+                  color: danger ? AppColors.rose : AppColors.ink,
+                ),
+              ),
+            ],
           ),
         ),
       );
     }
 
     final items = [
-      b('Add care note', Icons.edit_outlined, AddCareNoteBottomSheet()),
-      b(
-        'Meds this visit',
-        Icons.medication_outlined,
-        MedsForVisitBottomSheet(),
-      ),
-      b('Body map', Icons.accessibility_new, BodyMapBottomSheet()),
-      b(
-        'Raise concern',
-        Icons.flag_outlined,
-        RaiseConcernBottomSheet(),
-        danger: true,
-      ),
+      b('Add care note', Icons.edit_outlined, widget.onAddCareNote),
       b(
         'Report incident',
         Icons.warning_amber_rounded,
-        ReportIncidentBottomSheet(),
-        danger: true,
-      ),
-      b(
-        'Safeguarding',
-        Icons.shield_outlined,
-        SafeguardingBottomSheet(),
+        widget.onReportIncident,
         danger: true,
       ),
     ];
@@ -582,13 +667,12 @@ class _VisitDesignPageState extends State<VisitDesignPage> {
 
   Widget _card(Widget child) => DesignCard(child: child);
 
-  Widget _h2(String t, {double size = 19}) => Text(
-    t,
-    style: TextStyle(
-      fontFamily: 'Playfair Display',
-      fontWeight: FontWeight.w700,
-      fontSize: size,
-      color: AppColors.ink,
-    ),
+  Widget _h2(String t, {double size = 19}) => AppText(
+    text: t,
+    type: AppTextType.bodySmall,
+    fontFamily: 'Playfair Display',
+    fontWeight: FontWeight.w700,
+    fontSize: size,
+    color: AppColors.ink,
   );
 }

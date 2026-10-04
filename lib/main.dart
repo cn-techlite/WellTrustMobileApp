@@ -5,7 +5,6 @@ import 'package:well_trust_mobile_app/features/auth/domain/usercases/auth_reposi
 import 'package:well_trust_mobile_app/shared/state/connectivity_state.dart';
 import 'package:well_trust_mobile_app/shared/state/theme_state.dart';
 import 'package:well_trust_mobile_app/core/utils/colors.dart';
-import 'package:well_trust_mobile_app/core/utils/size_config.dart';
 import 'core/helpers/globals.dart';
 import 'core/routes/routers.dart';
 import 'core/utils/package_export.dart';

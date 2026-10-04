@@ -2,8 +2,6 @@
 
 import 'package:well_trust_mobile_app/core/utils/app_buttons.dart';
 import 'package:well_trust_mobile_app/core/utils/package_export.dart';
-import 'package:well_trust_mobile_app/core/utils/size_config.dart';
-import 'package:well_trust_mobile_app/shared/widgets/app_text.dart';
 import '../../core/utils/colors.dart';
 
 class SearchWidget extends StatefulWidget {
@@ -51,60 +49,29 @@ class _SearchWidgetState extends State<SearchWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final borderColor = AppColors.line;
     final hintColor = AppColors.muted;
 
-    return Container(
+    return SizedBox(
       height: 6.heightAdjusted,
-      // margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: borderColor, width: 1.4),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.search, color: hintColor, size: 24),
-
-          const SizedBox(width: 10),
-
-          Expanded(
-            child: TextField(
-              controller: controller,
-              onChanged: widget.onChanged,
-              cursorColor: AppColors.black,
-              style: TextStyle(
-                color: AppColors.black,
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-              ),
-              decoration: InputDecoration(
-                hintText: widget.hintText,
-                hintStyle: TextStyle(
-                  color: hintColor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                ),
-                border: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                isDense: true,
-                contentPadding: EdgeInsets.zero,
-              ),
-            ),
-          ),
-
-          if (widget.text.isNotEmpty)
-            GestureDetector(
-              onTap: () {
-                controller.clear();
-                widget.onChanged('');
-                FocusScope.of(context).unfocus();
-              },
-              child: Icon(Icons.close, color: hintColor, size: 24),
-            ),
-        ],
+      child: GlobalTextField(
+        fieldName: widget.hintText,
+        keyBoardType: TextInputType.text,
+        textController: controller,
+        isOptional: true,
+        removeSpace: false,
+        maxLength: 100,
+        borderRadius: 12,
+        prefixIcon: Icon(Icons.search, color: hintColor, size: 24),
+        suffix: widget.text.isNotEmpty
+            ? IconButton(
+                onPressed: () {
+                  controller.clear();
+                  widget.onChanged('');
+                  FocusScope.of(context).unfocus();
+                },
+                icon: Icon(Icons.close, color: hintColor, size: 24),
+              )
+            : null,
       ),
     );
   }
@@ -121,17 +88,24 @@ class GlobalTextField extends StatefulWidget {
   final bool removeSpace;
   bool obscureText;
   final bool isOptional;
-  final Function(String?)? onChanged;
-  final Function(String?)? onFieldSubmitted;
+  final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onFieldSubmitted;
   final TextInputAction? textInputAction;
   final bool readOnly;
   final double? borderRadius;
   final VoidCallback? onTap;
   final Widget? prefix;
+  final Widget? prefixIcon;
   final Widget? suffix;
   final bool isNotePad;
   final String? confirmPasswordMatch;
   final bool allowDecimal;
+  final bool enabled;
+  final int? minLines;
+  final int? maxLines;
+  final TextCapitalization? textCapitalization;
+  final String? hintText;
+  final bool hasError;
   GlobalTextField({
     super.key,
     required this.fieldName,
@@ -151,10 +125,17 @@ class GlobalTextField extends StatefulWidget {
     this.borderRadius,
     this.onTap,
     this.prefix,
+    this.prefixIcon,
     this.suffix,
     this.isNotePad = false,
     this.confirmPasswordMatch,
     this.allowDecimal = false, // 👈 default
+    this.enabled = true,
+    this.minLines,
+    this.maxLines,
+    this.textCapitalization,
+    this.hintText,
+    this.hasError = false,
   });
 
   @override
@@ -182,22 +163,26 @@ class _GlobalTextFieldState extends State<GlobalTextField> {
       readOnly: widget.readOnly,
       onFieldSubmitted: widget.onFieldSubmitted,
       onTap: widget.onTap,
-      enabled: true,
-      maxLines: widget.isNotePad ? 10 : 1,
-      minLines: widget.isNotePad
-          ? widget.maxLength <= 100
-                ? 3
-                : 6
-          : 1,
+      enabled: widget.enabled,
+      maxLines: widget.maxLines ?? (widget.isNotePad ? 10 : 1),
+      minLines:
+          widget.minLines ??
+          (widget.isNotePad
+              ? widget.maxLength <= 100
+                    ? 3
+                    : 6
+              : 1),
       enableInteractiveSelection: widget.readOnly == true
           ? false
           : true, // prevents long press/double tap menu
       textInputAction: widget.textInputAction,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       //   textAlign: TextAlign.start,
-      textCapitalization: widget.keyBoardType == TextInputType.name
-          ? TextCapitalization.sentences
-          : TextCapitalization.none,
+      textCapitalization:
+          widget.textCapitalization ??
+          (widget.keyBoardType == TextInputType.name
+              ? TextCapitalization.sentences
+              : TextCapitalization.none),
       keyboardType: widget.allowDecimal
           ? const TextInputType.numberWithOptions(decimal: true)
           : widget.obscureText == true
@@ -211,8 +196,11 @@ class _GlobalTextFieldState extends State<GlobalTextField> {
         letterSpacing: 1.2,
       ),
       decoration: InputDecoration(
-        floatingLabelBehavior: FloatingLabelBehavior.never,
+        floatingLabelBehavior: widget.hintText == null
+            ? FloatingLabelBehavior.never
+            : FloatingLabelBehavior.auto,
         labelText: widget.fieldName,
+        hintText: widget.hintText,
         isDense: true,
         filled: true,
         fillColor: AppColors.surface,
@@ -237,13 +225,17 @@ class _GlobalTextFieldState extends State<GlobalTextField> {
               )
             : widget.suffix,
         prefix: widget.prefix,
+        prefixIcon: widget.prefixIcon,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(widget.borderRadius ?? 10),
           borderSide: BorderSide(color: AppColors.line2, width: 1.5),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(widget.borderRadius ?? 10),
-          borderSide: BorderSide(color: AppColors.line2, width: 1.5),
+          borderSide: BorderSide(
+            color: widget.hasError ? AppColors.rose : AppColors.line2,
+            width: 1.5,
+          ),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(widget.borderRadius ?? 10),
@@ -251,7 +243,10 @@ class _GlobalTextFieldState extends State<GlobalTextField> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(widget.borderRadius ?? 10),
-          borderSide: BorderSide(color: AppColors.line2, width: 1.5),
+          borderSide: BorderSide(
+            color: widget.hasError ? AppColors.rose : AppColors.line2,
+            width: 1.5,
+          ),
         ),
         errorStyle: TextStyle(fontSize: 4.textSize, height: 1.1),
       ),
@@ -428,16 +423,124 @@ class _GlobalPhoneTextFieldState extends State<GlobalPhoneTextField> {
   }
 }
 
+class SearchableDropdownOption<T> {
+  final T value;
+  final String label;
+
+  const SearchableDropdownOption({required this.value, required this.label});
+}
+
+/// Project-wide searchable dropdown field.
+///
+/// The user sees an option's [SearchableDropdownOption.label], while
+/// [onChanged] receives its typed [SearchableDropdownOption.value]. This lets
+/// API-backed forms display a person's name while submitting their id.
+class GlobalSearchableDropdown<T> extends StatelessWidget {
+  final String title;
+  final String hintText;
+  final T? value;
+  final List<SearchableDropdownOption<T>> options;
+  final ValueChanged<T> onChanged;
+  final bool showSearch;
+  final String emptyMessage;
+
+  const GlobalSearchableDropdown({
+    super.key,
+    required this.title,
+    required this.value,
+    required this.options,
+    required this.onChanged,
+    this.hintText = 'Choose',
+    this.showSearch = true,
+    this.emptyMessage = 'No options are currently available.',
+  });
+
+  Future<void> _open(BuildContext context) async {
+    final selectedLabel = await showModalBottomSheet<String>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => CustomDropdownBottomSheet(
+        title: title,
+        options: [for (final option in options) option.label],
+        showSearch: showSearch,
+        emptyMessage: emptyMessage,
+      ),
+    );
+    if (selectedLabel == null) return;
+
+    final selected = options.firstWhere(
+      (option) => option.label == selectedLabel,
+    );
+    onChanged(selected.value);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    SearchableDropdownOption<T>? selected;
+    for (final option in options) {
+      if (option.value == value) {
+        selected = option;
+        break;
+      }
+    }
+
+    return Semantics(
+      button: true,
+      label: '$title. Searchable dropdown.',
+      child: Material(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(10),
+        child: InkWell(
+          onTap: () => _open(context),
+          borderRadius: BorderRadius.circular(10),
+          child: Container(
+            width: double.infinity,
+            constraints: const BoxConstraints(minHeight: 54),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: AppColors.line2, width: 1.5),
+            ),
+            child: Row(
+              children: [
+                if (showSearch) ...[
+                  Icon(Icons.search, size: 21, color: AppColors.muted),
+                  addHorizontalSpacing(2.56),
+                ],
+                Expanded(
+                  child: AppText(
+                    text: selected?.label ?? hintText,
+                    type: AppTextType.bodySmall,
+                    color: selected == null ? AppColors.muted : AppColors.ink,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                addHorizontalSpacing(2.05),
+                Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.muted),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class CustomDropdownBottomSheet extends StatefulWidget {
   final String title;
   final List<String> options;
   final bool showSearch;
+  final String emptyMessage;
 
   const CustomDropdownBottomSheet({
     super.key,
     required this.title,
     required this.options,
     this.showSearch = false,
+    this.emptyMessage = 'No options are currently available.',
   });
 
   @override
@@ -496,14 +599,13 @@ class _CustomDropdownBottomSheetState extends State<CustomDropdownBottomSheet> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: Text(
-                        widget.title,
-                        style: TextStyle(
-                          fontSize: 12.textSize,
-                          color: AppColors.black,
-                          fontWeight: FontWeight.w700,
-                          fontFamily: 'Source Sans 3',
-                        ),
+                      child: AppText(
+                        text: widget.title,
+                        type: AppTextType.bodySmall,
+                        fontSize: 12.textSize,
+                        color: AppColors.black,
+                        fontWeight: FontWeight.w700,
+                        fontFamily: 'Source Sans 3',
                       ),
                     ),
                     IconButton(
@@ -517,43 +619,71 @@ class _CustomDropdownBottomSheetState extends State<CustomDropdownBottomSheet> {
               const Divider(height: 1),
 
               // Optional Search Field
-              if (widget.showSearch)
+              if (widget.showSearch && widget.options.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: TextField(
-                    controller: _searchController,
-                    decoration: InputDecoration(
-                      hintText: 'Search...',
-                      prefixIcon: const Icon(Icons.search),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
+                  child: GlobalTextField(
+                    fieldName: 'Search...',
+                    keyBoardType: TextInputType.text,
+                    textController: _searchController,
+                    isOptional: true,
+                    removeSpace: false,
+                    maxLength: 100,
+                    borderRadius: 12,
+                    prefixIcon: const Icon(Icons.search),
                   ),
                 ),
 
               // Options
               Flexible(
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  itemCount: _filteredOptions.length,
-                  separatorBuilder: (_, _) => const Divider(height: 1),
-                  itemBuilder: (_, index) {
-                    final item = _filteredOptions[index];
-                    return ListTile(
-                      title: Text(
-                        item,
-                        style: TextStyle(
-                          fontSize: 12.textSize,
-                          color: AppColors.black,
-                          fontWeight: FontWeight.w400,
-                          fontFamily: 'Source Sans 3',
+                child: _filteredOptions.isEmpty
+                    ? Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(24),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.people_outline_rounded,
+                                color: AppColors.muted,
+                                size: 32,
+                              ),
+                              addVerticalSpacing(1.18),
+                              AppText(
+                                text: widget.options.isEmpty
+                                    ? widget.emptyMessage
+                                    : 'No matching results.',
+                                type: AppTextType.bodySmall,
+                                color: AppColors.muted,
+                                fontWeight: FontWeight.w600,
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
                         ),
+                      )
+                    : ListView.separated(
+                        shrinkWrap: true,
+                        itemCount: _filteredOptions.length,
+                        separatorBuilder: (_, _) => const Divider(height: 1),
+                        itemBuilder: (_, index) {
+                          final item = _filteredOptions[index];
+                          return Material(
+                            color: AppColors.surface,
+                            child: ListTile(
+                              title: AppText(
+                                text: item,
+                                type: AppTextType.bodySmall,
+                                fontSize: 12.textSize,
+                                color: AppColors.black,
+                                fontWeight: FontWeight.w400,
+                                fontFamily: 'Source Sans 3',
+                              ),
+                              onTap: () => Navigator.pop(context, item),
+                            ),
+                          );
+                        },
                       ),
-                      onTap: () => Navigator.pop(context, item),
-                    );
-                  },
-                ),
               ),
             ],
           ),
@@ -639,6 +769,7 @@ class _CustomMultipleDropdownBottomSheetState
                   Expanded(
                     child: AppText(
                       text: widget.title,
+                      type: AppTextType.bodyMedium,
                       textAlign: TextAlign.start,
 
                       color: AppColors.black,
@@ -667,15 +798,15 @@ class _CustomMultipleDropdownBottomSheetState
             if (widget.showSearch)
               Padding(
                 padding: const EdgeInsets.all(12.0),
-                child: TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    hintText: 'Search...',
-                    prefixIcon: const Icon(Icons.search),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
+                child: GlobalTextField(
+                  fieldName: 'Search...',
+                  keyBoardType: TextInputType.text,
+                  textController: _searchController,
+                  isOptional: true,
+                  removeSpace: false,
+                  maxLength: 100,
+                  borderRadius: 12,
+                  prefixIcon: const Icon(Icons.search),
                 ),
               ),
 
@@ -688,24 +819,28 @@ class _CustomMultipleDropdownBottomSheetState
                   final item = _filteredOptions[index];
                   final isSelected = _selectedItems.contains(item);
 
-                  return CheckboxListTile(
-                    value: isSelected,
-                    title: AppText(
-                      text: item,
-                      textAlign: TextAlign.start,
+                  return Material(
+                    color: AppColors.surface,
+                    child: CheckboxListTile(
+                      value: isSelected,
+                      title: AppText(
+                        text: item,
+                        type: AppTextType.bodyMedium,
+                        textAlign: TextAlign.start,
 
-                      color: AppColors.black,
-                      fontWeight: FontWeight.w400,
+                        color: AppColors.black,
+                        fontWeight: FontWeight.w400,
+                      ),
+                      onChanged: (checked) {
+                        setState(() {
+                          if (checked == true) {
+                            _selectedItems.add(item);
+                          } else {
+                            _selectedItems.remove(item);
+                          }
+                        });
+                      },
                     ),
-                    onChanged: (checked) {
-                      setState(() {
-                        if (checked == true) {
-                          _selectedItems.add(item);
-                        } else {
-                          _selectedItems.remove(item);
-                        }
-                      });
-                    },
                   );
                 },
               ),

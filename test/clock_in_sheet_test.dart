@@ -3,9 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:well_trust_mobile_app/core/services/location_service.dart';
-import 'package:well_trust_mobile_app/features/visits/data/model/clock_in_details.dart';
+import 'package:well_trust_mobile_app/features/visits/data/dto/clock_in_details.dart';
 import 'package:well_trust_mobile_app/features/visits/data/model/today_visit.dart';
 import 'package:well_trust_mobile_app/features/visits/presentation/widget/clock_in_sheet.dart';
+import 'package:well_trust_mobile_app/shared/widgets/input.dart';
 
 /// The fake fix's position, used by every test unless it sets a client
 /// address of its own.
@@ -145,7 +146,7 @@ void main() {
       start: _in(20),
       interact: () async {
         await tester.enterText(
-          find.byType(TextField),
+          find.byType(GlobalTextField),
           '  Last visit ended early ',
         );
         await tester.tap(find.text("I am at Harold's home"));
@@ -168,7 +169,7 @@ void main() {
       location: location,
       start: _in(3),
       interact: () async {
-        expect(find.byType(TextField), findsNothing);
+        expect(find.byType(GlobalTextField), findsNothing);
         expect(find.textContaining('min early'), findsNothing);
         await tester.tap(find.text('I am somewhere else'));
       },
@@ -185,7 +186,7 @@ void main() {
       tester,
       location: _FakeLocation(),
       interact: () async {
-        expect(find.byType(TextField), findsNothing);
+        expect(find.byType(GlobalTextField), findsNothing);
         await tester.tap(find.text("I am at Harold's home"));
       },
     );
@@ -268,10 +269,10 @@ void main() {
       location: location,
       start: _in(20),
       interact: () async {
-        await tester.enterText(find.byType(TextField), 'Early finish');
+        await tester.enterText(find.byType(GlobalTextField), 'Early finish');
         await tester.tap(find.text('I am somewhere else'));
         await tester.pumpAndSettle();
-        await tester.enterText(find.byType(TextField), '');
+        await tester.enterText(find.byType(GlobalTextField), '');
         await tester.ensureVisible(find.text('Clock in without location'));
         await tester.pumpAndSettle();
         await tester.tap(find.text('Clock in without location'));
@@ -280,7 +281,7 @@ void main() {
           find.text('Please tell the office why you are early.'),
           findsOneWidget,
         );
-        await tester.enterText(find.byType(TextField), 'Early finish');
+        await tester.enterText(find.byType(GlobalTextField), 'Early finish');
         await tester.ensureVisible(find.text('Clock in without location'));
         await tester.pumpAndSettle();
         await tester.tap(find.text('Clock in without location'));
@@ -299,7 +300,7 @@ void main() {
       location: _FakeLocation(),
       start: _in(26),
       interact: () async {
-        await tester.enterText(find.byType(TextField), 'Because');
+        await tester.enterText(find.byType(GlobalTextField), 'Because');
       },
     );
   });

@@ -2,6 +2,7 @@ import 'package:well_trust_mobile_app/core/routes/route.dart';
 import 'package:flutter/material.dart';
 import 'package:well_trust_mobile_app/features/auth/presentation/screen/logins.dart';
 import 'package:well_trust_mobile_app/features/auth/presentation/screen/get_started.dart';
+import 'package:well_trust_mobile_app/shared/widgets/app_text.dart';
 
 import '../../features/home_screen.dart';
 import '../helpers/globals.dart';
@@ -28,8 +29,13 @@ Route<dynamic> _errorRoute() {
   return MaterialPageRoute(
     builder: (context) {
       return Scaffold(
-        appBar: AppBar(title: const Text('ERROR'), centerTitle: true),
-        body: const Center(child: Text('Page not found!')),
+        appBar: AppBar(
+          title: const AppText(text: 'ERROR', type: AppTextType.bodySmall),
+          centerTitle: true,
+        ),
+        body: const Center(
+          child: AppText(text: 'Page not found!', type: AppTextType.bodySmall),
+        ),
       );
     },
   );

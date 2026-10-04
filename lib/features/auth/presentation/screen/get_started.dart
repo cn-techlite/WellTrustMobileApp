@@ -4,8 +4,6 @@ import 'package:well_trust_mobile_app/core/utils/app_buttons.dart';
 import 'package:well_trust_mobile_app/core/utils/colors.dart';
 import 'package:well_trust_mobile_app/core/utils/helper_functions.dart';
 import 'package:well_trust_mobile_app/core/utils/package_export.dart';
-import 'package:well_trust_mobile_app/core/utils/size_config.dart';
-import 'package:well_trust_mobile_app/shared/widgets/app_text.dart';
 
 /// Single welcome screen shown the first time the app is opened.
 class GetStartedScreen extends StatelessWidget {

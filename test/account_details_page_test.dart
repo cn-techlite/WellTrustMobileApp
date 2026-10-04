@@ -6,7 +6,7 @@ import 'package:well_trust_mobile_app/core/helpers/globals.dart';
 import 'package:well_trust_mobile_app/features/account/data/model/user_response_model.dart';
 import 'package:well_trust_mobile_app/features/account/domain/usercases/account_repository.dart';
 import 'package:well_trust_mobile_app/features/account/presentation/screen/personal_detail.dart';
-import 'package:well_trust_mobile_app/features/account/presentation/state/provider/account_provider.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/state/providers/account_provider.dart';
 import 'package:well_trust_mobile_app/features/account/presentation/widget/staff_record_widgets.dart';
 
 class _Repo implements AccountRepository {

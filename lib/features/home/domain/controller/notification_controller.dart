@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:well_trust_mobile_app/core/utils/package_export.dart';
 import 'package:well_trust_mobile_app/features/home/data/model/notification_model.dart';
 import 'package:well_trust_mobile_app/features/home/domain/usecases/home_repository.dart';
-import 'package:well_trust_mobile_app/features/home/presentation/state/provider/home_provider.dart';
+import 'package:well_trust_mobile_app/features/home/presentation/state/providers/home_provider.dart';
 import 'package:well_trust_mobile_app/features/home/presentation/state/state_model/notification_state.dart';
 import 'package:well_trust_mobile_app/shared/model/response_result_model.dart';
 
@@ -30,23 +30,17 @@ class NotificationController extends AsyncNotifier<NotificationStateModel> {
 
     if (!current.hasFetched || forceRefresh) {
       state = const AsyncLoading();
-
-      final data = await _home.getAllNotificationData();
-      _cacheList(data);
-      state = AsyncData(
-        current.copyWith(
-          allNotification: data,
-          hasFetched: true,
-          visitCount: visit,
-        ),
-      );
-    } else {
-      final data = await _home.getAllNotificationData();
-      _cacheList(data);
-      state = AsyncData(
-        current.copyWith(allNotification: data, visitCount: visit),
-      );
     }
+
+    state = await AsyncValue.guard(() async {
+      final data = await _home.getAllNotificationData();
+      _cacheList(data);
+      return current.copyWith(
+        allNotification: data,
+        hasFetched: true,
+        visitCount: visit,
+      );
+    });
   }
 
   NotificationResponseModel? getNotificationById(String id) {

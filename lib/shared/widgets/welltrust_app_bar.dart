@@ -1,11 +1,13 @@
+import 'package:well_trust_mobile_app/core/utils/app_buttons.dart';
 import 'package:well_trust_mobile_app/core/utils/colors.dart';
 import 'package:well_trust_mobile_app/core/utils/helper_functions.dart';
 import 'package:well_trust_mobile_app/core/utils/package_export.dart';
 import 'package:well_trust_mobile_app/features/account/presentation/screen/notification_page.dart';
 import 'package:well_trust_mobile_app/features/auth/presentation/screen/logins.dart';
-import 'package:well_trust_mobile_app/features/home/presentation/widget/chat_message_widget.dart';
 import 'package:well_trust_mobile_app/features/meetings/presentation/screen/meetings_screen.dart';
+import 'package:well_trust_mobile_app/features/messages/presentation/screen/messages_screen.dart';
 import 'package:well_trust_mobile_app/shared/state/header_state.dart';
+import 'package:well_trust_mobile_app/features/meetings/presentation/state/providers/meeting_provider.dart';
 import 'package:well_trust_mobile_app/shared/widgets/brand_logo.dart';
 
 /// The navy bar at the top of every screen (design `.bar`): the WellTrust mark,
@@ -16,27 +18,47 @@ import 'package:well_trust_mobile_app/shared/widgets/brand_logo.dart';
 class WellTrustAppBar extends ConsumerWidget {
   final String? title;
   final bool showBack;
+  final bool messagesActive;
+  final bool meetingsActive;
+  final bool notificationsActive;
 
-  const WellTrustAppBar({super.key, this.title, this.showBack = false});
+  const WellTrustAppBar({
+    super.key,
+    this.title,
+    this.showBack = false,
+    this.messagesActive = false,
+    this.meetingsActive = false,
+    this.notificationsActive = false,
+  });
 
   Future<void> _lock(BuildContext context) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         backgroundColor: AppColors.surface,
-        title: Text('Lock the app?', style: TextStyle(color: AppColors.ink)),
-        content: Text(
-          'You will go back to the sign in screen and need your username and PIN to continue.',
-          style: TextStyle(color: AppColors.muted),
+        title: AppText(
+          text: 'Lock the app?',
+          type: AppTextType.bodySmall,
+          color: AppColors.ink,
+        ),
+        content: AppText(
+          text:
+              'You will go back to the sign in screen and need your username and PIN to continue.',
+          type: AppTextType.bodySmall,
+          color: AppColors.muted,
         ),
         actions: [
-          TextButton(
+          AppButton(
+            text: 'Cancel',
+            expand: false,
+            btnColor: Colors.transparent,
+            textColor: AppColors.muted,
             onPressed: () => Navigator.pop(dialogContext, false),
-            child: Text('Cancel', style: TextStyle(color: AppColors.muted)),
           ),
-          TextButton(
+          AppButton(
+            text: 'Lock',
+            expand: false,
             onPressed: () => Navigator.pop(dialogContext, true),
-            child: Text('Lock', style: TextStyle(color: AppColors.ink)),
           ),
         ],
       ),
@@ -51,6 +73,13 @@ class WellTrustAppBar extends ConsumerWidget {
     final width = MediaQuery.sizeOf(context).width;
     final unreadMessages = ref.watch(unreadMessagesProvider);
     final unreadNotifications = ref.watch(unreadNotificationsProvider);
+    final meetingLive =
+        ref
+            .watch(meetingsProvider)
+            .value
+            ?.meetings
+            .any((meeting) => meeting.isLive) ??
+        false;
     final slot = width <= 380 ? 40.0 : 44.0;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -73,19 +102,18 @@ class WellTrustAppBar extends ConsumerWidget {
               )
             else ...[
               const WellTrustMark(size: 32),
-              const SizedBox(width: 10),
+              addHorizontalSpacing(2.56),
             ],
             Expanded(
-              child: Text(
-                title ?? (width <= 400 ? 'WellTrust' : 'WellTrust Carer'),
+              child: AppText(
+                text: title ?? (width <= 400 ? 'WellTrust' : 'WellTrust Carer'),
+                type: AppTextType.bodySmall,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontFamily: 'Playfair Display',
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                  fontSize: title == null ? 17 : 19,
-                ),
+                fontFamily: 'Playfair Display',
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+                fontSize: title == null ? 17 : 19,
               ),
             ),
             _BarIcon(
@@ -95,16 +123,20 @@ class WellTrustAppBar extends ConsumerWidget {
                   : 'Messages',
               badge: unreadMessages,
               slot: slot,
-              onTap: () {
-                ref.read(unreadMessagesProvider.notifier).clear();
-                displayBottomSheet(context, const MessagesBottomSheet());
-              },
+              active: messagesActive,
+              onTap: messagesActive
+                  ? () {}
+                  : () => navigateToRoute(context, const MessagesScreen()),
             ),
             _BarIcon(
               icon: Icons.groups_outlined,
-              label: 'Team meetings',
+              label: meetingLive ? 'Team meetings, on now' : 'Team meetings',
               slot: slot,
-              onTap: () => navigateToRoute(context, const MeetingsScreen()),
+              active: meetingsActive,
+              liveDot: meetingLive,
+              onTap: meetingsActive
+                  ? () {}
+                  : () => navigateToRoute(context, const MeetingsScreen()),
             ),
             _BarIcon(
               icon: Icons.lock_outline,
@@ -119,10 +151,10 @@ class WellTrustAppBar extends ConsumerWidget {
                   : 'Notifications',
               badge: unreadNotifications,
               slot: slot,
-              onTap: () {
-                ref.read(notificationsSeenProvider.notifier).markSeen();
-                navigateToRoute(context, const NotificationPage());
-              },
+              active: notificationsActive,
+              onTap: notificationsActive
+                  ? () {}
+                  : () => navigateToRoute(context, const NotificationPage()),
             ),
           ],
         ),
@@ -155,16 +187,15 @@ class _BackButton extends StatelessWidget {
                 children: [
                   const Icon(Icons.arrow_back, color: Colors.white, size: 22),
                   if (showLabel) ...[
-                    const SizedBox(width: 6),
-                    const Text(
-                      'Back',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                      ),
+                    addHorizontalSpacing(1.54),
+                    const AppText(
+                      text: 'Back',
+                      type: AppTextType.bodySmall,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
                     ),
-                    const SizedBox(width: 6),
+                    addHorizontalSpacing(1.54),
                   ],
                 ],
               ),
@@ -182,6 +213,8 @@ class _BarIcon extends StatelessWidget {
   final int badge;
   final double slot;
   final VoidCallback onTap;
+  final bool active;
+  final bool liveDot;
 
   const _BarIcon({
     required this.icon,
@@ -189,6 +222,8 @@ class _BarIcon extends StatelessWidget {
     required this.slot,
     required this.onTap,
     this.badge = 0,
+    this.active = false,
+    this.liveDot = false,
   });
 
   @override
@@ -203,11 +238,19 @@ class _BarIcon extends StatelessWidget {
           child: Stack(
             children: [
               Positioned.fill(
-                child: InkResponse(
-                  onTap: onTap,
-                  radius: 24,
-                  child: Center(
-                    child: Icon(icon, color: Colors.white, size: 22),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: active
+                        ? Colors.white.withValues(alpha: 0.18)
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: InkResponse(
+                    onTap: onTap,
+                    radius: 24,
+                    child: Center(
+                      child: Icon(icon, color: Colors.white, size: 22),
+                    ),
                   ),
                 ),
               ),
@@ -227,16 +270,31 @@ class _BarIcon extends StatelessWidget {
                         color: AppColors.rose,
                         borderRadius: BorderRadius.circular(13),
                       ),
-                      child: Text(
-                        badge > 9 ? '9+' : '$badge',
-                        style: TextStyle(
-                          color: AppColors.dark
-                              ? const Color(0xFF40191A)
-                              : Colors.white,
-                          fontSize: 11.2,
-                          fontWeight: FontWeight.w700,
-                          height: 1.1,
-                        ),
+                      child: AppText(
+                        text: badge > 9 ? '9+' : '$badge',
+                        type: AppTextType.bodySmall,
+                        color: AppColors.dark
+                            ? const Color(0xFF40191A)
+                            : Colors.white,
+                        fontSize: 11.2,
+                        fontWeight: FontWeight.w700,
+                        height: 1.1,
+                      ),
+                    ),
+                  ),
+                ),
+              if (liveDot && badge == 0)
+                Positioned(
+                  top: 5,
+                  right: 5,
+                  child: IgnorePointer(
+                    child: Container(
+                      width: 9,
+                      height: 9,
+                      decoration: BoxDecoration(
+                        color: AppColors.sage,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: AppColors.navy, width: 1.5),
                       ),
                     ),
                   ),

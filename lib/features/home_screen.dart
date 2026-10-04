@@ -2,10 +2,11 @@
 
 import 'dart:ui';
 import 'package:well_trust_mobile_app/core/helpers/globals.dart';
+import 'package:well_trust_mobile_app/core/utils/app_buttons.dart';
 import 'package:well_trust_mobile_app/core/utils/constants.dart';
 import 'package:well_trust_mobile_app/features/account/presentation/screen/account.dart';
 import 'package:well_trust_mobile_app/features/handover/presentation/screen/handover_screen.dart';
-import 'package:well_trust_mobile_app/features/handover/presentation/state/provider/handover_provider.dart';
+import 'package:well_trust_mobile_app/features/handover/presentation/state/providers/handover_provider.dart';
 import 'package:well_trust_mobile_app/features/visits/presentation/screen/visit_screen.dart';
 import 'package:well_trust_mobile_app/features/home/presentation/screen/home.dart';
 import 'package:well_trust_mobile_app/features/notes/presentation/screen/notes_screen.dart';
@@ -72,9 +73,11 @@ class _NavBarfeaturestate extends ConsumerState<HomeScreenPage> {
 
   void _showLocationMessage(String message) {
     if (!mounted) return;
-    ScaffoldMessenger.maybeOf(
-      context,
-    )?.showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+      SnackBar(
+        content: AppText(text: message, type: AppTextType.bodySmall),
+      ),
+    );
   }
 
   Future<void> _getCurrentPosition() async {
@@ -136,30 +139,34 @@ class _NavBarfeaturestate extends ConsumerState<HomeScreenPage> {
           builder: (context) => BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
             child: AlertDialog(
-              title: Text(
-                'Exit App',
-                style: TextStyle(
-                  color: AppColors.ink,
-                  fontWeight: FontWeight.w700,
-                ),
+              title: AppText(
+                text: 'Exit App',
+                type: AppTextType.bodySmall,
+                color: AppColors.ink,
+                fontWeight: FontWeight.w700,
               ),
-              content: Text(
-                'Do you want to exit the app?',
-                style: TextStyle(color: AppColors.primary),
+              content: AppText(
+                text: 'Do you want to exit the app?',
+                type: AppTextType.bodySmall,
+                color: AppColors.primary,
               ),
               backgroundColor: AppColors.surface,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15),
               ),
               actions: <Widget>[
-                TextButton(
-                  child: Text('Yes', style: TextStyle(color: AppColors.ink)),
+                AppButton(
+                  text: 'Yes',
+                  expand: false,
                   onPressed: () {
                     SystemNavigator.pop();
                   },
                 ),
-                TextButton(
-                  child: Text('No', style: TextStyle(color: AppColors.primary)),
+                AppButton(
+                  text: 'No',
+                  expand: false,
+                  btnColor: Colors.transparent,
+                  textColor: AppColors.primary,
                   onPressed: () {
                     Navigator.of(context).pop(false);
                   },
@@ -237,7 +244,10 @@ class _NavBarfeaturestate extends ConsumerState<HomeScreenPage> {
                           ),
                           child: Badge(
                             isLabelVisible: i == 2 && unreadHandover > 0,
-                            label: Text('$unreadHandover'),
+                            label: AppText(
+                              text: '$unreadHandover',
+                              type: AppTextType.bodySmall,
+                            ),
                             backgroundColor: AppColors.rose,
                             child: Icon(
                               items[i].$1,
@@ -248,15 +258,14 @@ class _NavBarfeaturestate extends ConsumerState<HomeScreenPage> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 2),
-                        Text(
-                          items[i].$2,
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontFamily: 'Source Sans 3',
-                            fontWeight: FontWeight.w600,
-                            color: selected ? AppColors.ink : AppColors.muted,
-                          ),
+                        addVerticalSpacing(0.24),
+                        AppText(
+                          text: items[i].$2,
+                          type: AppTextType.bodySmall,
+                          fontSize: 11,
+                          fontFamily: 'Source Sans 3',
+                          fontWeight: FontWeight.w600,
+                          color: selected ? AppColors.ink : AppColors.muted,
                         ),
                       ],
                     ),

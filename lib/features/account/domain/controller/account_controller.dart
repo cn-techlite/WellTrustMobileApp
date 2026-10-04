@@ -6,7 +6,7 @@ import 'package:well_trust_mobile_app/core/utils/package_export.dart';
 import 'package:well_trust_mobile_app/features/account/data/dto/staff_requests.dart';
 import 'package:well_trust_mobile_app/features/account/data/model/user_response_model.dart';
 import 'package:well_trust_mobile_app/features/account/domain/usercases/account_repository.dart';
-import 'package:well_trust_mobile_app/features/account/presentation/state/provider/account_provider.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/state/providers/account_provider.dart';
 import 'package:well_trust_mobile_app/features/account/presentation/state/state_model/account_state_model.dart';
 import 'package:well_trust_mobile_app/shared/model/response_result_model.dart';
 
@@ -253,4 +253,22 @@ class AccountController extends AsyncNotifier<AccountStateModel> {
 
     state = const AsyncData(AccountStateModel());
   }
+
+  Future<List<Map<String, dynamic>>> getAssessments() =>
+      _repository.getAssessments();
+
+  Future<Map<String, dynamic>> createAssessment(Map<String, dynamic> fields) =>
+      _repository.createAssessment(fields);
+
+  Future<List<Map<String, dynamic>>> getIncidents() =>
+      _repository.getIncidents();
+
+  Future<Map<String, dynamic>> createIncident(Map<String, dynamic> fields) =>
+      _repository.createIncident(fields);
+
+  Future<List<Map<String, dynamic>>> getComplaints() =>
+      _repository.getComplaints();
+
+  Future<Map<String, dynamic>> createComplaint(Map<String, dynamic> fields) =>
+      _repository.createComplaint(fields);
 }

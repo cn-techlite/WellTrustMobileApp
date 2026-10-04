@@ -3,13 +3,11 @@ import 'package:well_trust_mobile_app/core/utils/app_buttons.dart';
 import 'package:well_trust_mobile_app/core/utils/colors.dart';
 import 'package:well_trust_mobile_app/core/utils/helper_functions.dart';
 import 'package:well_trust_mobile_app/core/utils/package_export.dart';
-import 'package:well_trust_mobile_app/core/utils/size_config.dart';
 import 'package:well_trust_mobile_app/features/auth/presentation/state/providers/auth_provider.dart';
 import 'package:well_trust_mobile_app/features/auth/presentation/state/state_model/auth_state.dart';
 import 'package:well_trust_mobile_app/features/home_screen.dart';
 
 import 'package:well_trust_mobile_app/shared/state/connectivity_state.dart';
-import 'package:well_trust_mobile_app/shared/widgets/app_text.dart';
 import 'package:well_trust_mobile_app/shared/widgets/custom_snackbar.dart';
 import 'package:well_trust_mobile_app/shared/widgets/input.dart';
 import 'package:well_trust_mobile_app/shared/widgets/pin_input.dart';

@@ -4,16 +4,20 @@ import 'package:well_trust_mobile_app/core/helpers/globals.dart';
 import 'package:well_trust_mobile_app/core/utils/colors.dart';
 import 'package:well_trust_mobile_app/core/utils/helper_functions.dart';
 import 'package:well_trust_mobile_app/core/utils/package_export.dart';
-import 'package:well_trust_mobile_app/features/handover/presentation/state/provider/handover_provider.dart';
+import 'package:well_trust_mobile_app/features/handover/presentation/state/providers/handover_provider.dart';
 import 'package:well_trust_mobile_app/features/handover/presentation/widget/handover_widgets.dart';
-import 'package:well_trust_mobile_app/features/home/presentation/state/provider/home_provider.dart';
+import 'package:well_trust_mobile_app/features/home/presentation/state/providers/home_provider.dart';
 import 'package:well_trust_mobile_app/features/meetings/data/model/meeting_model.dart';
 import 'package:well_trust_mobile_app/features/meetings/presentation/screen/meetings_screen.dart';
+import 'package:well_trust_mobile_app/features/meetings/presentation/state/providers/meeting_provider.dart';
 import 'package:well_trust_mobile_app/features/visits/data/model/today_visit.dart';
 import 'package:well_trust_mobile_app/features/visits/presentation/screen/today_visit_page.dart';
 import 'package:well_trust_mobile_app/features/visits/presentation/state/providers/today_run_provider.dart';
+import 'package:well_trust_mobile_app/features/visits/presentation/state/providers/visit_provider.dart';
+import 'package:well_trust_mobile_app/features/visits/presentation/state/state_model/today_run_state.dart';
 import 'package:well_trust_mobile_app/features/visits/presentation/widget/clock_in_sheet.dart';
-import 'package:well_trust_mobile_app/features/visits/presentation/widget/report_incident_bottomsheet.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/screen/more_screens.dart';
+import 'package:well_trust_mobile_app/shared/widgets/input.dart';
 import 'package:well_trust_mobile_app/shared/widgets/welltrust_app_bar.dart';
 
 /// How long before a visit starts the reminder card appears.
@@ -75,9 +79,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       clientLongitude: v.longitude,
     );
     if (details == null || !mounted) return;
-    final recorded = ref
-        .read(todayRunProvider.notifier)
-        .clockIn(v.id, details: details);
+    late final bool recorded;
+    try {
+      recorded = await ref
+          .read(visitControllerProvider.notifier)
+          .clockIn(v, details);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.maybeOf(
+          context,
+        )?.showSnackBar(SnackBar(content: Text(e.toString())));
+      }
+      return;
+    }
     if (!recorded || !mounted) return;
     _openVisit(v);
   }
@@ -86,20 +100,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     displayBottomSheet(context, _RunningLateSheet(visit: v));
   }
 
-  void _reportIncident(TodayVisit v) => displayBottomSheet(
+  void _reportIncident(TodayVisit v) => navigateToRoute(
     context,
-    ReportIncidentBottomSheet(initialClient: v.name),
+    IncidentReportScreen(initialClientId: v.clientId),
   );
 
   Future<void> _callOffice() async {
-    final uri = Uri(scheme: 'tel', path: sampleOfficePhone.replaceAll(' ', ''));
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
-      return;
-    }
-    if (!mounted) return;
     ScaffoldMessenger.maybeOf(context)?.showSnackBar(
-      const SnackBar(content: Text('Unable to open the phone app.')),
+      const SnackBar(
+        content: AppText(
+          text:
+              'The office telephone number is not supplied by the mobile API. Use Messages to contact the office.',
+          type: AppTextType.bodySmall,
+        ),
+      ),
     );
   }
 
@@ -108,9 +122,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final now = DateTime.now();
     final run = ref.watch(todayRunProvider);
     final handover = ref.watch(handoverProvider);
-    final visits = todayVisits;
+    final visits =
+        (ref.watch(visitControllerProvider).value?.visits ??
+                const <TodayVisit>[])
+            .where((visit) => DateUtils.isSameDay(visit.start, now))
+            .toList();
     final focus = run.focus(visits, now);
-    final meeting = meetingToday();
+    final meeting = meetingToday(
+      ref.watch(meetingsProvider).value?.meetings ?? const <TeamMeeting>[],
+    );
 
     final reminder =
         focus != null &&
@@ -159,7 +179,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             ),
                             if (focus != null) ..._actions(focus, run, now),
                             if (reminder != null) ...[
-                              const SizedBox(height: 14),
+                              addVerticalSpacing(1.66),
                               _ReminderCard(
                                 visit: reminder,
                                 handoverNotes: handover.unreadFor(
@@ -173,31 +193,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               ),
                             ],
                             if (meeting != null) ...[
-                              const SizedBox(height: 14),
+                              addVerticalSpacing(1.66),
                               _MeetingNotice(meeting: meeting),
                             ],
-                            const SizedBox(height: 26),
-                            Text(
-                              "Today's visits",
-                              style: TextStyle(
-                                fontFamily: 'Playfair Display',
-                                fontWeight: FontWeight.w700,
-                                fontSize: 18.4,
-                                color: AppColors.ink,
-                              ),
+                            addVerticalSpacing(3.08),
+                            AppText(
+                              text: "Today's visits",
+                              type: AppTextType.bodySmall,
+                              fontFamily: 'Playfair Display',
+                              fontWeight: FontWeight.w700,
+                              fontSize: 18.4,
+                              color: AppColors.ink,
                             ),
-                            const SizedBox(height: 14),
+                            addVerticalSpacing(1.66),
                             if (visits.isEmpty)
                               _NoVisits(onOpenRota: widget.onOpenVisits)
                             else ...[
-                              Text(
-                                '${_plural(visits.length, 'visit', 'visits')}, ${formatMinutes(care)} of care${travel > 0 ? ', ${formatMinutes(travel)} travel' : ''}.',
-                                style: TextStyle(
-                                  color: AppColors.muted,
-                                  fontSize: 16,
-                                ),
+                              AppText(
+                                text:
+                                    '${_plural(visits.length, 'visit', 'visits')}, ${formatMinutes(care)} of care${travel > 0 ? ', ${formatMinutes(travel)} travel' : ''}.',
+                                type: AppTextType.bodySmall,
+                                color: AppColors.muted,
+                                fontSize: 16,
                               ),
-                              const SizedBox(height: 14),
+                              addVerticalSpacing(1.66),
                               for (var i = 0; i < visits.length; i++) ...[
                                 if (i > 0)
                                   _TravelGap(minutes: visits[i].travelMins),
@@ -242,14 +261,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     return [
       if (canClock) ...[
-        const SizedBox(height: 12),
+        addVerticalSpacing(1.42),
         DesignButton(
           'Clock in to ${v.preferred}',
           icon: Icons.access_time,
           onPressed: () => _clockIn(v),
         ),
       ],
-      const SizedBox(height: 10),
+      addVerticalSpacing(1.18),
       Row(
         children: [
           Expanded(
@@ -262,7 +281,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   : () => _reportIncident(v),
             ),
           ),
-          const SizedBox(width: 10),
+          addHorizontalSpacing(2.56),
           Expanded(
             child: DesignButton(
               'Call the office',
@@ -295,20 +314,21 @@ class _Masthead extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            '${greeting().replaceAll(',', '')}, $name',
-            style: const TextStyle(
-              fontFamily: 'Playfair Display',
-              color: Colors.white,
-              fontWeight: FontWeight.w700,
-              fontSize: 28,
-              height: 1.2,
-            ),
+          AppText(
+            text: '${greeting().replaceAll(',', '')}, $name',
+            type: AppTextType.displayMedium,
+            fontFamily: 'Playfair Display',
+            color: Colors.white,
+            fontWeight: FontWeight.w700,
+            fontSize: 28,
+            height: 1.2,
           ),
-          const SizedBox(height: 4),
-          Text(
-            DateFormat('EEEE d MMMM').format(now),
-            style: TextStyle(color: AppColors.brandMuted, fontSize: 18),
+          addVerticalSpacing(0.47),
+          AppText(
+            text: DateFormat('EEEE d MMMM').format(now),
+            type: AppTextType.bodySmall,
+            color: AppColors.brandMuted,
+            fontSize: 18,
           ),
         ],
       ),
@@ -429,40 +449,39 @@ class _Hero extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        label,
-                        style: TextStyle(color: AppColors.muted, fontSize: 14),
+                      AppText(
+                        text: label,
+                        type: AppTextType.bodySmall,
+                        color: AppColors.muted,
+                        fontSize: 14,
                       ),
-                      const SizedBox(height: 2),
-                      Text(
-                        title,
-                        style: TextStyle(
-                          fontFamily: 'Playfair Display',
-                          fontWeight: FontWeight.w700,
-                          fontSize: 25.6,
-                          height: 1.2,
-                          color: AppColors.ink,
-                        ),
+                      addVerticalSpacing(0.24),
+                      AppText(
+                        text: title,
+                        type: AppTextType.bodySmall,
+                        fontFamily: 'Playfair Display',
+                        fontWeight: FontWeight.w700,
+                        fontSize: 25.6,
+                        height: 1.2,
+                        color: AppColors.ink,
                       ),
-                      const SizedBox(height: 2),
-                      Text(
-                        line,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 17,
-                          color: AppColors.ink,
-                        ),
+                      addVerticalSpacing(0.24),
+                      AppText(
+                        text: line,
+                        type: AppTextType.bodySmall,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 17,
+                        color: AppColors.ink,
                       ),
                       if (note != null)
-                        Text(
-                          note,
-                          style: TextStyle(
-                            color: AppColors.muted,
-                            fontSize: 14,
-                          ),
+                        AppText(
+                          text: note,
+                          type: AppTextType.bodySmall,
+                          color: AppColors.muted,
+                          fontSize: 14,
                         ),
                       if (pills.isNotEmpty) ...[
-                        const SizedBox(height: 10),
+                        addVerticalSpacing(1.18),
                         Wrap(spacing: 6, runSpacing: 6, children: pills),
                       ],
                     ],
@@ -480,7 +499,7 @@ class _Hero extends StatelessWidget {
 int _minsUntil(DateTime t, DateTime now) =>
     (t.difference(now).inSeconds / 60).ceil();
 
-/// "Mr Harold Fisher: starts in 27 min" (design `.notice.info.reminder`).
+/// A reminder for the next live rota visit.
 class _ReminderCard extends StatelessWidget {
   final TodayVisit visit;
   final int handoverNotes;
@@ -513,14 +532,13 @@ class _ReminderCard extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(icon, size: 20, color: fg),
-        const SizedBox(width: 6),
-        Text(
-          '$n',
-          style: TextStyle(
-            color: fg,
-            fontWeight: FontWeight.w700,
-            fontSize: 16,
-          ),
+        addHorizontalSpacing(1.54),
+        AppText(
+          text: '$n',
+          type: AppTextType.bodySmall,
+          color: fg,
+          fontWeight: FontWeight.w700,
+          fontSize: 16,
         ),
       ],
     );
@@ -530,15 +548,14 @@ class _ReminderCard extends StatelessWidget {
       fg: fg,
       icon: Icons.access_time,
       children: [
-        Text(
-          '${v.name}: starts in ${formatMinutes(minutes)}',
-          style: TextStyle(
-            color: fg,
-            fontWeight: FontWeight.w600,
-            fontSize: 17,
-          ),
+        AppText(
+          text: '${v.name}: starts in ${formatMinutes(minutes)}',
+          type: AppTextType.bodySmall,
+          color: fg,
+          fontWeight: FontWeight.w600,
+          fontSize: 17,
         ),
-        const SizedBox(height: 6),
+        addVerticalSpacing(0.71),
         Wrap(
           spacing: 18,
           children: [
@@ -547,16 +564,15 @@ class _ReminderCard extends StatelessWidget {
             count(Icons.description_outlined, handoverNotes),
           ],
         ),
-        const SizedBox(height: 6),
-        Text(
-          '${parts.join(', ')}.',
-          style: TextStyle(
-            color: fg,
-            fontWeight: FontWeight.w500,
-            fontSize: 14,
-          ),
+        addVerticalSpacing(0.71),
+        AppText(
+          text: '${parts.join(', ')}.',
+          type: AppTextType.bodySmall,
+          color: fg,
+          fontWeight: FontWeight.w500,
+          fontSize: 14,
         ),
-        const SizedBox(height: 10),
+        addVerticalSpacing(1.18),
         DesignButton('Open the visit', small: true, onPressed: onOpen),
       ],
     );
@@ -577,17 +593,16 @@ class _MeetingNotice extends StatelessWidget {
       fg: fg,
       icon: Icons.groups_outlined,
       children: [
-        Text(
-          live
+        AppText(
+          text: live
               ? 'A team meeting is on now: ${meeting.title}'
               : 'Team meeting today at ${hhmm(meeting.start)}: ${meeting.title}',
-          style: TextStyle(
-            color: fg,
-            fontWeight: FontWeight.w600,
-            fontSize: 17,
-          ),
+          type: AppTextType.bodySmall,
+          color: fg,
+          fontWeight: FontWeight.w600,
+          fontSize: 17,
         ),
-        const SizedBox(height: 10),
+        addVerticalSpacing(1.18),
         DesignButton(
           live ? 'Listen now' : 'Open meeting',
           small: true,
@@ -629,7 +644,7 @@ class _NoticeShell extends StatelessWidget {
             padding: const EdgeInsets.only(top: 1),
             child: Icon(icon, color: fg, size: 22),
           ),
-          const SizedBox(width: 10),
+          addHorizontalSpacing(2.56),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -658,16 +673,19 @@ class _NoVisits extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text(
-            'No visits today',
-            style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.ink),
+          AppText(
+            text: 'No visits today',
+            type: AppTextType.bodySmall,
+            fontWeight: FontWeight.w700,
+            color: AppColors.ink,
           ),
-          const SizedBox(height: 4),
-          Text(
-            'Nothing is planned for you yet.',
-            style: TextStyle(color: AppColors.muted),
+          addVerticalSpacing(0.47),
+          AppText(
+            text: 'Nothing is planned for you yet.',
+            type: AppTextType.bodySmall,
+            color: AppColors.muted,
           ),
-          const SizedBox(height: 14),
+          addVerticalSpacing(1.66),
           DesignButton('Open the rota', small: true, onPressed: onOpenRota),
         ],
       ),
@@ -695,10 +713,12 @@ class _TravelGap extends StatelessWidget {
               borderRadius: BorderRadius.circular(1),
             ),
           ),
-          const SizedBox(width: 8),
-          Text(
-            minutes > 0 ? '${formatMinutes(minutes)} travel' : '',
-            style: TextStyle(color: AppColors.muted, fontSize: 14),
+          addHorizontalSpacing(2.05),
+          AppText(
+            text: minutes > 0 ? '${formatMinutes(minutes)} travel' : '',
+            type: AppTextType.bodySmall,
+            color: AppColors.muted,
+            fontSize: 14,
           ),
         ],
       ),
@@ -757,59 +777,60 @@ class _VisitRow extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      hhmm(v.start),
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16,
-                        height: 1.25,
-                        color: AppColors.ink,
-                      ),
+                    AppText(
+                      text: hhmm(v.start),
+                      type: AppTextType.bodySmall,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                      height: 1.25,
+                      color: AppColors.ink,
                     ),
-                    Text(
-                      formatMinutes(v.minutes),
-                      style: TextStyle(
-                        fontSize: 12.8,
-                        height: 1.25,
-                        color: AppColors.muted,
-                      ),
+                    AppText(
+                      text: formatMinutes(v.minutes),
+                      type: AppTextType.bodySmall,
+                      fontSize: 12.8,
+                      height: 1.25,
+                      color: AppColors.muted,
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width: 12),
+              addHorizontalSpacing(3.08),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      v.preferred,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16,
-                        color: AppColors.ink,
-                      ),
+                    AppText(
+                      text: v.preferred,
+                      type: AppTextType.bodySmall,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                      color: AppColors.ink,
                     ),
-                    Text(
-                      v.address,
-                      style: TextStyle(color: AppColors.muted, fontSize: 14),
+                    AppText(
+                      text: v.address,
+                      type: AppTextType.bodySmall,
+                      color: AppColors.muted,
+                      fontSize: 14,
                     ),
                     if (v.withStaff.isNotEmpty)
-                      Text(
-                        'With ${v.withStaff}',
-                        style: TextStyle(color: AppColors.muted, fontSize: 14),
+                      AppText(
+                        text: 'With ${v.withStaff}',
+                        type: AppTextType.bodySmall,
+                        color: AppColors.muted,
+                        fontSize: 14,
                       ),
                   ],
                 ),
               ),
               if (statePill != null || showHandover) ...[
-                const SizedBox(width: 12),
+                addHorizontalSpacing(3.08),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     ?statePill,
                     if (statePill != null && showHandover)
-                      const SizedBox(height: 4),
+                      addVerticalSpacing(0.47),
                     if (showHandover) Pill.gold('New handover'),
                   ],
                 ),
@@ -822,16 +843,16 @@ class _VisitRow extends StatelessWidget {
   }
 }
 
-class _RunningLateSheet extends StatefulWidget {
+class _RunningLateSheet extends ConsumerStatefulWidget {
   final TodayVisit visit;
 
   const _RunningLateSheet({required this.visit});
 
   @override
-  State<_RunningLateSheet> createState() => _RunningLateSheetState();
+  ConsumerState<_RunningLateSheet> createState() => _RunningLateSheetState();
 }
 
-class _RunningLateSheetState extends State<_RunningLateSheet> {
+class _RunningLateSheetState extends ConsumerState<_RunningLateSheet> {
   static const _choices = ['10 min', '20 min', '30 min', '45 min', '1 hour'];
 
   final _reason = TextEditingController();
@@ -844,17 +865,40 @@ class _RunningLateSheetState extends State<_RunningLateSheet> {
     super.dispose();
   }
 
-  void _submit() {
+  Future<void> _submit() async {
     if (_eta == null) {
       setState(() => _showError = true);
       return;
     }
+    try {
+      await ref
+          .read(visitControllerProvider.notifier)
+          .reportIssue(
+            widget.visit.id,
+            issueType: 'Running late',
+            details: [
+              'Expected delay: $_eta.',
+              if (_reason.text.trim().isNotEmpty) _reason.text.trim(),
+            ].join(' '),
+          );
+    } catch (e) {
+      if (mounted) {
+        setState(() => _showError = true);
+        ScaffoldMessenger.maybeOf(
+          context,
+        )?.showSnackBar(SnackBar(content: Text(e.toString())));
+      }
+      return;
+    }
+    if (!mounted) return;
     final messenger = ScaffoldMessenger.maybeOf(context);
     Navigator.pop(context);
     messenger?.showSnackBar(
       SnackBar(
-        content: Text(
-          'The office knows you will be about ${_eta == '1 hour' ? '60 minutes' : _eta} late.',
+        content: AppText(
+          text:
+              'The office knows you will be about ${_eta == '1 hour' ? '60 minutes' : _eta} late.',
+          type: AppTextType.bodySmall,
         ),
       ),
     );
@@ -877,40 +921,38 @@ class _RunningLateSheetState extends State<_RunningLateSheet> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Running late',
-              style: TextStyle(
-                fontFamily: 'Playfair Display',
-                fontWeight: FontWeight.w700,
-                fontSize: 22,
-                color: AppColors.ink,
-              ),
+            AppText(
+              text: 'Running late',
+              type: AppTextType.bodySmall,
+              fontFamily: 'Playfair Display',
+              fontWeight: FontWeight.w700,
+              fontSize: 22,
+              color: AppColors.ink,
             ),
-            const SizedBox(height: 8),
-            Text(
-              'This tells the office. Please also let ${widget.visit.preferred} know if you can.',
-              style: TextStyle(
-                color: AppColors.muted,
-                fontSize: 16,
-                height: 1.4,
-              ),
+            addVerticalSpacing(0.95),
+            AppText(
+              text:
+                  'This tells the office. Please also let ${widget.visit.preferred} know if you can.',
+              type: AppTextType.bodySmall,
+              color: AppColors.muted,
+              fontSize: 16,
+              height: 1.4,
             ),
-            const SizedBox(height: 18),
-            Text(
-              'How late will you be?',
-              style: TextStyle(
-                color: AppColors.ink,
-                fontWeight: FontWeight.w600,
-              ),
+            addVerticalSpacing(2.13),
+            AppText(
+              text: 'How late will you be?',
+              type: AppTextType.bodySmall,
+              color: AppColors.ink,
+              fontWeight: FontWeight.w600,
             ),
-            const SizedBox(height: 8),
+            addVerticalSpacing(0.95),
             Wrap(
               spacing: 6,
               runSpacing: 6,
               children: [
                 for (final choice in _choices)
                   ChoiceChip(
-                    label: Text(choice),
+                    label: AppText(text: choice, type: AppTextType.bodySmall),
                     selected: _eta == choice,
                     onSelected: (_) => setState(() {
                       _eta = choice;
@@ -935,41 +977,32 @@ class _RunningLateSheetState extends State<_RunningLateSheet> {
               ],
             ),
             if (_showError) ...[
-              const SizedBox(height: 6),
-              Text(
-                'Choose how late you will be.',
-                style: TextStyle(
-                  color: AppColors.rose,
-                  fontWeight: FontWeight.w600,
-                ),
+              addVerticalSpacing(0.71),
+              AppText(
+                text: 'Choose how late you will be.',
+                type: AppTextType.bodySmall,
+                color: AppColors.rose,
+                fontWeight: FontWeight.w600,
               ),
             ],
-            const SizedBox(height: 16),
-            TextField(
-              controller: _reason,
+            addVerticalSpacing(1.90),
+            GlobalTextField(
+              fieldName: 'Reason (optional)',
+              hintText: 'For example: traffic on the A14',
+              keyBoardType: TextInputType.text,
+              textController: _reason,
               maxLength: 120,
-              decoration: InputDecoration(
-                labelText: 'Reason (optional)',
-                hintText: 'For example: traffic on the A14',
-                filled: true,
-                fillColor: AppColors.surface,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: AppColors.line2, width: 1.5),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: AppColors.line2, width: 1.5),
-                ),
-              ),
+              isOptional: true,
+              removeSpace: false,
+              textCapitalization: TextCapitalization.sentences,
             ),
-            const SizedBox(height: 12),
+            addVerticalSpacing(1.42),
             Row(
               children: [
                 Expanded(
                   child: DesignButton('Tell the office', onPressed: _submit),
                 ),
-                const SizedBox(width: 10),
+                addHorizontalSpacing(2.56),
                 Expanded(
                   child: DesignButton(
                     'Call ${widget.visit.preferred}',
@@ -980,10 +1013,12 @@ class _RunningLateSheetState extends State<_RunningLateSheet> {
                 ),
               ],
             ),
-            const SizedBox(height: 8),
-            Text(
-              '${widget.visit.preferred}: ${widget.visit.phone}',
-              style: TextStyle(color: AppColors.muted, fontSize: 14),
+            addVerticalSpacing(0.95),
+            AppText(
+              text: '${widget.visit.preferred}: ${widget.visit.phone}',
+              type: AppTextType.bodySmall,
+              color: AppColors.muted,
+              fontSize: 14,
             ),
           ],
         ),

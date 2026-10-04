@@ -91,20 +91,23 @@ class StaffSheet extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                title,
-                style: TextStyle(
-                  fontFamily: 'Playfair Display',
-                  fontWeight: FontWeight.w700,
-                  fontSize: 22,
-                  color: AppColors.ink,
-                ),
+              AppText(
+                text: title,
+                type: AppTextType.bodySmall,
+                fontFamily: 'Playfair Display',
+                fontWeight: FontWeight.w700,
+                fontSize: 22,
+                color: AppColors.ink,
               ),
               if (intro != null) ...[
-                const SizedBox(height: 4),
-                Text(intro!, style: TextStyle(color: AppColors.muted)),
+                addVerticalSpacing(0.47),
+                AppText(
+                  text: intro!,
+                  type: AppTextType.bodySmall,
+                  color: AppColors.muted,
+                ),
               ],
-              const SizedBox(height: 14),
+              addVerticalSpacing(1.66),
               Flexible(
                 child: SingleChildScrollView(
                   child: Column(
@@ -112,7 +115,7 @@ class StaffSheet extends StatelessWidget {
                     children: [
                       for (final c in children) ...[
                         c,
-                        const SizedBox(height: 14),
+                        addVerticalSpacing(1.66),
                       ],
                     ],
                   ),
@@ -125,7 +128,7 @@ class StaffSheet extends StatelessWidget {
                   fg: AppColors.rose,
                   icon: Icons.error_outline,
                 ),
-                const SizedBox(height: 10),
+                addVerticalSpacing(1.18),
               ],
               AppButton(
                 text: saveLabel,
@@ -135,10 +138,13 @@ class StaffSheet extends StatelessWidget {
                 heightPercent: 6.5,
                 btnColor: AppColors.primary,
               ),
-              const SizedBox(height: 6),
-              TextButton(
+              addVerticalSpacing(0.71),
+              AppButton(
+                text: 'Cancel',
                 onPressed: saving ? null : () => Navigator.pop(context),
-                child: Text('Cancel', style: TextStyle(color: AppColors.muted)),
+                btnColor: Colors.transparent,
+                textColor: AppColors.muted,
+                borderColor: AppColors.line2,
               ),
             ],
           ),
@@ -152,15 +158,14 @@ Widget _labelled(String label, Widget field, {bool required = false}) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text(
-        required ? '$label *' : label,
-        style: TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 14,
-          color: AppColors.ink,
-        ),
+      AppText(
+        text: required ? '$label *' : label,
+        type: AppTextType.bodySmall,
+        fontWeight: FontWeight.w600,
+        fontSize: 14,
+        color: AppColors.ink,
       ),
-      const SizedBox(height: 6),
+      addVerticalSpacing(0.71),
       field,
     ],
   );
@@ -177,7 +182,7 @@ class StaffTextField extends StatelessWidget {
   final bool name;
   final bool multiline;
   final int maxLength;
-  final ValueChanged<String?>? onChanged;
+  final ValueChanged<String>? onChanged;
 
   const StaffTextField({
     super.key,
@@ -261,14 +266,13 @@ class StaffDateField extends StatelessWidget {
           child: Row(
             children: [
               Expanded(
-                child: Text(
-                  value == null
+                child: AppText(
+                  text: value == null
                       ? 'Choose a date'
                       : DateFormat('d MMM yyyy').format(value!),
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: value == null ? AppColors.muted : AppColors.ink,
-                  ),
+                  type: AppTextType.bodySmall,
+                  fontSize: 16,
+                  color: value == null ? AppColors.muted : AppColors.ink,
                 ),
               ),
               if (allowClear && value != null)
@@ -313,35 +317,16 @@ class StaffDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final border = OutlineInputBorder(
-      borderRadius: BorderRadius.circular(10),
-      borderSide: BorderSide(color: AppColors.line2, width: 1.5),
-    );
     return _labelled(
       label,
-      DropdownButtonFormField<String>(
-        initialValue: options.contains(value) ? value : null,
-        isExpanded: true,
-        dropdownColor: AppColors.surface,
-        hint: Text('Choose', style: TextStyle(color: AppColors.muted)),
-        style: TextStyle(fontSize: 16, color: AppColors.ink),
-        decoration: InputDecoration(
-          isDense: true,
-          filled: true,
-          fillColor: AppColors.surface,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 14,
-            vertical: 14,
-          ),
-          border: border,
-          enabledBorder: border,
-          focusedBorder: border,
-        ),
-        items: [
+      GlobalSearchableDropdown<String>(
+        title: label,
+        value: options.contains(value) ? value : null,
+        options: [
           for (final o in options)
-            DropdownMenuItem(value: o, child: Text(display?.call(o) ?? o)),
+            SearchableDropdownOption(value: o, label: display?.call(o) ?? o),
         ],
-        onChanged: onChanged,
+        onChanged: (selected) => onChanged(selected),
       ),
     );
   }
@@ -423,31 +408,46 @@ class _StaffAttachmentState extends State<StaffAttachment> {
                     color: AppColors.primary,
                   ),
                 ),
-                const SizedBox(width: 10),
-                Text('Uploading...', style: TextStyle(color: AppColors.muted)),
+                addHorizontalSpacing(2.56),
+                AppText(
+                  text: 'Uploading...',
+                  type: AppTextType.bodySmall,
+                  color: AppColors.muted,
+                ),
               ],
             )
           else if (has)
             Row(
               children: [
                 Pill.ok('File attached'),
-                const SizedBox(width: 8),
-                TextButton(
+                addHorizontalSpacing(2.05),
+                AppButton(
+                  text: 'View',
+                  expand: false,
+                  btnColor: Colors.transparent,
+                  textColor: AppColors.ink,
                   onPressed: () => launchUrl(
                     Uri.parse(widget.url),
                     mode: LaunchMode.externalApplication,
                   ),
-                  child: Text('View', style: TextStyle(color: AppColors.ink)),
                 ),
               ],
             )
           else
-            Text('No file yet', style: TextStyle(color: AppColors.muted)),
+            AppText(
+              text: 'No file yet',
+              type: AppTextType.bodySmall,
+              color: AppColors.muted,
+            ),
           if (_error != null) ...[
-            const SizedBox(height: 4),
-            Text(_error!, style: TextStyle(color: AppColors.rose)),
+            addVerticalSpacing(0.47),
+            AppText(
+              text: _error!,
+              type: AppTextType.bodySmall,
+              color: AppColors.rose,
+            ),
           ],
-          const SizedBox(height: 8),
+          addVerticalSpacing(0.95),
           Row(
             children: [
               Expanded(
@@ -461,7 +461,7 @@ class _StaffAttachmentState extends State<StaffAttachment> {
                       : () => _pick(ImageSource.gallery),
                 ),
               ),
-              const SizedBox(width: 10),
+              addHorizontalSpacing(2.56),
               Expanded(
                 child: DesignButton(
                   'Take photo',

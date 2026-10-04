@@ -3,7 +3,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
-        android:label="well_trust_mobile_app"
+        android:label="welltrust Care App"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

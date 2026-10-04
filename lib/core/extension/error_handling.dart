@@ -8,6 +8,11 @@ String handleHttpError(dynamic error) {
     return 'Server error: ${error.message}';
   } else if (error is FormatException) {
     return 'Bad response format.';
+  } else if (error is Exception) {
+    final message = error.toString().replaceFirst('Exception:', '').trim();
+    return message.isEmpty ? 'An unexpected error occurred.' : message;
+  } else if (error is String) {
+    return error;
   } else {
     return 'Unexpected error: $error';
   }
@@ -49,17 +54,5 @@ String getErrorMessageFromResponse(int statusCode, String responseBody) {
     }
 
     return "An error occurred. Please try again.";
-  }
-}
-
-String handleError(dynamic error) {
-  if (error is SocketException) {
-    return 'No Internet connection.';
-  } else if (error is HttpException) {
-    return 'Server error: ${error.message}';
-  } else if (error is FormatException) {
-    return 'Bad response format.';
-  } else {
-    return 'Unexpected error: $error';
   }
 }
