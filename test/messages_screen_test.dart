@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:well_trust_mobile_app/core/utils/size_config.dart';
-import 'package:well_trust_mobile_app/features/messages/presentation/state/providers/message_provider.dart';
+import 'package:well_trust_mobile_app/features/home/presentation/state/providers/message_provider.dart';
 import 'package:well_trust_mobile_app/shared/widgets/welltrust_app_bar.dart';
 import 'support/mobile_fixtures.dart';
 

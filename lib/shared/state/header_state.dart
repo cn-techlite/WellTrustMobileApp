@@ -2,7 +2,7 @@ import 'package:well_trust_mobile_app/core/helpers/globals.dart';
 import 'package:well_trust_mobile_app/core/utils/package_export.dart';
 import 'package:well_trust_mobile_app/features/home/data/model/notification_model.dart';
 import 'package:well_trust_mobile_app/features/home/presentation/state/providers/home_provider.dart';
-import 'package:well_trust_mobile_app/features/messages/presentation/state/providers/message_provider.dart';
+import 'package:well_trust_mobile_app/features/home/presentation/state/providers/message_provider.dart';
 
 /// Unread message threads shown by the badge in the global app bar.
 final unreadMessagesProvider = Provider<int>(

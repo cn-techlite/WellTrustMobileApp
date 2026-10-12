@@ -1,7 +1,7 @@
 import 'package:well_trust_mobile_app/core/utils/colors.dart';
 import 'package:well_trust_mobile_app/core/utils/package_export.dart';
-import 'package:well_trust_mobile_app/features/clients/data/model/assigned_client.dart';
-import 'package:well_trust_mobile_app/features/clients/presentation/state/providers/client_provider.dart';
+import 'package:well_trust_mobile_app/features/account/data/model/assigned_client.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/state/providers/client_provider.dart';
 import 'package:well_trust_mobile_app/features/handover/presentation/widget/handover_widgets.dart';
 import 'package:well_trust_mobile_app/features/notes/data/model/care_note_entry.dart';
 import 'package:well_trust_mobile_app/features/notes/presentation/state/providers/care_note_provider.dart';
@@ -173,41 +173,39 @@ class _NewCareNotePageState extends ConsumerState<NewCareNotePage> {
     }
   }
 
-  Widget pickerField({
-    required String label,
-    required VoidCallback onTap,
-  }) => Material(
-    color: AppColors.surface,
-    borderRadius: BorderRadius.circular(10),
-    child: InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(10),
-      child: Container(
-        constraints: const BoxConstraints(minHeight: 54),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        decoration: BoxDecoration(
+  Widget pickerField({required String label, required VoidCallback onTap}) =>
+      Material(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(10),
+        child: InkWell(
+          onTap: onTap,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: AppColors.line2, width: 1.5),
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: AppText(
-                text: label,
-                type: AppTextType.bodySmall,
-                color: AppColors.ink,
-              ),
+          child: Container(
+            constraints: const BoxConstraints(minHeight: 54),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: AppColors.line2, width: 1.5),
             ),
-            Icon(
-              Icons.calendar_today_outlined,
-              color: AppColors.muted,
-              size: 20,
+            child: Row(
+              children: [
+                Expanded(
+                  child: AppText(
+                    text: label,
+                    type: AppTextType.bodySmall,
+                    color: AppColors.ink,
+                  ),
+                ),
+                Icon(
+                  Icons.calendar_today_outlined,
+                  color: AppColors.muted,
+                  size: 20,
+                ),
+              ],
             ),
-          ],
+          ),
         ),
-      ),
-    ),
-  );
+      );
 
   Widget label(String value, {String? help}) => Padding(
     padding: const EdgeInsets.only(top: 16, bottom: 6),
@@ -306,8 +304,8 @@ class _NewCareNotePageState extends ConsumerState<NewCareNotePage> {
                           segments(
                             const ['Quick note', 'Daily Care Note'],
                             isDailyCareNote ? 'Daily Care Note' : 'Quick note',
-                            (value) => isDailyCareNote =
-                                value == 'Daily Care Note',
+                            (value) =>
+                                isDailyCareNote = value == 'Daily Care Note',
                           ),
                           if (!isDailyCareNote) ...[
                             label('How were they?'),

@@ -16,6 +16,7 @@ import 'package:well_trust_mobile_app/features/account/presentation/widget/staff
 import 'package:well_trust_mobile_app/features/account/presentation/widget/settings_sheet.dart';
 import 'package:well_trust_mobile_app/features/handover/presentation/widget/handover_widgets.dart';
 import 'package:well_trust_mobile_app/features/account/presentation/screen/personal_detail.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/screen/abc_chart_screen.dart';
 
 import '../../../../core/utils/colors.dart';
 import '../../../../core/utils/package_export.dart';
@@ -202,6 +203,15 @@ class _LoginPageState extends ConsumerState<AccountPage> {
                             onTap: () => navigateToRoute(
                               context,
                               const IncidentReportScreen(),
+                            ),
+                          ),
+                          _MenuTile(
+                            icon: Icons.format_list_bulleted_rounded,
+                            title: 'ABC Chart',
+                            subtitle: 'Record and review behaviour episodes',
+                            onTap: () => navigateToRoute(
+                              context,
+                              const AbcChartScreen(),
                             ),
                           ),
                           _MenuTile(

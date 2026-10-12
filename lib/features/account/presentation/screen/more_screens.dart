@@ -3,8 +3,8 @@ import 'dart:convert';
 
 import 'package:well_trust_mobile_app/core/helpers/globals.dart';
 import 'package:well_trust_mobile_app/core/utils/package_export.dart';
-import 'package:well_trust_mobile_app/features/clients/data/model/assigned_client.dart';
-import 'package:well_trust_mobile_app/features/clients/presentation/state/providers/client_provider.dart';
+import 'package:well_trust_mobile_app/features/account/data/model/assigned_client.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/state/providers/client_provider.dart';
 import 'package:well_trust_mobile_app/features/handover/presentation/widget/handover_widgets.dart';
 import 'package:well_trust_mobile_app/features/visits/data/model/today_visit.dart';
 import 'package:well_trust_mobile_app/features/visits/presentation/state/providers/visit_provider.dart';

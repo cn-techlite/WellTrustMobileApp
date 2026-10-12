@@ -9,7 +9,7 @@ import 'package:well_trust_mobile_app/features/account/domain/controller/account
 import 'package:well_trust_mobile_app/features/account/presentation/screen/account.dart';
 import 'package:well_trust_mobile_app/features/account/presentation/state/providers/account_provider.dart';
 import 'package:well_trust_mobile_app/features/account/presentation/state/state_model/account_state_model.dart';
-import 'package:well_trust_mobile_app/features/clients/presentation/state/providers/client_provider.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/state/providers/client_provider.dart';
 import 'support/mobile_fixtures.dart';
 
 class _FakeAccountController extends AccountController {
@@ -113,6 +113,35 @@ void main() {
     );
     expect(find.text('What kind of incident?'), findsOneWidget);
     expect(find.text('Submit incident report'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('ABC Chart follows Incident report and opens its entry form', (
+    tester,
+  ) async {
+    await pumpMore(tester);
+
+    final incidentTile = find.text('Incident report');
+    final abcTile = find.text('ABC Chart');
+    await tester.scrollUntilVisible(
+      abcTile,
+      120,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(
+      tester.getTopLeft(abcTile).dy,
+      greaterThan(tester.getTopLeft(incidentTile).dy),
+    );
+
+    await tester.tap(abcTile);
+    await tester.pumpAndSettle();
+
+    expect(find.text('New entry'), findsOneWidget);
+    expect(find.text('Records'), findsOneWidget);
+    expect(find.text('Antecedent — what happened before? *'), findsOneWidget);
+    expect(find.text('Behaviour — what did the person do? *'), findsOneWidget);
+    expect(find.text('Consequence — what happened after? *'), findsOneWidget);
+    expect(find.text('Save ABC entry'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 

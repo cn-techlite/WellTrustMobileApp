@@ -10,8 +10,8 @@ import 'package:well_trust_mobile_app/features/home/data/model/notification_mode
 import 'package:well_trust_mobile_app/features/home/presentation/state/providers/home_provider.dart';
 import 'package:well_trust_mobile_app/features/home/presentation/state/state_model/notification_state.dart';
 import 'package:well_trust_mobile_app/features/home_screen.dart';
-import 'package:well_trust_mobile_app/features/meetings/presentation/screen/meetings_screen.dart';
-import 'package:well_trust_mobile_app/features/messages/presentation/screen/messages_screen.dart';
+import 'package:well_trust_mobile_app/features/home/presentation/screen/meetings_screen.dart';
+import 'package:well_trust_mobile_app/features/home/presentation/screen/messages_screen.dart';
 import 'package:well_trust_mobile_app/shared/state/header_state.dart';
 import 'package:well_trust_mobile_app/shared/widgets/welltrust_app_bar.dart';
 

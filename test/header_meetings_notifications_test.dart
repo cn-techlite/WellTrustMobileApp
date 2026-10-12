@@ -12,7 +12,7 @@ import 'package:well_trust_mobile_app/features/home/presentation/state/providers
 import 'package:well_trust_mobile_app/features/home/presentation/state/state_model/notification_state.dart';
 import 'package:well_trust_mobile_app/shared/state/header_state.dart';
 import 'package:well_trust_mobile_app/shared/widgets/welltrust_app_bar.dart';
-import 'package:well_trust_mobile_app/features/meetings/presentation/state/providers/meeting_provider.dart';
+import 'package:well_trust_mobile_app/features/home/presentation/state/providers/meeting_provider.dart';
 import 'support/mobile_fixtures.dart';
 
 class _FakeNotifications extends NotificationController {

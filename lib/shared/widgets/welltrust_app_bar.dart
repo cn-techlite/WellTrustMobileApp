@@ -4,10 +4,10 @@ import 'package:well_trust_mobile_app/core/utils/helper_functions.dart';
 import 'package:well_trust_mobile_app/core/utils/package_export.dart';
 import 'package:well_trust_mobile_app/features/account/presentation/screen/notification_page.dart';
 import 'package:well_trust_mobile_app/features/auth/presentation/screen/logins.dart';
-import 'package:well_trust_mobile_app/features/meetings/presentation/screen/meetings_screen.dart';
-import 'package:well_trust_mobile_app/features/messages/presentation/screen/messages_screen.dart';
+import 'package:well_trust_mobile_app/features/home/presentation/screen/meetings_screen.dart';
+import 'package:well_trust_mobile_app/features/home/presentation/screen/messages_screen.dart';
 import 'package:well_trust_mobile_app/shared/state/header_state.dart';
-import 'package:well_trust_mobile_app/features/meetings/presentation/state/providers/meeting_provider.dart';
+import 'package:well_trust_mobile_app/features/home/presentation/state/providers/meeting_provider.dart';
 import 'package:well_trust_mobile_app/shared/widgets/brand_logo.dart';
 
 /// The navy bar at the top of every screen (design `.bar`): the WellTrust mark,

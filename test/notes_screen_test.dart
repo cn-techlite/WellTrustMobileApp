@@ -6,7 +6,7 @@ import 'package:well_trust_mobile_app/features/notes/data/model/care_note_entry.
 import 'package:well_trust_mobile_app/features/notes/presentation/screen/notes_screen.dart';
 import 'package:well_trust_mobile_app/features/notes/presentation/state/providers/care_note_provider.dart';
 import 'package:well_trust_mobile_app/shared/widgets/input.dart';
-import 'package:well_trust_mobile_app/features/clients/presentation/state/providers/client_provider.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/state/providers/client_provider.dart';
 import 'support/mobile_fixtures.dart';
 
 void main() {

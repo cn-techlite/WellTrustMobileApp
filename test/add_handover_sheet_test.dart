@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:well_trust_mobile_app/core/utils/size_config.dart';
 import 'package:well_trust_mobile_app/features/handover/presentation/widget/add_handover_sheet.dart';
-import 'package:well_trust_mobile_app/features/clients/presentation/state/providers/client_provider.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/state/providers/client_provider.dart';
 import 'support/mobile_fixtures.dart';
 
 void main() {

@@ -1,14 +1,14 @@
 import 'dart:async';
 
-import 'package:well_trust_mobile_app/features/clients/data/model/assigned_client.dart';
-import 'package:well_trust_mobile_app/features/clients/domain/controller/client_controller.dart';
-import 'package:well_trust_mobile_app/features/clients/presentation/state/state_model/client_state.dart';
-import 'package:well_trust_mobile_app/features/meetings/data/model/meeting_model.dart';
-import 'package:well_trust_mobile_app/features/meetings/domain/controller/meeting_controller.dart';
-import 'package:well_trust_mobile_app/features/meetings/presentation/state/state_model/meeting_state.dart';
-import 'package:well_trust_mobile_app/features/messages/data/model/message_thread.dart';
-import 'package:well_trust_mobile_app/features/messages/domain/controller/message_controller.dart';
-import 'package:well_trust_mobile_app/features/messages/presentation/state/state_model/message_state.dart';
+import 'package:well_trust_mobile_app/features/account/data/model/assigned_client.dart';
+import 'package:well_trust_mobile_app/features/account/domain/controller/client_controller.dart';
+import 'package:well_trust_mobile_app/features/account/presentation/state/state_model/client_state.dart';
+import 'package:well_trust_mobile_app/features/home/data/model/meeting_model.dart';
+import 'package:well_trust_mobile_app/features/home/domain/controller/meeting_controller.dart';
+import 'package:well_trust_mobile_app/features/home/presentation/state/state_model/meeting_state.dart';
+import 'package:well_trust_mobile_app/features/home/data/model/message_thread.dart';
+import 'package:well_trust_mobile_app/features/home/domain/controller/message_controller.dart';
+import 'package:well_trust_mobile_app/features/home/presentation/state/state_model/message_state.dart';
 import 'package:well_trust_mobile_app/features/notes/data/model/care_note_entry.dart';
 import 'package:well_trust_mobile_app/features/notes/domain/controller/care_note_controller.dart';
 import 'package:well_trust_mobile_app/features/notes/presentation/state/state_model/care_note_state.dart';

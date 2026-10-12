@@ -111,6 +111,9 @@ class Endpoints {
       "$messagesUrl/$messageId/read";
   static String assessmentsUrl = "$mobileUrl/care-assessments";
   static String incidentsUrl = "$mobileUrl/incidents";
+  static String abcChartsUrl = "$mobileUrl/abc-charts";
+  static String clientAbcCharts(String clientId) =>
+      "$abcChartsUrl/clients/$clientId";
   static String complaintsUrl = "$mobileUrl/complaints";
   static String meetingsUrl = "$mobileUrl/meetings";
 
